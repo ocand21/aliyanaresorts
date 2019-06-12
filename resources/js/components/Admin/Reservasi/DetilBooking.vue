@@ -29,6 +29,12 @@
                             </div>
                             <div class="card-body">
                                 <div class="col-md-12">
+
+                                  <div class="row">
+                                    <div class="col-md-12 text-right">
+                                      <button type="button" class="btn btn-success btn-sm" name="button" @click="cetakInvoice()"><i class="fa fa-print"></i> Cetak Invoice</button>
+                                    </div>
+                                  </div>
                                   <div class="row">
 
                                     <div class="col-md-3">
@@ -169,6 +175,10 @@ export default {
         }
     },
     methods: {
+      cetakInvoice(){
+
+        window.open('/booking/invoice/'+this.$route.params.kode_booking, '_blank');
+      },
       detilKamar(){
         axios.get('/api/admin/booking/detil/kamar/' + this.$route.params.kode_booking).then(({
             data

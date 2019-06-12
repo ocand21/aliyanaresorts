@@ -53,4 +53,6 @@ Route::group(['prefix' => 'apps'], function(){
   Route::get('/fasilitas', 'API\App\AppsController@loadFasilitas');
   Route::get('/fasilitas/{id}', 'API\App\AppsController@detailFasilitas');
 
+  Route::post('/booking/cek-kamar', 'API\App\BookingsController@cekKamar');
+
 });

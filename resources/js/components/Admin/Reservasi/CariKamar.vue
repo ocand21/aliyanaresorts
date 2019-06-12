@@ -50,6 +50,17 @@
                                         </div>
                                         <div class="row" style="margin-top: 10px">
                                             <div class="col-md-3">
+                                                <label for="">Tipe Kamar</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select class="form-control" v-model="form.id_tipe">
+                                                    <option value="0">Semua</option>
+                                                    <option v-for="tipe in TipeKamar" :key="tipe.id" :value="tipe.id">{{tipe.tipe}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top: 10px">
+                                            <div class="col-md-3">
                                                 <label for="">Jumlah Tamu</label>
                                             </div>
                                             <div class="col-md-4">
@@ -226,9 +237,9 @@
                         <div class="form-group">
                             <label for=""> <strong>Tipe Identitas</strong> </label>
                             <select class="form-control" name="tipe_identitas">
-                              <option value="-">-- Pilih --</option>
-                              <option value="KTP">KTP</option>
-                              <option value="SIM">SIM</option>
+                                <option value="-">-- Pilih --</option>
+                                <option value="KTP">KTP</option>
+                                <option value="SIM">SIM</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -236,8 +247,8 @@
                             <input type="text" class="form-control" name="no_identitas">
                         </div>
                         <div class="form-group">
-                          <label for=""> <strong>Alamat (Sesuai Kartu Identitas)</strong> </label>
-                          <textarea type="text" class="form-control" name="alamat"></textarea>
+                            <label for=""> <strong>Alamat (Sesuai Kartu Identitas)</strong> </label>
+                            <textarea type="text" class="form-control" name="alamat"></textarea>
                         </div>
                         <div class="form-group">
                             <label for=""> <strong>No Telepon/ Handphone</strong> </label>
@@ -281,6 +292,7 @@ export default {
                 tgl_checkin: '',
                 tgl_checkout: '',
                 jml_tamu: '',
+                id_tipe: '',
             }),
             lang: {
                 days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
@@ -325,28 +337,34 @@ export default {
             dataKamar: [],
             countTemp: [],
             dataTemp: [],
+            TipeKamar: [],
         }
     },
     methods: {
-        prosesBooking(){
-          var formData = new FormData(document.getElementById("formProsesBooking"));
-          let instance = this;
-          axios.post('/api/admin/booking/proses', formData)
-              .then(() => {
-                  Fire.$emit('AfterCreate');
-                  swal(
-                      'Sukses!',
-                      'Ditambahkan ke daftar booking.',
-                      'success'
-                  )
-                  this.$Progress.finish();
-                  $('#detailBooking').modal('hide');
-                  this.$router.push({
-                      name: 'bookings'
-                  });
-              }).catch({
+        loadTipe() {
+            axios.get('/api/admin/tipe-kamar').then(({
+                data
+            }) => (this.TipeKamar = data));
+        },
+        prosesBooking() {
+            var formData = new FormData(document.getElementById("formProsesBooking"));
+            let instance = this;
+            axios.post('/api/admin/booking/proses', formData)
+                .then(() => {
+                    Fire.$emit('AfterCreate');
+                    swal(
+                        'Sukses!',
+                        'Ditambahkan ke daftar booking.',
+                        'success'
+                    )
+                    this.$Progress.finish();
+                    $('#detailBooking').modal('hide');
+                    this.$router.push({
+                        name: 'bookings'
+                    });
+                }).catch({
 
-              })
+                })
         },
         hapusTemp(id) {
             swal({
@@ -419,6 +437,7 @@ export default {
     created() {
         this.$Progress.start();
         this.hitungTemp();
+        this.loadTipe();
         Fire.$on('AfterCreate', () => {
             this.cekKamar();
             this.loadTemp();

@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://sistem.aliyanaresorts.com'),
 
     'asset_url' => env('ASSET_URL', null),
 
@@ -167,6 +167,9 @@ return [
          */
          SMartins\PassportMultiauth\Providers\MultiauthServiceProvider::class,
          Intervention\Image\ImageServiceProvider::class,
+         Barryvdh\DomPDF\ServiceProvider::class,
+         'Jenssegers\Date\DateServiceProvider',
+         Lanin\Laravel\EmailTemplatesOptimization\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -227,6 +230,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Date' => Jenssegers\Date\Date::class,
 
     ],
 

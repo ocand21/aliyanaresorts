@@ -19,5 +19,6 @@ Route::group(['prefix' => 'admin'], function (){
 
   Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 });
-
+Route::view('/template-email', 'mail.invoice');
+Route::get('/booking/invoice/{kode_booking}', 'PDF\PDFController@invoice');
 Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d-\/_.]+)?');

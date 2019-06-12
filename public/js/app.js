@@ -6765,6 +6765,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -6780,7 +6791,8 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         tgl_checkin: '',
         tgl_checkout: '',
-        jml_tamu: ''
+        jml_tamu: '',
+        id_tipe: ''
       }),
       lang: {
         days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
@@ -6822,12 +6834,21 @@ __webpack_require__.r(__webpack_exports__);
       fasilitas: [],
       dataKamar: [],
       countTemp: [],
-      dataTemp: []
+      dataTemp: [],
+      TipeKamar: []
     };
   },
   methods: {
-    prosesBooking: function prosesBooking() {
+    loadTipe: function loadTipe() {
       var _this = this;
+
+      axios.get('/api/admin/tipe-kamar').then(function (_ref) {
+        var data = _ref.data;
+        return _this.TipeKamar = data;
+      });
+    },
+    prosesBooking: function prosesBooking() {
+      var _this2 = this;
 
       var formData = new FormData(document.getElementById("formProsesBooking"));
       var instance = this;
@@ -6835,17 +6856,17 @@ __webpack_require__.r(__webpack_exports__);
         Fire.$emit('AfterCreate');
         swal('Sukses!', 'Ditambahkan ke daftar booking.', 'success');
 
-        _this.$Progress.finish();
+        _this2.$Progress.finish();
 
         $('#detailBooking').modal('hide');
 
-        _this.$router.push({
+        _this2.$router.push({
           name: 'bookings'
         });
       })["catch"]({});
     },
     hapusTemp: function hapusTemp(id) {
-      var _this2 = this;
+      var _this3 = this;
 
       swal({
         title: 'Anda yakin?',
@@ -6858,13 +6879,13 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: 'Batal'
       }).then(function (result) {
         if (result.value) {
-          _this2.$Progress.start();
+          _this3.$Progress.start();
 
           axios["delete"]('/api/admin/booking/room/temp/hapus/' + id).then(function () {
             swal('Dihapus!', 'Data berhasil dihapus.', 'success');
             Fire.$emit('AfterCreate');
 
-            _this2.$Progress.finish();
+            _this3.$Progress.finish();
           })["catch"](function () {
             swal("Gagal!", "Terjadi kesalahan.", "warning");
           });
@@ -6872,11 +6893,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     loadTemp: function loadTemp() {
-      var _this3 = this;
+      var _this4 = this;
 
-      axios.get("/api/admin/booking/room/temp").then(function (_ref) {
-        var data = _ref.data;
-        return _this3.dataTemp = data;
+      axios.get("/api/admin/booking/room/temp").then(function (_ref2) {
+        var data = _ref2.data;
+        return _this4.dataTemp = data;
       });
     },
     modal: function modal() {
@@ -6884,15 +6905,15 @@ __webpack_require__.r(__webpack_exports__);
       this.loadTemp();
     },
     hitungTemp: function hitungTemp() {
-      var _this4 = this;
+      var _this5 = this;
 
-      axios.get("/api/admin/booking/room/temp/count").then(function (_ref2) {
-        var data = _ref2.data;
-        return _this4.countTemp = data;
+      axios.get("/api/admin/booking/room/temp/count").then(function (_ref3) {
+        var data = _ref3.data;
+        return _this5.countTemp = data;
       });
     },
     roomTemp: function roomTemp() {
-      var _this5 = this;
+      var _this6 = this;
 
       var formData = new FormData(document.getElementById("formBooking"));
       var instance = this;
@@ -6901,29 +6922,30 @@ __webpack_require__.r(__webpack_exports__);
         Fire.$emit('AfterCreate');
         swal('Sukses!', 'Ditambahkan ke daftar booking.', 'success');
 
-        _this5.$Progress.finish();
+        _this6.$Progress.finish();
       })["catch"]({});
     },
     cekKamar: function cekKamar() {
-      var _this6 = this;
+      var _this7 = this;
 
-      this.form.post('/api/admin/booking/cek-kamar').then(function (_ref3) {
-        var data = _ref3.data;
-        return _this6.dataKamar = data;
+      this.form.post('/api/admin/booking/cek-kamar').then(function (_ref4) {
+        var data = _ref4.data;
+        return _this7.dataKamar = data;
       });
     }
   },
   created: function created() {
-    var _this7 = this;
+    var _this8 = this;
 
     this.$Progress.start();
     this.hitungTemp();
+    this.loadTipe();
     Fire.$on('AfterCreate', function () {
-      _this7.cekKamar();
+      _this8.cekKamar();
 
-      _this7.loadTemp();
+      _this8.loadTemp();
 
-      _this7.hitungTemp();
+      _this8.hitungTemp();
     });
     this.$Progress.finish();
   }
@@ -6941,6 +6963,12 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tinymce/tinymce-vue */ "./node_modules/@tinymce/tinymce-vue/lib/es2015/index.js");
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -7108,6 +7136,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    cetakInvoice: function cetakInvoice() {
+      window.open('/booking/invoice/' + this.$route.params.kode_booking, '_blank');
+    },
     detilKamar: function detilKamar() {
       var _this = this;
 
@@ -76210,6 +76241,73 @@ var render = function() {
                             _vm._m(4),
                             _vm._v(" "),
                             _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.id_tipe,
+                                      expression: "form.id_tipe"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.form,
+                                        "id_tipe",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("option", { attrs: { value: "0" } }, [
+                                    _vm._v("Semua")
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.TipeKamar, function(tipe) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        key: tipe.id,
+                                        domProps: { value: tipe.id }
+                                      },
+                                      [_vm._v(_vm._s(tipe.tipe))]
+                                    )
+                                  })
+                                ],
+                                2
+                              )
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "row",
+                            staticStyle: { "margin-top": "10px" }
+                          },
+                          [
+                            _vm._m(5),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
                               _c("input", {
                                 directives: [
                                   {
@@ -76248,7 +76346,7 @@ var render = function() {
                       "div",
                       { staticClass: "card-footer text-right" },
                       [
-                        _vm._m(5),
+                        _vm._m(6),
                         _vm._v(" "),
                         _c(
                           "router-link",
@@ -76283,7 +76381,7 @@ var render = function() {
             [
               _c("div", { staticClass: "col-md-12" }, [
                 _c("div", { staticClass: "card" }, [
-                  _vm._m(6),
+                  _vm._m(7),
                   _vm._v(" "),
                   _c("div", { staticClass: "card-body" }, [
                     _c("div", { staticClass: "col-md-12" }, [
@@ -76303,7 +76401,7 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("table", { staticClass: "table table-bordered" }, [
-                        _vm._m(7),
+                        _vm._m(8),
                         _vm._v(" "),
                         _c(
                           "tbody",
@@ -76349,7 +76447,7 @@ var render = function() {
                                       domProps: { value: kamar.tipe.harga }
                                     }),
                                     _vm._v(" "),
-                                    _vm._m(8, true),
+                                    _vm._m(9, true),
                                     _vm._v(" "),
                                     _c("input", {
                                       staticClass: "form-control",
@@ -76448,7 +76546,7 @@ var render = function() {
           { staticClass: "modal-dialog modal-lg", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(9),
+              _vm._m(10),
               _vm._v(" "),
               _c(
                 "form",
@@ -76466,7 +76564,7 @@ var render = function() {
                     "div",
                     { staticClass: "modal-body" },
                     [
-                      _vm._m(10),
+                      _vm._m(11),
                       _vm._v(" "),
                       _c("hr"),
                       _vm._v(" "),
@@ -76474,7 +76572,7 @@ var render = function() {
                         "table",
                         { staticClass: "table table-bordered table-hover" },
                         [
-                          _vm._m(11),
+                          _vm._m(12),
                           _vm._v(" "),
                           _c(
                             "tbody",
@@ -76528,7 +76626,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("thead", [
                             _c("tr", [
-                              _vm._m(12),
+                              _vm._m(13),
                               _vm._v(" "),
                               _c(
                                 "th",
@@ -76574,7 +76672,7 @@ var render = function() {
                         ]
                       ),
                       _vm._v(" "),
-                      _vm._m(13),
+                      _vm._m(14),
                       _vm._v(" "),
                       _c("hr"),
                       _vm._v(" "),
@@ -76599,7 +76697,7 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("div", { staticClass: "form-group" }, [
-                        _vm._m(14),
+                        _vm._m(15),
                         _vm._v(" "),
                         _c("input", {
                           staticClass: "form-control text-uppercase",
@@ -76613,7 +76711,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "form-group" }, [
-                        _vm._m(15),
+                        _vm._m(16),
                         _vm._v(" "),
                         _c("input", {
                           staticClass: "form-control",
@@ -76627,7 +76725,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "form-group" }, [
-                        _vm._m(16),
+                        _vm._m(17),
                         _vm._v(" "),
                         _c("input", {
                           staticClass: "form-control",
@@ -76641,7 +76739,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "form-group" }, [
-                        _vm._m(17),
+                        _vm._m(18),
                         _vm._v(" "),
                         _c("input", {
                           staticClass: "form-control",
@@ -76652,11 +76750,9 @@ var render = function() {
                       _vm._v(" "),
                       _c("hr"),
                       _vm._v(" "),
-                      _vm._m(18),
+                      _vm._m(19),
                       _vm._v(" "),
                       _c("hr"),
-                      _vm._v(" "),
-                      _vm._m(19),
                       _vm._v(" "),
                       _vm._m(20),
                       _vm._v(" "),
@@ -76668,12 +76764,14 @@ var render = function() {
                       _vm._v(" "),
                       _vm._m(24),
                       _vm._v(" "),
-                      _vm._m(25)
+                      _vm._m(25),
+                      _vm._v(" "),
+                      _vm._m(26)
                     ],
                     2
                   ),
                   _vm._v(" "),
-                  _vm._m(26)
+                  _vm._m(27)
                 ]
               )
             ])
@@ -76747,6 +76845,14 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-3" }, [
       _c("label", { attrs: { for: "" } }, [_vm._v("Tanggal Check-out")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-3" }, [
+      _c("label", { attrs: { for: "" } }, [_vm._v("Tipe Kamar")])
     ])
   },
   function() {
@@ -77076,6 +77182,27 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "row" }, [
+                      _c("div", { staticClass: "col-md-12 text-right" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success btn-sm",
+                            attrs: { type: "button", name: "button" },
+                            on: {
+                              click: function($event) {
+                                return _vm.cetakInvoice()
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-print" }),
+                            _vm._v(" Cetak Invoice")
+                          ]
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
                     _c("div", { staticClass: "row" }, [
                       _vm._m(2),
                       _vm._v(" "),
@@ -98890,7 +99017,12 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
 
 var app = new Vue({
   el: '#app',
-  router: router
+  router: router,
+  methods: {
+    printme: function printme() {
+      window.print();
+    }
+  }
 });
 
 /***/ }),
@@ -99870,8 +100002,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\ariyanaresorts\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\ariyanaresorts\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\aliyanaresorts\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\aliyanaresorts\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
