@@ -6162,6 +6162,138 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tinymce/tinymce-vue */ "./node_modules/@tinymce/tinymce-vue/lib/es2015/index.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    'editor': _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      editMode: false,
+      columns: ['aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang'],
+      options: {
+        texts: {
+          filterPlaceholder: "Cari data",
+          filter: "Pencarian : ",
+          filterBy: "Cari {column}",
+          count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data"
+        },
+        headings: {
+          nama: 'Nama Lengkap',
+          kode_booking: 'Kode Booking',
+          no_telepon: 'No Telepon',
+          total_tagihan: 'Total Tagihan',
+          terbayarkan: 'Terbayarkan',
+          hutang: 'Balance'
+        },
+        sortable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang'],
+        filterable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang'],
+        columnsDisplay: {},
+        filterByColumn: true,
+        pagination: {
+          dropdown: false
+        },
+        columnsClasses: {
+          aksi: 'text-center'
+        }
+      },
+      tagihan: []
+    };
+  },
+  methods: {
+    cetakInvoice: function cetakInvoice(kode_booking) {
+      window.open('/booking/invoice/' + kode_booking, '_blank');
+    },
+    dataTagihan: function dataTagihan() {
+      var _this = this;
+
+      axios.get('/api/admin/payment/tagihan').then(function (_ref) {
+        var data = _ref.data;
+        return _this.tagihan = data;
+      });
+    }
+  },
+  created: function created() {
+    this.$Progress.start();
+    this.dataTagihan();
+    this.$Progress.finish();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Pengaturan.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Pengaturan.vue?vue&type=script&lang=js& ***!
@@ -75212,6 +75344,261 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "container-fluid" } }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { attrs: { id: "ui-view" } }, [
+        _c("div", { staticClass: "animated fadeIn" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-12" }, [
+              _c("div", { staticClass: "card" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-12" },
+                    [
+                      _c("hr"),
+                      _vm._v(" "),
+                      _c("v-client-table", {
+                        attrs: {
+                          data: _vm.tagihan,
+                          columns: _vm.columns,
+                          options: _vm.options
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "aksi",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "div",
+                                { staticClass: "btn-group show" },
+                                [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-info dropdown-toggle",
+                                      attrs: {
+                                        type: "button",
+                                        "data-toggle": "dropdown",
+                                        "aria-haspopup": "true",
+                                        "aria-expanded": "true"
+                                      }
+                                    },
+                                    [_vm._v("Aksi")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "dropdown-menu",
+                                      staticStyle: {
+                                        position: "absolute",
+                                        "will-change": "transform",
+                                        top: "0px",
+                                        left: "0px",
+                                        transform:
+                                          "translate3d(0px, -187px, 0px)"
+                                      },
+                                      attrs: { "x-placement": "top-start" }
+                                    },
+                                    [
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.cetakInvoice(
+                                                row.kode_booking
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-search info"
+                                          }),
+                                          _vm._v(" Detil")
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.hapusFasilitas(row.id)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-trash red"
+                                          }),
+                                          _vm._v(" Hapus")
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            }
+                          },
+                          {
+                            key: "kode_booking",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "p",
+                                { staticClass: "text-uppercase" },
+                                [_vm._v(_vm._s(row.kode_booking))]
+                              )
+                            }
+                          },
+                          {
+                            key: "total_tagihan",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "p",
+                                { staticClass: "float-right red" },
+                                [
+                                  _vm._v(
+                                    "Rp. " +
+                                      _vm._s(
+                                        _vm._f("currency")(row.total_tagihan)
+                                      )
+                                  )
+                                ]
+                              )
+                            }
+                          },
+                          {
+                            key: "terbayarkan",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "p",
+                                { staticClass: "float-right red" },
+                                [
+                                  _vm._v(
+                                    "Rp. " +
+                                      _vm._s(
+                                        _vm._f("currency")(row.terbayarkan)
+                                      )
+                                  )
+                                ]
+                              )
+                            }
+                          },
+                          {
+                            key: "hutang",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "p",
+                                { staticClass: "float-right red" },
+                                [
+                                  _vm._v(
+                                    "Rp. -" +
+                                      _vm._s(_vm._f("currency")(row.hutang))
+                                  )
+                                ]
+                              )
+                            }
+                          }
+                        ])
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-footer text-right" })
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ol", { staticClass: "breadcrumb" }, [
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Dashboard")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Payment")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Tagihan")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-menu d-md-down-none" }, [
+        _c(
+          "div",
+          {
+            staticClass: "btn-group",
+            attrs: { role: "group", "aria-label": "Button group" }
+          },
+          [
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-speech" })
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "./" } }, [
+              _c("i", { staticClass: "icon-graph" }),
+              _vm._v("  Dashboard")
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-settings" }),
+              _vm._v(" Settings")
+            ])
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("strong", [_vm._v("Daftar Tagihan")])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Pengaturan.vue?vue&type=template&id=2fe01c14&":
 /*!*******************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Pengaturan.vue?vue&type=template&id=2fe01c14& ***!
@@ -76409,17 +76796,19 @@ var render = function() {
                             return _c("tr", { key: kamar.id }, [
                               _c("td", [_vm._v(_vm._s(kamar.no_room))]),
                               _vm._v(" "),
-                              _c("td", [_vm._v(_vm._s(kamar.tipe.tipe))]),
+                              _c("td", [_vm._v(_vm._s(kamar.tipe_kamar.tipe))]),
                               _vm._v(" "),
                               _c("td", [
-                                _vm._v(_vm._s(kamar.tipe.kapasitas) + " Person")
+                                _vm._v(
+                                  _vm._s(kamar.tipe_kamar.kapasitas) + " Person"
+                                )
                               ]),
                               _vm._v(" "),
                               _c("td", [
                                 _vm._v(
                                   "Start @ Rp. " +
                                     _vm._s(
-                                      _vm._f("currency")(kamar.tipe.harga)
+                                      _vm._f("currency")(kamar.tipe_kamar.harga)
                                     ) +
                                     "/Night"
                                 )
@@ -76444,7 +76833,9 @@ var render = function() {
                                     _c("input", {
                                       staticClass: "form-control",
                                       attrs: { type: "hidden", name: "harga" },
-                                      domProps: { value: kamar.tipe.harga }
+                                      domProps: {
+                                        value: kamar.tipe_kamar.harga
+                                      }
                                     }),
                                     _vm._v(" "),
                                     _vm._m(9, true),
@@ -76689,7 +77080,7 @@ var render = function() {
                             _vm._v(" "),
                             _c("input", {
                               staticClass: "form-control",
-                              attrs: { type: "text", name: "jml_tamu[]" },
+                              attrs: { type: "hidden", name: "jml_tamu[]" },
                               domProps: { value: temp.jml_tamu }
                             })
                           ]
@@ -99004,6 +99395,10 @@ var routes = [{
   path: '/admin/booking/detail/:kode_booking',
   component: __webpack_require__(/*! ./components/Admin/Reservasi/DetilBooking.vue */ "./resources/js/components/Admin/Reservasi/DetilBooking.vue")["default"],
   name: 'detil-booking'
+}, {
+  path: '/admin/payment/tagihan',
+  component: __webpack_require__(/*! ./components/Admin/Payment/Tagihan.vue */ "./resources/js/components/Admin/Payment/Tagihan.vue")["default"],
+  name: 'tagihan'
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
   mode: 'history',
@@ -99565,6 +99960,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Kamar_vue_vue_type_template_id_8dbb0f66___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Kamar_vue_vue_type_template_id_8dbb0f66___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Payment/Tagihan.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/Admin/Payment/Tagihan.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Tagihan_vue_vue_type_template_id_ca729b7c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Tagihan.vue?vue&type=template&id=ca729b7c& */ "./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c&");
+/* harmony import */ var _Tagihan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Tagihan.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Tagihan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Tagihan_vue_vue_type_template_id_ca729b7c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Tagihan_vue_vue_type_template_id_ca729b7c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/Payment/Tagihan.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Tagihan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Tagihan.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Tagihan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Tagihan_vue_vue_type_template_id_ca729b7c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Tagihan.vue?vue&type=template&id=ca729b7c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Tagihan_vue_vue_type_template_id_ca729b7c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Tagihan_vue_vue_type_template_id_ca729b7c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

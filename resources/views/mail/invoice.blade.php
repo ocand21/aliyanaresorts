@@ -72,7 +72,7 @@
                          <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">Rp. {{format_uang($booking->total)}}</td>
                      </tr>
 </tbody></table>
-<a href="{{ url('/booking/invoice/' . $booking->kode_booking)}}" class="btn btn-xl btn-success btn-block" style="box-sizing:border-box;color:#fff;text-decoration:none;background-color:#28a745;display:block;font-weight:400;text-align:center;vertical-align:middle;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;padding:0.375rem 0.75rem;font-size:1rem;line-height:1.5;border-radius:0.25rem;transition:none;border-color:#28a745;width:100%;">Klik Di sini</a>
+<a href="{{ url('/booking/invoice/' . $booking->kode_booking)}}" class="btn btn-xl btn-success btn-block" style="box-sizing:border-box;color:#fff;text-decoration:none;background-color:#28a745;display:block;font-weight:400;text-align:center;vertical-align:middle;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid transparent;padding:0.375rem 0.75rem;font-size:1rem;line-height:1.5;border-radius:0.25rem;transition:none;border-color:#28a745;width:100%;">Proses Pembayaran</a>
            </div>
 
        </div>

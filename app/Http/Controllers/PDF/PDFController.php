@@ -35,12 +35,17 @@ class PDFController extends Controller
                       ->where('booking_rooms.kode_booking', $kode_booking)
                       ->first();
 
+                      $tagihan = DB::table('tagihan')
+                                    ->select(DB::raw("total_tagihan, terbayarkan, hutang"))
+                                    ->where('kode_booking', $kode_booking)
+                                    ->first();
+
       $tgl1 = Carbon::parse($booking->tgl_checkin);
       $tgl2 = Carbon::parse($booking->tgl_checkout);
       $durasi = $tgl1->diffInDays($tgl2);
 
-      $total = $subtotal->sub_total * $durasi;
+      // $total = $subtotal->sub_total * $durasi;
       // dd($subtotal);
-      return view('pdf.invoice', compact('booking', 'rooms', 'subtotal', 'durasi', 'total', 'konfig'));
+      return view('pdf.invoice', compact('booking', 'rooms', 'subtotal', 'durasi', 'tagihan', 'konfig'));
     }
 }

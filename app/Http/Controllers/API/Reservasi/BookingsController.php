@@ -14,6 +14,7 @@ use App\Kamar;
 use App\BookingTemp;
 use App\BookingRoom;
 use App\Pelanggan;
+use App\Tagihan;
 use Mail;
 class BookingsController extends Controller
 {
@@ -137,6 +138,20 @@ class BookingsController extends Controller
           ]);
           $tmp->delete();
         }
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      try {
+        $tagihan = Tagihan::create([
+          'kode_booking' => $request->kode_booking,
+          'id_pelanggan' => $pelanggan->id,
+          'total_tagihan' => $request->total,
+          'terbayarkan' => '0',
+          'hutang' => $request->total,
+        ]);
+
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
@@ -295,14 +310,14 @@ class BookingsController extends Controller
       $tgl2 = Carbon::parse($tgl_checkout)->format("d M Y");
 
       if ($tipe == "0") {
-        $kamar = Kamar::with('booking', 'tipe')->whereHas('booking', function($q) use ($tgl_checkin, $tgl_checkout){
+        $kamar = Kamar::with('booking', 'tipe_kamar')->whereHas('booking', function($q) use ($tgl_checkin, $tgl_checkout){
           $q->where(function($q2) use ($tgl_checkin, $tgl_checkout){
             $q2->where('tgl_checkin', '>=', $tgl_checkout)
                ->orWhere('tgl_checkout', '<=', $tgl_checkin);
           })->where([['status_temp', '=', '0']]);
         })->orWhereDoesntHave('booking')->where('status_temp', '=', '0')->get();
       } else {
-        $kamar = Kamar::with('booking', 'tipe')->whereHas('booking', function($q) use ($tgl_checkin, $tgl_checkout, $tipe){
+        $kamar = Kamar::with('booking', 'tipe_kamar')->whereHas('booking', function($q) use ($tgl_checkin, $tgl_checkout, $tipe){
           $q->where(function($q2) use ($tgl_checkin, $tgl_checkout){
             $q2->where('tgl_checkin', '>=', $tgl_checkout)
                ->orWhere('tgl_checkout', '<=', $tgl_checkin);

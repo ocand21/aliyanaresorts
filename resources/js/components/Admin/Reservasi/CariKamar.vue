@@ -111,15 +111,15 @@
                                         <tbody>
                                             <tr v-for="kamar in dataKamar.kamar" :key="kamar.id">
                                                 <td>{{kamar.no_room}}</td>
-                                                <td>{{kamar.tipe.tipe}}</td>
-                                                <td>{{kamar.tipe.kapasitas}} Person</td>
+                                                <td>{{kamar.tipe_kamar.tipe}}</td>
+                                                <td>{{kamar.tipe_kamar.kapasitas}} Person</td>
                                                 <!-- <td>{{kamar.tipe.deskripsi}}</td> -->
 
-                                                <td>Start @ Rp. {{kamar.tipe.harga | currency}}/Night</td>
+                                                <td>Start @ Rp. {{kamar.tipe_kamar.harga | currency}}/Night</td>
                                                 <td>
                                                     <form class="" method="post" id="formBooking">
                                                         <input type="hidden" name="no_room" class="form-control" :value="kamar.no_room">
-                                                        <input type="hidden" name="harga" class="form-control" :value="kamar.tipe.harga">
+                                                        <input type="hidden" name="harga" class="form-control" :value="kamar.tipe_kamar.harga">
                                                         <select class="form-control" name="tamu_booking">
                                                             <option value="-">--</option>
                                                             <option value="1">1</option>
@@ -209,7 +209,7 @@
                         <hr>
                         <div class="form-group" v-for="temp in dataTemp.temp" :key="temp.no_room">
                             <input type="hidden" name="no_rooms[]" class="form-control" :value="temp.no_room">
-                            <input type="text" name="jml_tamu[]" class="form-control" :value="temp.jml_tamu">
+                            <input type="hidden" name="jml_tamu[]" class="form-control" :value="temp.jml_tamu">
                         </div>
                         <div class="form-group">
                             <label for=""><strong>Kode Booking</strong></label>

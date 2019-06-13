@@ -91,6 +91,18 @@
                               </li>
                             </ul>
                         </li>
+
+                        <li class="nav-item nav-dropdown">
+                            <a class="nav-link nav-dropdown-toggle" href="#">
+                                <i class="nav-icon fa fa-wallet"></i> Payment</a>
+                            <ul class="nav-dropdown-items" style="margin-left: 10px">
+                              <li class="nav-item">
+                                  <router-link to="/admin/payment/tagihan" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-money-bill"></i> Tagihan
+                                  </router-link>
+                              </li>
+                            </ul>
+                        </li>
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#">
                                 <i class="nav-icon fa fa-briefcase"></i> Master Data</a>

@@ -11,6 +11,18 @@ use App\FotoKamar;
 
 class AppsController extends Controller
 {
+
+    public function tipeKamar(){
+      $tipe = DB::table('tipe_kamar')
+                  ->select(DB::raw("id, tipe"))
+                  ->orderBy('id', 'asc')
+                  ->get();
+
+      return response()->json([
+        'tipe_kamar' => $tipe
+      ]);
+    }
+
     public function loadKamar(){
       $kamar = DB::table('tipe_kamar')
                     ->join('foto_kamar', 'foto_kamar.id_tipe', '=', 'tipe_kamar.id')

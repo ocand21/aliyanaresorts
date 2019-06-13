@@ -15,7 +15,7 @@ class Kamar extends Model
       return $this->hasOne(BookingRoom::class, 'no_room', 'no_room');
     }
 
-    public function tipe(){
+    public function tipe_kamar(){
       return $this->belongsTo(TipeKamar::class, 'id_tipe', 'id');
     }
 }

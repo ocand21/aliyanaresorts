@@ -104,8 +104,7 @@
                     </ul>
                     <div class="col-12" style="margin-left: 5px">
                         <a href="" @click.prevent="printme" target="_blank" class="btn btn-light"><i class="fa fa-print"></i> Print</a>
-                        <button type="button" class="btn btn-success float-right"><i class="fa fa-credit-card"></i> Submit
-                            Payment
+                        <button type="button" class="btn btn-success float-right"><i class="fa fa-credit-card"></i> Proses Pembayaran
                         </button>
                     </div>
 
@@ -153,7 +152,7 @@
                             </div>
 
                             <div class="col-sm-4 invoice-col">
-                                <strong>Invoice #{{$booking->kode_booking}}</strong>
+                                <strong class="text-uppercase">Invoice #{{$booking->kode_booking}}</strong>
                                 <br>
                                 <p></p>
                                 <strong>Tanggal Checkin: </strong>{{ Date::parse($booking->tgl_checkin)->format('l, j F Y') }}<br>
@@ -211,7 +210,15 @@
                                             </tr>
                                             <tr>
                                                 <td><strong>Total</strong></td>
-                                                <td>Rp. {{format_uang($booking->total)}}</td>
+                                                <td>Rp. {{format_uang($tagihan->total_tagihan)}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td><strong>Terbayarkan</strong></td>
+                                              <td>Rp. {{format_uang($tagihan->terbayarkan)}}</td>
+                                            </tr>
+                                            <tr>
+                                              <td><strong>Balance</strong> </td>
+                                              <td class="red">Rp. -{{format_uang($tagihan->hutang)}}</td>
                                             </tr>
                                         </tbody>
                                     </table>

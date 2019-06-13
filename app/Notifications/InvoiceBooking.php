@@ -52,6 +52,7 @@ class InvoiceBooking extends Notification implements ShouldQueue
                         ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                         ->select(DB::raw("bookings.kode_booking, bookings.jml_kamar as jmlKamar, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
                         bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                        ->where('bookings.kode_booking', $kode_booking)
                         ->first();
 
                         $rooms = DB::table('booking_rooms')
@@ -75,6 +76,7 @@ class InvoiceBooking extends Notification implements ShouldQueue
         // $total = $subtotal->sub_total * $durasi;
 
         return (new MailMessage)
+                  ->subject('Invoice ' . $booking->kode_booking)
                   ->view('mail.invoice', [
                     'booking' => $booking,
                     'rooms' => $rooms,

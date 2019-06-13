@@ -43,10 +43,14 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/booking', 'API\Reservasi\BookingsController@loadBooking');
   Route::get('/admin/booking/detil/{kode_booking}', 'API\Reservasi\BookingsController@detilBooking');
   Route::get('/admin/booking/detil/kamar/{kode_booking}', 'API\Reservasi\BookingsController@detilKamar');
+
+  Route::get('/admin/payment/tagihan', 'API\Payment\TagihanController@loadTagihan');
 });
 
 
 Route::group(['prefix' => 'apps'], function(){
+
+    Route::get('/kamar/tipe', 'API\App\AppsController@tipeKamar');
   Route::get('/kamar', 'API\App\AppsController@loadKamar');
   Route::get('/kamar/{id}', 'API\App\AppsController@detailKamar');
 
@@ -54,5 +58,6 @@ Route::group(['prefix' => 'apps'], function(){
   Route::get('/fasilitas/{id}', 'API\App\AppsController@detailFasilitas');
 
   Route::post('/booking/cek-kamar', 'API\App\BookingsController@cekKamar');
+
 
 });
