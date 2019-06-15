@@ -18,6 +18,42 @@ use App\Tagihan;
 use Mail;
 class BookingsController extends Controller
 {
+    public function cancelBooking($kode_booking){
+
+      DB::beginTransaction();
+
+      try {
+        $booking = Booking::where('kode_booking', $kode_booking)->first();
+        $booking->delete();
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      try {
+        $booking_rooms = BookingRoom::where('kode_booking', $kode_booking)->get();
+        foreach ($booking_rooms as $room) {
+          $room->delete();
+        }
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      try {
+        $tagihan = Tagihan::where('kode_booking', $kode_booking)->first();
+        $tagihan->delete();
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+      
+      DB::commit();
+
+      return response()->json([
+        'msg' => 'Booking dibatalkan'
+      ],200);
+    }
 
     public function detilKamar($kode_booking){
       $rooms = DB::table('booking_rooms')

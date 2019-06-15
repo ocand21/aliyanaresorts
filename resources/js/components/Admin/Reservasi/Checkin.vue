@@ -3,7 +3,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Dashboard</li>
         <li class="breadcrumb-item">Reservasi</li>
-        <li class="breadcrumb-item active">Booking</li>
+        <li class="breadcrumb-item active">Checkin</li>
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu d-md-down-none">
             <div class="btn-group" role="group" aria-label="Button group">
@@ -24,19 +24,29 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong>Daftar Booking</strong>
+                                <strong>Daftar Checkin</strong>
 
                             </div>
                             <div class="card-body">
                                 <div class="col-md-12">
-                                    <router-link to="/admin/booking/room" href="#" @click="modal()" class="btn btn-success btn-sm text-right"><span class="fa fa-plus"></span> Tambah Booking</router-link>
+                                    <form class="" action="" @submit.prevent="filterTanggal()" method="post">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label for="">Filter Tanggal</label>
+                                                <date-picker name="tgl_awal" v-model="form.tgl_awal" :lang="lang" value-type="format" confirm :class="{ 'is-invalid': form.errors.has('tgl_awal') }"></date-picker>
+                                                <date-picker name="tgl_akhir" v-model="form.tgl_akhir" :lang="lang" value-type="format" confirm :class="{ 'is-invalid': form.errors.has('tgl_akhir') }"></date-picker>
+                                                <button type="submit" class="btn btn-danger btn-sm" name="button">Filter</button>
+                                                <button type="button" @click="dataBooking()" class="btn btn-success btn-sm" name="button">Reset</button>
+
+                                            </div>
+                                        </div>
+                                    </form>
                                     <hr>
                                     <v-client-table :data="bookings" :columns="columns" :options="options">
                                         <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
                                                 <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
-                                                <a class="dropdown-item" @click="cancelBooking(row.kode_booking)" href="#"> <span class="fa fa-window-close"></span> Batalkan</a>
                                             </div>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
@@ -59,17 +69,33 @@
 </template>
 
 <script>
+import DatePicker from 'vue2-datepicker';
 import Editor from '@tinymce/tinymce-vue';
 export default {
     components: {
-        'editor': Editor
+        DatePicker,
     },
     data() {
         return {
             editMode: false,
+            form: new Form({
+                tgl_awal: '',
+                tgl_akhir: '',
+            }),
             columns: [
                 'aksi', 'kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status',
             ],
+            lang: {
+                days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
+                months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+                placeholder: {
+                    date: 'Pilih Tanggal',
+                }
+            },
+            optionsDate: {
+                format: 'YYYY-mm-dd'
+            },
             options: {
                 texts: {
                     filterPlaceholder: "Cari data",
@@ -85,8 +111,8 @@ export default {
                     tgl_checkout: 'Tgl Checkout',
                     status: 'Status',
                 },
-                sortable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status',],
-                filterable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status',],
+                sortable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status', ],
+                filterable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status', ],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {
@@ -100,44 +126,25 @@ export default {
         }
     },
     methods: {
-      cancelBooking(kode_booking){
-        swal({
-            title: 'Anda yakin?',
-            text: "Operasi ini tidak dapat dibatalkan!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, batalkan booking!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-
-            if (result.value) {
-                this.$Progress.start();
-                axios.delete('/api/admin/booking/cancel/' + kode_booking).then(() => {
-                    swal(
-                        'Dibatalkan!',
-                        'Booking dibatalkan.',
-                        'success'
-                    )
-                    Fire.$emit('AfterCreate')
-                    this.$Progress.finish();
-                }).catch(() => {
-                    swal("Gagal!", "Terjadi kesalahan.",
-                        "warning");
-                });
-            }
-
-        })
-      },
-      detilBooking(kode_booking){
-        this.$router.push({name: 'detil-booking', params:{kode_booking:kode_booking}})
-      },
-      dataBooking(){
-        axios.get('/api/admin/booking').then(({
-            data
-        }) => (this.bookings = data));
-      }
+        filterTanggal() {
+            axios.get('/api/admin/checkin/' + this.form.tgl_awal + '/' + this.form.tgl_akhir).then(({
+                data
+            }) => (this.bookings = data));
+        },
+        detilBooking(kode_booking) {
+            this.$router.push({
+                name: 'detil-booking',
+                params: {
+                    kode_booking: kode_booking
+                }
+            })
+        },
+        dataBooking() {
+            axios.get('/api/admin/checkin').then(({
+                data
+            }) => (this.bookings = data));
+            this.form.reset();
+        }
     },
     created() {
         this.$Progress.start();

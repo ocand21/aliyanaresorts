@@ -95,6 +95,8 @@ let routes = [
   { path: '/admin/booking/room', component: require('./components/Admin/Reservasi/CariKamar.vue').default, name: 'cari-kamar'},
   { path: '/admin/booking/detail/:kode_booking', component: require('./components/Admin/Reservasi/DetilBooking.vue').default, name: 'detil-booking'},
 
+  { path: '/admin/check-in', component: require('./components/Admin/Reservasi/Checkin.vue').default, name: 'check-in'},
+
   { path: '/admin/payment/tagihan', component: require('./components/Admin/Payment/Tagihan.vue').default, name: 'tagihan'},
 ]
 

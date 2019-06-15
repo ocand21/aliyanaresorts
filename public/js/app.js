@@ -6594,6 +6594,33 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    cancelBooking: function cancelBooking(kode_booking) {
+      var _this = this;
+
+      swal({
+        title: 'Anda yakin?',
+        text: "Operasi ini tidak dapat dibatalkan!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, batalkan booking!',
+        cancelButtonText: 'Batal'
+      }).then(function (result) {
+        if (result.value) {
+          _this.$Progress.start();
+
+          axios["delete"]('/api/admin/booking/cancel/' + kode_booking).then(function () {
+            swal('Dibatalkan!', 'Booking dibatalkan.', 'success');
+            Fire.$emit('AfterCreate');
+
+            _this.$Progress.finish();
+          })["catch"](function () {
+            swal("Gagal!", "Terjadi kesalahan.", "warning");
+          });
+        }
+      });
+    },
     detilBooking: function detilBooking(kode_booking) {
       this.$router.push({
         name: 'detil-booking',
@@ -6603,17 +6630,22 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     dataBooking: function dataBooking() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('/api/admin/booking').then(function (_ref) {
         var data = _ref.data;
-        return _this.bookings = data;
+        return _this2.bookings = data;
       });
     }
   },
   created: function created() {
+    var _this3 = this;
+
     this.$Progress.start();
     this.dataBooking();
+    Fire.$on('AfterCreate', function () {
+      _this3.dataBooking('');
+    });
     this.$Progress.finish();
   }
 });
@@ -7078,6 +7110,183 @@ __webpack_require__.r(__webpack_exports__);
       _this8.loadTemp();
 
       _this8.hitungTemp();
+    });
+    this.$Progress.finish();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue2-datepicker */ "./node_modules/vue2-datepicker/lib/index.js");
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tinymce/tinymce-vue */ "./node_modules/@tinymce/tinymce-vue/lib/es2015/index.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
+  },
+  data: function data() {
+    return {
+      editMode: false,
+      form: new Form({
+        tgl_awal: '',
+        tgl_akhir: ''
+      }),
+      columns: ['aksi', 'kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status'],
+      lang: {
+        days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
+        months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+        placeholder: {
+          date: 'Pilih Tanggal'
+        }
+      },
+      optionsDate: {
+        format: 'YYYY-mm-dd'
+      },
+      options: {
+        texts: {
+          filterPlaceholder: "Cari data",
+          filter: "Pencarian : ",
+          filterBy: "Cari {column}",
+          count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data"
+        },
+        headings: {
+          nama: 'Nama Lengkap',
+          kode_booking: 'Kode Booking',
+          no_telepon: 'No Telepon',
+          tgl_checkin: 'Tgl Checkin',
+          tgl_checkout: 'Tgl Checkout',
+          status: 'Status'
+        },
+        sortable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status'],
+        filterable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status'],
+        columnsDisplay: {},
+        filterByColumn: true,
+        pagination: {
+          dropdown: false
+        },
+        columnsClasses: {
+          aksi: 'text-center'
+        }
+      },
+      bookings: []
+    };
+  },
+  methods: {
+    filterTanggal: function filterTanggal() {
+      var _this = this;
+
+      axios.get('/api/admin/checkin/' + this.form.tgl_awal + '/' + this.form.tgl_akhir).then(function (_ref) {
+        var data = _ref.data;
+        return _this.bookings = data;
+      });
+    },
+    detilBooking: function detilBooking(kode_booking) {
+      this.$router.push({
+        name: 'detil-booking',
+        params: {
+          kode_booking: kode_booking
+        }
+      });
+    },
+    dataBooking: function dataBooking() {
+      var _this2 = this;
+
+      axios.get('/api/admin/checkin').then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.bookings = data;
+      });
+      this.form.reset();
+    }
+  },
+  created: function created() {
+    var _this3 = this;
+
+    this.$Progress.start();
+    this.dataBooking();
+    Fire.$on('AfterCreate', function () {
+      _this3.dataBooking('');
     });
     this.$Progress.finish();
   }
@@ -76410,15 +76619,17 @@ var render = function() {
                                           attrs: { href: "#" },
                                           on: {
                                             click: function($event) {
-                                              return _vm.hapusFasilitas(row.id)
+                                              return _vm.cancelBooking(
+                                                row.kode_booking
+                                              )
                                             }
                                           }
                                         },
                                         [
                                           _c("span", {
-                                            staticClass: "fa fa-trash red"
+                                            staticClass: "fa fa-window-close"
                                           }),
-                                          _vm._v(" Hapus")
+                                          _vm._v(" Batalkan")
                                         ]
                                       )
                                     ]
@@ -77536,6 +77747,282 @@ var staticRenderFns = [
         },
         [_vm._v("Batal")]
       )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=template&id=41d92e91&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=template&id=41d92e91& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "container-fluid" } }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { attrs: { id: "ui-view" } }, [
+        _c("div", { staticClass: "animated fadeIn" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-12" }, [
+              _c("div", { staticClass: "card" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-12" },
+                    [
+                      _c(
+                        "form",
+                        {
+                          attrs: { action: "", method: "post" },
+                          on: {
+                            submit: function($event) {
+                              $event.preventDefault()
+                              return _vm.filterTanggal()
+                            }
+                          }
+                        },
+                        [
+                          _c("div", { staticClass: "row" }, [
+                            _c(
+                              "div",
+                              { staticClass: "col-md-12" },
+                              [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Filter Tanggal")
+                                ]),
+                                _vm._v(" "),
+                                _c("date-picker", {
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "tgl_awal"
+                                    )
+                                  },
+                                  attrs: {
+                                    name: "tgl_awal",
+                                    lang: _vm.lang,
+                                    "value-type": "format",
+                                    confirm: ""
+                                  },
+                                  model: {
+                                    value: _vm.form.tgl_awal,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "tgl_awal", $$v)
+                                    },
+                                    expression: "form.tgl_awal"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("date-picker", {
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "tgl_akhir"
+                                    )
+                                  },
+                                  attrs: {
+                                    name: "tgl_akhir",
+                                    lang: _vm.lang,
+                                    "value-type": "format",
+                                    confirm: ""
+                                  },
+                                  model: {
+                                    value: _vm.form.tgl_akhir,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "tgl_akhir", $$v)
+                                    },
+                                    expression: "form.tgl_akhir"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    attrs: { type: "submit", name: "button" }
+                                  },
+                                  [_vm._v("Filter")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success btn-sm",
+                                    attrs: { type: "button", name: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.dataBooking()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Reset")]
+                                )
+                              ],
+                              1
+                            )
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("hr"),
+                      _vm._v(" "),
+                      _c("v-client-table", {
+                        attrs: {
+                          data: _vm.bookings,
+                          columns: _vm.columns,
+                          options: _vm.options
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "aksi",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "div",
+                                { staticClass: "btn-group show" },
+                                [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-info dropdown-toggle",
+                                      attrs: {
+                                        type: "button",
+                                        "data-toggle": "dropdown",
+                                        "aria-haspopup": "true",
+                                        "aria-expanded": "true"
+                                      }
+                                    },
+                                    [_vm._v("Aksi")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "dropdown-menu",
+                                      staticStyle: {
+                                        position: "absolute",
+                                        "will-change": "transform",
+                                        top: "0px",
+                                        left: "0px",
+                                        transform:
+                                          "translate3d(0px, -187px, 0px)"
+                                      },
+                                      attrs: { "x-placement": "top-start" }
+                                    },
+                                    [
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.detilBooking(
+                                                row.kode_booking
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-search info"
+                                          }),
+                                          _vm._v(" Detil")
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            }
+                          },
+                          {
+                            key: "kode_booking",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "p",
+                                { staticClass: "text-uppercase" },
+                                [_vm._v(_vm._s(row.kode_booking))]
+                              )
+                            }
+                          }
+                        ])
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-footer text-right" })
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ol", { staticClass: "breadcrumb" }, [
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Dashboard")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Reservasi")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Checkin")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-menu d-md-down-none" }, [
+        _c(
+          "div",
+          {
+            staticClass: "btn-group",
+            attrs: { role: "group", "aria-label": "Button group" }
+          },
+          [
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-speech" })
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "./" } }, [
+              _c("i", { staticClass: "icon-graph" }),
+              _vm._v("  Dashboard")
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-settings" }),
+              _vm._v(" Settings")
+            ])
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("strong", [_vm._v("Daftar Checkin")])
     ])
   }
 ]
@@ -99396,6 +99883,10 @@ var routes = [{
   component: __webpack_require__(/*! ./components/Admin/Reservasi/DetilBooking.vue */ "./resources/js/components/Admin/Reservasi/DetilBooking.vue")["default"],
   name: 'detil-booking'
 }, {
+  path: '/admin/check-in',
+  component: __webpack_require__(/*! ./components/Admin/Reservasi/Checkin.vue */ "./resources/js/components/Admin/Reservasi/Checkin.vue")["default"],
+  name: 'check-in'
+}, {
   path: '/admin/payment/tagihan',
   component: __webpack_require__(/*! ./components/Admin/Payment/Tagihan.vue */ "./resources/js/components/Admin/Payment/Tagihan.vue")["default"],
   name: 'tagihan'
@@ -100236,6 +100727,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CariKamar_vue_vue_type_template_id_c4195ad2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CariKamar_vue_vue_type_template_id_c4195ad2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Checkin.vue":
+/*!*************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Checkin.vue ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Checkin.vue?vue&type=template&id=41d92e91& */ "./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=template&id=41d92e91&");
+/* harmony import */ var _Checkin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Checkin.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Checkin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/Reservasi/Checkin.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Checkin.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=template&id=41d92e91&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=template&id=41d92e91& ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Checkin.vue?vue&type=template&id=41d92e91& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=template&id=41d92e91&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

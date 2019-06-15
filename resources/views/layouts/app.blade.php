@@ -89,6 +89,11 @@
                                       <i class="nav-icon fa fa-key"></i> Booking
                                   </router-link>
                               </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/check-in" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-bed"></i> Check-in
+                                  </router-link>
+                              </li>
                             </ul>
                         </li>
 

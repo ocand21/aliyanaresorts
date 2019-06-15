@@ -26,7 +26,7 @@ class AppsController extends Controller
     public function loadKamar(){
       $kamar = DB::table('tipe_kamar')
                     ->join('foto_kamar', 'foto_kamar.id_tipe', '=', 'tipe_kamar.id')
-                    ->select(DB::raw("tipe_kamar.id, tipe_kamar.tipe, tipe_kamar.harga, foto_kamar.lokasi"))
+                    ->select(DB::raw("tipe_kamar.id, tipe_kamar.tipe, tipe_kamar.harga, tipe_kamar.kapasitas, foto_kamar.lokasi"))
                     ->groupBy('tipe_kamar.id')
                     ->orderBy('tipe_kamar.id', 'ASC')
                     ->get();

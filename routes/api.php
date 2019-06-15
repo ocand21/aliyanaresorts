@@ -43,8 +43,13 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/booking', 'API\Reservasi\BookingsController@loadBooking');
   Route::get('/admin/booking/detil/{kode_booking}', 'API\Reservasi\BookingsController@detilBooking');
   Route::get('/admin/booking/detil/kamar/{kode_booking}', 'API\Reservasi\BookingsController@detilKamar');
+  Route::delete('/admin/booking/cancel/{kode_booking}', 'API\Reservasi\BookingsController@cancelBooking');
+
+  Route::get('/admin/checkin', 'API\Reservasi\CheckinController@loadData');
+  Route::get('/admin/checkin/{tgl_awal}/{tgl_akhir}', 'API\Reservasi\CheckinController@filterTgl');
 
   Route::get('/admin/payment/tagihan', 'API\Payment\TagihanController@loadTagihan');
+
 });
 
 
