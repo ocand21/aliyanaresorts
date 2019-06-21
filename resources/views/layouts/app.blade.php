@@ -94,6 +94,16 @@
                                       <i class="nav-icon fa fa-bed"></i> Check-in
                                   </router-link>
                               </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/check-out" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-suitcase-rolling"></i> Check-out
+                                  </router-link>
+                              </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/canceled" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-window-close"></i> Canceled
+                                  </router-link>
+                              </li>
                             </ul>
                         </li>
 
@@ -104,6 +114,11 @@
                               <li class="nav-item">
                                   <router-link to="/admin/payment/tagihan" class="nav-link" href="colors.html">
                                       <i class="nav-icon fa fa-money-bill"></i> Tagihan
+                                  </router-link>
+                              </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/payment/tagihan" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-credit-card"></i> Pembayaran
                                   </router-link>
                               </li>
                             </ul>
@@ -125,6 +140,11 @@
                               <li class="nav-item">
                                   <router-link to="/admin/departemen" class="nav-link" href="colors.html">
                                       <i class="nav-icon fa fa-users"></i> Departemen
+                                  </router-link>
+                              </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/master-data/slideshow" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-images"></i> Slideshow
                                   </router-link>
                               </li>
                             </ul>

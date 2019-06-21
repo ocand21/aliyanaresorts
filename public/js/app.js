@@ -6162,6 +6162,239 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tinymce/tinymce-vue */ "./node_modules/@tinymce/tinymce-vue/lib/es2015/index.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    'editor': _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      editMode: false,
+      form: new Form({
+        id: '',
+        judul: '',
+        foto: ''
+      }),
+      columns: ['aksi', 'judul', 'foto'],
+      options: {
+        texts: {
+          filterPlaceholder: "Cari data",
+          filter: "Pencarian : ",
+          filterBy: "Cari {column}",
+          count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data"
+        },
+        headings: {
+          judul: 'Judul',
+          foto: 'Foto'
+        },
+        sortable: ['judul', 'foto'],
+        filterable: ['judul', 'foto'],
+        columnsDisplay: {},
+        filterByColumn: true,
+        pagination: {
+          dropdown: false
+        },
+        columnsClasses: {
+          aksi: 'text-center'
+        }
+      },
+      slideshow: []
+    };
+  },
+  methods: {
+    hapusSlide: function hapusSlide(id) {
+      var _this = this;
+
+      swal({
+        title: 'Anda yakin?',
+        text: "Operasi ini tidak dapat dibatalkan!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus slide!',
+        cancelButtonText: 'Batal'
+      }).then(function (result) {
+        if (result.value) {
+          _this.$Progress.start();
+
+          axios["delete"]('/api/admin/slideshow/' + id).then(function () {
+            swal('Dihapus!', 'Data berhasil dihapus.', 'success');
+            Fire.$emit('AfterCreate');
+
+            _this.$Progress.finish();
+          })["catch"](function () {
+            swal("Gagal!", "Terjadi kesalahan.", "warning");
+          });
+        }
+      });
+    },
+    updateDepartemen: function updateDepartemen() {
+      var _this2 = this;
+
+      this.form.put('/api/admin/departemen/' + this.form.id).then(function () {
+        _this2.$Progress.start();
+
+        swal('Sukses!', 'Departemen berhasil dirubah.', 'success');
+
+        _this2.$Progress.finish();
+
+        _this2.form.reset();
+
+        $('#newDepartemen').modal('hide');
+        Fire.$emit('AfterCreate');
+      })["catch"](function () {
+        swal('Gagal!', 'Terjadi kesalahan', 'warning');
+      });
+    },
+    editDepartemen: function editDepartemen(departemen) {
+      this.editMode = true;
+      this.form.reset();
+      $('#newDepartemen').modal('show');
+      this.form.fill(departemen);
+    },
+    loadSlide: function loadSlide() {
+      var _this3 = this;
+
+      axios.get('/api/admin/slideshow').then(function (_ref) {
+        var data = _ref.data;
+        return _this3.slideshow = data;
+      });
+    },
+    tambahSlide: function tambahSlide() {
+      var _this4 = this;
+
+      var formData = new FormData(document.getElementById("formSlide"));
+      var instance = this;
+      this.$Progress.start();
+      axios.post('/api/admin/slideshow', formData).then(function () {
+        Fire.$emit('AfterCreate');
+        $('#newDepartemen').modal('hide');
+        swal('Sukses!', 'Slideshow berhasil ditambah.', 'success');
+
+        _this4.$Progress.finish();
+      })["catch"](function () {
+        swal('Gagal!', 'Terjadi kesalahan', 'warning');
+      });
+    },
+    modal: function modal() {
+      this.editMode = false, this.form.reset();
+      $('#newDepartemen').modal('show');
+    }
+  },
+  created: function created() {
+    var _this5 = this;
+
+    this.$Progress.start();
+    this.loadSlide();
+    Fire.$on('AfterCreate', function () {
+      _this5.loadSlide('');
+    });
+    this.$Progress.finish();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js&":
 /*!********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=script&lang=js& ***!
@@ -6242,7 +6475,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       editMode: false,
-      columns: ['aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang'],
+      columns: ['aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan'],
       options: {
         texts: {
           filterPlaceholder: "Cari data",
@@ -6555,6 +6788,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -6590,11 +6864,22 @@ __webpack_require__.r(__webpack_exports__);
           aksi: 'text-center'
         }
       },
-      bookings: []
+      bookings: [],
+      form: new Form({
+        kode_booking: '',
+        id_pelanggan: '',
+        alasan: '',
+        nama: ''
+      })
     };
   },
   methods: {
-    cancelBooking: function cancelBooking(kode_booking) {
+    cancelModal: function cancelModal(booking) {
+      this.form.reset();
+      $('#modalCancel').modal('show');
+      this.form.fill(booking);
+    },
+    cancelBooking: function cancelBooking() {
       var _this = this;
 
       swal({
@@ -6610,9 +6895,10 @@ __webpack_require__.r(__webpack_exports__);
         if (result.value) {
           _this.$Progress.start();
 
-          axios["delete"]('/api/admin/booking/cancel/' + kode_booking).then(function () {
+          _this.form.post('/api/admin/booking/cancel').then(function () {
             swal('Dibatalkan!', 'Booking dibatalkan.', 'success');
             Fire.$emit('AfterCreate');
+            $('#newKamar').modal('hide');
 
             _this.$Progress.finish();
           })["catch"](function () {
@@ -6645,6 +6931,138 @@ __webpack_require__.r(__webpack_exports__);
     this.dataBooking();
     Fire.$on('AfterCreate', function () {
       _this3.dataBooking('');
+    });
+    this.$Progress.finish();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tinymce/tinymce-vue */ "./node_modules/@tinymce/tinymce-vue/lib/es2015/index.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    'editor': _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      editMode: false,
+      columns: ['kode_booking', 'nama', 'created_at', 'admin'],
+      options: {
+        texts: {
+          filterPlaceholder: "Cari data",
+          filter: "Pencarian : ",
+          filterBy: "Cari {column}",
+          count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data"
+        },
+        headings: {
+          nama: 'Nama Lengkap',
+          kode_booking: 'Kode Booking',
+          created_at: 'Tgl Dibatalkan',
+          admin: 'Dibatalkan oleh'
+        },
+        sortable: ['kode_booking', 'nama', 'created_at', 'admin'],
+        filterable: ['kode_booking', 'nama', 'created_at', 'admin'],
+        columnsDisplay: {},
+        filterByColumn: true,
+        pagination: {
+          dropdown: false
+        },
+        columnsClasses: {
+          aksi: 'text-center'
+        }
+      },
+      bookings: []
+    };
+  },
+  methods: {
+    dataBooking: function dataBooking() {
+      var _this = this;
+
+      axios.get('/api/admin/booking/canceled').then(function (_ref) {
+        var data = _ref.data;
+        return _this.bookings = data;
+      });
+    }
+  },
+  created: function created() {
+    var _this2 = this;
+
+    this.$Progress.start();
+    this.dataBooking();
+    Fire.$on('AfterCreate', function () {
+      _this2.dataBooking('');
     });
     this.$Progress.finish();
   }
@@ -7016,6 +7434,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var formData = new FormData(document.getElementById("formProsesBooking"));
       var instance = this;
+      this.$Progress.start();
       axios.post('/api/admin/booking/proses', formData).then(function () {
         Fire.$emit('AfterCreate');
         swal('Sukses!', 'Ditambahkan ke daftar booking.', 'success');
@@ -7027,7 +7446,9 @@ __webpack_require__.r(__webpack_exports__);
         _this2.$router.push({
           name: 'bookings'
         });
-      })["catch"]({});
+      })["catch"](function () {
+        swal("Gagal!", "Terjadi kesalahan.", "warning");
+      });
     },
     hapusTemp: function hapusTemp(id) {
       var _this3 = this;
@@ -7087,7 +7508,9 @@ __webpack_require__.r(__webpack_exports__);
         swal('Sukses!', 'Ditambahkan ke daftar booking.', 'success');
 
         _this6.$Progress.finish();
-      })["catch"]({});
+      })["catch"](function () {
+        swal("Gagal!", "Terjadi kesalahan.", "warning");
+      });
     },
     cekKamar: function cekKamar() {
       var _this7 = this;
@@ -7121,6 +7544,184 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Reservasi/Checkin.vue?vue&type=script&lang=js& ***!
   \**********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue2-datepicker */ "./node_modules/vue2-datepicker/lib/index.js");
+/* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _tinymce_tinymce_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tinymce/tinymce-vue */ "./node_modules/@tinymce/tinymce-vue/lib/es2015/index.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
+  },
+  data: function data() {
+    return {
+      editMode: false,
+      form: new Form({
+        tgl_awal: '',
+        tgl_akhir: ''
+      }),
+      columns: ['aksi', 'kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status'],
+      lang: {
+        days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
+        months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+        placeholder: {
+          date: 'Pilih Tanggal'
+        }
+      },
+      optionsDate: {
+        format: 'YYYY-mm-dd'
+      },
+      options: {
+        texts: {
+          filterPlaceholder: "Cari data",
+          filter: "Pencarian : ",
+          filterBy: "Cari {column}",
+          count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data"
+        },
+        headings: {
+          nama: 'Nama Lengkap',
+          kode_booking: 'Kode Booking',
+          no_telepon: 'No Telepon',
+          tgl_checkin: 'Tgl Checkin',
+          tgl_checkout: 'Tgl Checkout',
+          status: 'Status'
+        },
+        sortable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status'],
+        filterable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status'],
+        columnsDisplay: {},
+        filterByColumn: true,
+        pagination: {
+          dropdown: false
+        },
+        columnsClasses: {
+          aksi: 'text-center'
+        }
+      },
+      bookings: []
+    };
+  },
+  methods: {
+    filterTanggal: function filterTanggal() {
+      var _this = this;
+
+      axios.get('/api/admin/checkin/' + this.form.tgl_awal + '/' + this.form.tgl_akhir).then(function (_ref) {
+        var data = _ref.data;
+        return _this.bookings = data;
+      });
+    },
+    detilBooking: function detilBooking(kode_booking) {
+      this.$router.push({
+        name: 'detil-booking',
+        params: {
+          kode_booking: kode_booking
+        }
+      });
+    },
+    dataBooking: function dataBooking() {
+      var _this2 = this;
+
+      axios.get('/api/admin/checkin').then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.bookings = data;
+      });
+      this.form.reset();
+    }
+  },
+  created: function created() {
+    var _this3 = this;
+
+    this.$Progress.start();
+    this.dataBooking();
+    Fire.$on('AfterCreate', function () {
+      _this3.dataBooking('');
+    });
+    this.$Progress.finish();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -75553,6 +76154,364 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=template&id=4a52c6f6&":
+/*!*****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=template&id=4a52c6f6& ***!
+  \*****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "container-fluid" } }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { attrs: { id: "ui-view" } }, [
+        _c("div", { staticClass: "animated fadeIn" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-12" }, [
+              _c("div", { staticClass: "card" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-12" },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-success btn-sm text-right",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.modal()
+                            }
+                          }
+                        },
+                        [
+                          _c("span", { staticClass: "fa fa-plus" }),
+                          _vm._v(" Tambah Slideshow")
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("hr"),
+                      _vm._v(" "),
+                      _c("v-client-table", {
+                        attrs: {
+                          data: _vm.slideshow,
+                          columns: _vm.columns,
+                          options: _vm.options
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "aksi",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "div",
+                                { staticClass: "btn-group show" },
+                                [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-info dropdown-toggle",
+                                      attrs: {
+                                        type: "button",
+                                        "data-toggle": "dropdown",
+                                        "aria-haspopup": "true",
+                                        "aria-expanded": "true"
+                                      }
+                                    },
+                                    [_vm._v("Aksi")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "dropdown-menu",
+                                      staticStyle: {
+                                        position: "absolute",
+                                        "will-change": "transform",
+                                        top: "0px",
+                                        left: "0px",
+                                        transform:
+                                          "translate3d(0px, -187px, 0px)"
+                                      },
+                                      attrs: { "x-placement": "top-start" }
+                                    },
+                                    [
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.hapusSlide(row.id)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-trash red"
+                                          }),
+                                          _vm._v(" Hapus")
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            }
+                          },
+                          {
+                            key: "foto",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c("img", {
+                                staticClass:
+                                  "img-responsive rounded float-left img-thumbnail",
+                                attrs: {
+                                  src: row.foto,
+                                  alt: "",
+                                  width: "250px"
+                                }
+                              })
+                            }
+                          }
+                        ])
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-footer text-right" })
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade bd-example-modal-lg",
+        attrs: { id: "newDepartemen", tabindex: "-1", role: "dialog" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.editMode,
+                        expression: "!editMode"
+                      }
+                    ],
+                    staticClass: "modal-title"
+                  },
+                  [_vm._v("Tambah Slideshow")]
+                ),
+                _vm._v(" "),
+                _vm._m(2)
+              ]),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: {
+                    id: "formSlide",
+                    method: "post",
+                    enctype: "multipart/form-data"
+                  },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      _vm.editMode ? _vm.updateDepartemen() : _vm.tambahSlide()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "" } }, [_vm._v("Judul")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "form-control",
+                          attrs: { type: "text", name: "judul" }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "judul" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "" } }, [_vm._v("Foto")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "form-control",
+                          attrs: { type: "file", name: "foto" }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "foto" }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.editMode,
+                            expression: "editMode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Ubah")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editMode,
+                            expression: "!editMode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Simpan")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Batal")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ol", { staticClass: "breadcrumb" }, [
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Dashboard")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item active" }, [
+        _vm._v("Slideshow")
+      ]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-menu d-md-down-none" }, [
+        _c(
+          "div",
+          {
+            staticClass: "btn-group",
+            attrs: { role: "group", "aria-label": "Button group" }
+          },
+          [
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-speech" })
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "./" } }, [
+              _c("i", { staticClass: "icon-graph" }),
+              _vm._v("  Dashboard")
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-settings" }),
+              _vm._v(" Settings")
+            ])
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("strong", [_vm._v("Daftar Slideshow")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c&":
 /*!************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Payment/Tagihan.vue?vue&type=template&id=ca729b7c& ***!
@@ -75718,22 +76677,6 @@ var render = function() {
                                       _vm._s(
                                         _vm._f("currency")(row.terbayarkan)
                                       )
-                                  )
-                                ]
-                              )
-                            }
-                          },
-                          {
-                            key: "hutang",
-                            fn: function(ref) {
-                              var row = ref.row
-                              return _c(
-                                "p",
-                                { staticClass: "float-right red" },
-                                [
-                                  _vm._v(
-                                    "Rp. -" +
-                                      _vm._s(_vm._f("currency")(row.hutang))
                                   )
                                 ]
                               )
@@ -76619,9 +77562,7 @@ var render = function() {
                                           attrs: { href: "#" },
                                           on: {
                                             click: function($event) {
-                                              return _vm.cancelBooking(
-                                                row.kode_booking
-                                              )
+                                              return _vm.cancelModal(row)
                                             }
                                           }
                                         },
@@ -76648,6 +77589,28 @@ var render = function() {
                                 [_vm._v(_vm._s(row.kode_booking))]
                               )
                             }
+                          },
+                          {
+                            key: "tgl_checkin",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c("p", {}, [
+                                _vm._v(
+                                  _vm._s(_vm._f("myDate")(row.tgl_checkin))
+                                )
+                              ])
+                            }
+                          },
+                          {
+                            key: "tgl_checkout",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c("p", {}, [
+                                _vm._v(
+                                  _vm._s(_vm._f("myDate")(row.tgl_checkout))
+                                )
+                              ])
+                            }
                           }
                         ])
                       })
@@ -76662,7 +77625,240 @@ var render = function() {
           ])
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade bd-example-modal-lg",
+        attrs: { id: "modalCancel", tabindex: "-1", role: "dialog" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: { method: "post" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.cancelBooking()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "" } }, [
+                          _vm._v("Kode Booking")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.kode_booking,
+                              expression: "form.kode_booking"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.form.errors.has(
+                              "form.kode_booking"
+                            )
+                          },
+                          attrs: {
+                            type: "text",
+                            readonly: "",
+                            name: "kode_booking"
+                          },
+                          domProps: { value: _vm.form.kode_booking },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.form,
+                                "kode_booking",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "kode_booking" }
+                        }),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.id_pelanggan,
+                              expression: "form.id_pelanggan"
+                            }
+                          ],
+                          attrs: { type: "hidden", name: "", value: "" },
+                          domProps: { value: _vm.form.id_pelanggan },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.form,
+                                "id_pelanggan",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "" } }, [
+                          _vm._v("Nama Pelanggan")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.nama,
+                              expression: "form.nama"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.form.errors.has("form.nama")
+                          },
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: _vm.form.nama },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(_vm.form, "nama", $event.target.value)
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "nama" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "" } }, [_vm._v("Alasan")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.alasan,
+                              expression: "form.alasan"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.form.errors.has("form.alasan")
+                          },
+                          attrs: { type: "text" },
+                          domProps: { value: _vm.form.alasan },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(_vm.form, "alasan", $event.target.value)
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "alasan" }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.editMode,
+                            expression: "editMode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Ubah")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editMode,
+                            expression: "!editMode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Simpan")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Batal")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -76709,6 +77905,237 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("strong", [_vm._v("Daftar Booking")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Batalkan Booking")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=template&id=beedfc36&":
+/*!***************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=template&id=beedfc36& ***!
+  \***************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "container-fluid" } }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { attrs: { id: "ui-view" } }, [
+        _c("div", { staticClass: "animated fadeIn" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-12" }, [
+              _c("div", { staticClass: "card" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-12" },
+                    [
+                      _c("v-client-table", {
+                        attrs: {
+                          data: _vm.bookings,
+                          columns: _vm.columns,
+                          options: _vm.options
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "aksi",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "div",
+                                { staticClass: "btn-group show" },
+                                [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-info dropdown-toggle",
+                                      attrs: {
+                                        type: "button",
+                                        "data-toggle": "dropdown",
+                                        "aria-haspopup": "true",
+                                        "aria-expanded": "true"
+                                      }
+                                    },
+                                    [_vm._v("Aksi")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "dropdown-menu",
+                                      staticStyle: {
+                                        position: "absolute",
+                                        "will-change": "transform",
+                                        top: "0px",
+                                        left: "0px",
+                                        transform:
+                                          "translate3d(0px, -187px, 0px)"
+                                      },
+                                      attrs: { "x-placement": "top-start" }
+                                    },
+                                    [
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.detilBooking(
+                                                row.kode_booking
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-search info"
+                                          }),
+                                          _vm._v(" Detil")
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.cancelModal(row)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-window-close"
+                                          }),
+                                          _vm._v(" Batalkan")
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            }
+                          },
+                          {
+                            key: "kode_booking",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "p",
+                                { staticClass: "text-uppercase" },
+                                [_vm._v(_vm._s(row.kode_booking))]
+                              )
+                            }
+                          },
+                          {
+                            key: "created_at",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c("p", {}, [
+                                _vm._v(_vm._s(_vm._f("myDate")(row.created_at)))
+                              ])
+                            }
+                          }
+                        ])
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-footer text-right" })
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ol", { staticClass: "breadcrumb" }, [
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Dashboard")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Reservasi")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Canceled")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-menu d-md-down-none" }, [
+        _c(
+          "div",
+          {
+            staticClass: "btn-group",
+            attrs: { role: "group", "aria-label": "Button group" }
+          },
+          [
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-speech" })
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "./" } }, [
+              _c("i", { staticClass: "icon-graph" }),
+              _vm._v("  Dashboard")
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-settings" }),
+              _vm._v(" Settings")
+            ])
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("strong", [_vm._v("Daftar Canceled")])
     ])
   }
 ]
@@ -77007,20 +78434,16 @@ var render = function() {
                             return _c("tr", { key: kamar.id }, [
                               _c("td", [_vm._v(_vm._s(kamar.no_room))]),
                               _vm._v(" "),
-                              _c("td", [_vm._v(_vm._s(kamar.tipe_kamar.tipe))]),
+                              _c("td", [_vm._v(_vm._s(kamar.tipe))]),
                               _vm._v(" "),
                               _c("td", [
-                                _vm._v(
-                                  _vm._s(kamar.tipe_kamar.kapasitas) + " Person"
-                                )
+                                _vm._v(_vm._s(kamar.kapasitas) + " Person")
                               ]),
                               _vm._v(" "),
                               _c("td", [
                                 _vm._v(
                                   "Start @ Rp. " +
-                                    _vm._s(
-                                      _vm._f("currency")(kamar.tipe_kamar.harga)
-                                    ) +
+                                    _vm._s(_vm._f("currency")(kamar.harga)) +
                                     "/Night"
                                 )
                               ]),
@@ -77044,9 +78467,7 @@ var render = function() {
                                     _c("input", {
                                       staticClass: "form-control",
                                       attrs: { type: "hidden", name: "harga" },
-                                      domProps: {
-                                        value: kamar.tipe_kamar.harga
-                                      }
+                                      domProps: { value: kamar.harga }
                                     }),
                                     _vm._v(" "),
                                     _vm._m(9, true),
@@ -77933,6 +79354,25 @@ var render = function() {
                                           attrs: { href: "#" },
                                           on: {
                                             click: function($event) {
+                                              return _vm.checkIn()
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-door-open"
+                                          }),
+                                          _vm._v(" Checkin")
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
                                               return _vm.detilBooking(
                                                 row.kode_booking
                                               )
@@ -78023,6 +79463,282 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("strong", [_vm._v("Daftar Checkin")])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=template&id=465dac12&":
+/*!***************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=template&id=465dac12& ***!
+  \***************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "container-fluid" } }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { attrs: { id: "ui-view" } }, [
+        _c("div", { staticClass: "animated fadeIn" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-12" }, [
+              _c("div", { staticClass: "card" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-12" },
+                    [
+                      _c(
+                        "form",
+                        {
+                          attrs: { action: "", method: "post" },
+                          on: {
+                            submit: function($event) {
+                              $event.preventDefault()
+                              return _vm.filterTanggal()
+                            }
+                          }
+                        },
+                        [
+                          _c("div", { staticClass: "row" }, [
+                            _c(
+                              "div",
+                              { staticClass: "col-md-12" },
+                              [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Filter Tanggal")
+                                ]),
+                                _vm._v(" "),
+                                _c("date-picker", {
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "tgl_awal"
+                                    )
+                                  },
+                                  attrs: {
+                                    name: "tgl_awal",
+                                    lang: _vm.lang,
+                                    "value-type": "format",
+                                    confirm: ""
+                                  },
+                                  model: {
+                                    value: _vm.form.tgl_awal,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "tgl_awal", $$v)
+                                    },
+                                    expression: "form.tgl_awal"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("date-picker", {
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "tgl_akhir"
+                                    )
+                                  },
+                                  attrs: {
+                                    name: "tgl_akhir",
+                                    lang: _vm.lang,
+                                    "value-type": "format",
+                                    confirm: ""
+                                  },
+                                  model: {
+                                    value: _vm.form.tgl_akhir,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "tgl_akhir", $$v)
+                                    },
+                                    expression: "form.tgl_akhir"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    attrs: { type: "submit", name: "button" }
+                                  },
+                                  [_vm._v("Filter")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success btn-sm",
+                                    attrs: { type: "button", name: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.dataBooking()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Reset")]
+                                )
+                              ],
+                              1
+                            )
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("hr"),
+                      _vm._v(" "),
+                      _c("v-client-table", {
+                        attrs: {
+                          data: _vm.bookings,
+                          columns: _vm.columns,
+                          options: _vm.options
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "aksi",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "div",
+                                { staticClass: "btn-group show" },
+                                [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-info dropdown-toggle",
+                                      attrs: {
+                                        type: "button",
+                                        "data-toggle": "dropdown",
+                                        "aria-haspopup": "true",
+                                        "aria-expanded": "true"
+                                      }
+                                    },
+                                    [_vm._v("Aksi")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "dropdown-menu",
+                                      staticStyle: {
+                                        position: "absolute",
+                                        "will-change": "transform",
+                                        top: "0px",
+                                        left: "0px",
+                                        transform:
+                                          "translate3d(0px, -187px, 0px)"
+                                      },
+                                      attrs: { "x-placement": "top-start" }
+                                    },
+                                    [
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.detilBooking(
+                                                row.kode_booking
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-search info"
+                                          }),
+                                          _vm._v(" Detil")
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            }
+                          },
+                          {
+                            key: "kode_booking",
+                            fn: function(ref) {
+                              var row = ref.row
+                              return _c(
+                                "p",
+                                { staticClass: "text-uppercase" },
+                                [_vm._v(_vm._s(row.kode_booking))]
+                              )
+                            }
+                          }
+                        ])
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-footer text-right" })
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ol", { staticClass: "breadcrumb" }, [
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Dashboard")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Reservasi")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Checkout")]),
+      _vm._v(" "),
+      _c("li", { staticClass: "breadcrumb-menu d-md-down-none" }, [
+        _c(
+          "div",
+          {
+            staticClass: "btn-group",
+            attrs: { role: "group", "aria-label": "Button group" }
+          },
+          [
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-speech" })
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "./" } }, [
+              _c("i", { staticClass: "icon-graph" }),
+              _vm._v("  Dashboard")
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "icon-settings" }),
+              _vm._v(" Settings")
+            ])
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("strong", [_vm._v("Daftar Checkout")])
     ])
   }
 ]
@@ -78141,9 +79857,7 @@ var render = function() {
                       _vm._m(9),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("h5", [
-                          _vm._v(_vm._s(_vm.booking.jmlKamar) + " Kamar")
-                        ])
+                        _c("h5", [_vm._v(_vm._s(_vm.booking.jmlKamar))])
                       ]),
                       _vm._v(" "),
                       _vm._m(10),
@@ -99887,9 +101601,21 @@ var routes = [{
   component: __webpack_require__(/*! ./components/Admin/Reservasi/Checkin.vue */ "./resources/js/components/Admin/Reservasi/Checkin.vue")["default"],
   name: 'check-in'
 }, {
+  path: '/admin/check-out',
+  component: __webpack_require__(/*! ./components/Admin/Reservasi/Checkout.vue */ "./resources/js/components/Admin/Reservasi/Checkout.vue")["default"],
+  name: 'check-out'
+}, {
+  path: '/admin/canceled',
+  component: __webpack_require__(/*! ./components/Admin/Reservasi/Canceled.vue */ "./resources/js/components/Admin/Reservasi/Canceled.vue")["default"],
+  name: 'canceled'
+}, {
   path: '/admin/payment/tagihan',
   component: __webpack_require__(/*! ./components/Admin/Payment/Tagihan.vue */ "./resources/js/components/Admin/Payment/Tagihan.vue")["default"],
   name: 'tagihan'
+}, {
+  path: '/admin/master-data/slideshow',
+  component: __webpack_require__(/*! ./components/Admin/MasterData/Slideshow.vue */ "./resources/js/components/Admin/MasterData/Slideshow.vue")["default"],
+  name: 'slideshow'
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
   mode: 'history',
@@ -100456,6 +102182,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Admin/MasterData/Slideshow.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/Admin/MasterData/Slideshow.vue ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Slideshow_vue_vue_type_template_id_4a52c6f6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Slideshow.vue?vue&type=template&id=4a52c6f6& */ "./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=template&id=4a52c6f6&");
+/* harmony import */ var _Slideshow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Slideshow.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Slideshow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Slideshow_vue_vue_type_template_id_4a52c6f6___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Slideshow_vue_vue_type_template_id_4a52c6f6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/MasterData/Slideshow.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Slideshow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Slideshow.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Slideshow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=template&id=4a52c6f6&":
+/*!***********************************************************************************************!*\
+  !*** ./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=template&id=4a52c6f6& ***!
+  \***********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Slideshow_vue_vue_type_template_id_4a52c6f6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Slideshow.vue?vue&type=template&id=4a52c6f6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/MasterData/Slideshow.vue?vue&type=template&id=4a52c6f6&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Slideshow_vue_vue_type_template_id_4a52c6f6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Slideshow_vue_vue_type_template_id_4a52c6f6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Admin/Payment/Tagihan.vue":
 /*!***********************************************************!*\
   !*** ./resources/js/components/Admin/Payment/Tagihan.vue ***!
@@ -100663,6 +102458,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Admin/Reservasi/Canceled.vue":
+/*!**************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Canceled.vue ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Canceled_vue_vue_type_template_id_beedfc36___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Canceled.vue?vue&type=template&id=beedfc36& */ "./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=template&id=beedfc36&");
+/* harmony import */ var _Canceled_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Canceled.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Canceled_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Canceled_vue_vue_type_template_id_beedfc36___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Canceled_vue_vue_type_template_id_beedfc36___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/Reservasi/Canceled.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Canceled_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Canceled.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Canceled_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=template&id=beedfc36&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=template&id=beedfc36& ***!
+  \*********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Canceled_vue_vue_type_template_id_beedfc36___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Canceled.vue?vue&type=template&id=beedfc36& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Canceled.vue?vue&type=template&id=beedfc36&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Canceled_vue_vue_type_template_id_beedfc36___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Canceled_vue_vue_type_template_id_beedfc36___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Admin/Reservasi/CariKamar.vue":
 /*!***************************************************************!*\
   !*** ./resources/js/components/Admin/Reservasi/CariKamar.vue ***!
@@ -100796,6 +102660,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkin_vue_vue_type_template_id_41d92e91___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Checkout.vue":
+/*!**************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Checkout.vue ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Checkout_vue_vue_type_template_id_465dac12___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Checkout.vue?vue&type=template&id=465dac12& */ "./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=template&id=465dac12&");
+/* harmony import */ var _Checkout_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Checkout.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Checkout_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Checkout_vue_vue_type_template_id_465dac12___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Checkout_vue_vue_type_template_id_465dac12___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/Reservasi/Checkout.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkout_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Checkout.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkout_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=template&id=465dac12&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=template&id=465dac12& ***!
+  \*********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkout_vue_vue_type_template_id_465dac12___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Checkout.vue?vue&type=template&id=465dac12& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Reservasi/Checkout.vue?vue&type=template&id=465dac12&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkout_vue_vue_type_template_id_465dac12___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Checkout_vue_vue_type_template_id_465dac12___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

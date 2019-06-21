@@ -22,3 +22,4 @@ Route::group(['prefix' => 'admin'], function (){
 Route::view('/template-email', 'mail.invoice');
 Route::get('/booking/invoice/{kode_booking}', 'PDF\PDFController@invoice');
 Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d-\/_.]+)?');
+Route::post('/booking/invoice/payment', 'WEB\PembayaranController@store')->name('payment.store');

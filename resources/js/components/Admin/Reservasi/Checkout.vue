@@ -3,7 +3,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Dashboard</li>
         <li class="breadcrumb-item">Reservasi</li>
-        <li class="breadcrumb-item active">Checkin</li>
+        <li class="breadcrumb-item active">Checkout</li>
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu d-md-down-none">
             <div class="btn-group" role="group" aria-label="Button group">
@@ -24,7 +24,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong>Daftar Checkin</strong>
+                                <strong>Daftar Checkout</strong>
 
                             </div>
                             <div class="card-body">
@@ -46,7 +46,6 @@
                                         <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
-                                                <a class="dropdown-item" href="#" @click="checkIn()"><span class="fa fa-door-open"></span> Checkin</a>
                                                 <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
                                             </div>
                                         </div>

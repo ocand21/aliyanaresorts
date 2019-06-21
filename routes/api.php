@@ -43,24 +43,34 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/booking', 'API\Reservasi\BookingsController@loadBooking');
   Route::get('/admin/booking/detil/{kode_booking}', 'API\Reservasi\BookingsController@detilBooking');
   Route::get('/admin/booking/detil/kamar/{kode_booking}', 'API\Reservasi\BookingsController@detilKamar');
-  Route::delete('/admin/booking/cancel/{kode_booking}', 'API\Reservasi\BookingsController@cancelBooking');
+  Route::post('/admin/booking/cancel', 'API\Reservasi\BookingsController@cancelBooking');
+  Route::get('/admin/booking/canceled', 'API\Reservasi\BookingsController@loadCanceled');
 
   Route::get('/admin/checkin', 'API\Reservasi\CheckinController@loadData');
   Route::get('/admin/checkin/{tgl_awal}/{tgl_akhir}', 'API\Reservasi\CheckinController@filterTgl');
 
   Route::get('/admin/payment/tagihan', 'API\Payment\TagihanController@loadTagihan');
 
+  Route::post('/admin/slideshow', 'API\MasterData\SlideshowController@store');
+  Route::get('/admin/slideshow', 'API\MasterData\SlideshowController@index');
+  Route::delete('/admin/slideshow/{id}', 'API\MasterData\SlideshowController@destroy');
+
 });
 
 
 Route::group(['prefix' => 'apps'], function(){
 
-    Route::get('/kamar/tipe', 'API\App\AppsController@tipeKamar');
+
+  Route::get('/kamar/tipe', 'API\App\AppsController@tipeKamar');
   Route::get('/kamar', 'API\App\AppsController@loadKamar');
   Route::get('/kamar/{id}', 'API\App\AppsController@detailKamar');
 
   Route::get('/fasilitas', 'API\App\AppsController@loadFasilitas');
   Route::get('/fasilitas/{id}', 'API\App\AppsController@detailFasilitas');
+
+
+    Route::get('/slideshow', 'API\App\AppsController@slideshow');
+    Route::get('/about', 'API\App\AppsController@about');
 
   Route::post('/booking/cek-kamar', 'API\App\BookingsController@cekKamar');
 

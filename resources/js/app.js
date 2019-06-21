@@ -96,8 +96,12 @@ let routes = [
   { path: '/admin/booking/detail/:kode_booking', component: require('./components/Admin/Reservasi/DetilBooking.vue').default, name: 'detil-booking'},
 
   { path: '/admin/check-in', component: require('./components/Admin/Reservasi/Checkin.vue').default, name: 'check-in'},
+  { path: '/admin/check-out', component: require('./components/Admin/Reservasi/Checkout.vue').default, name: 'check-out'},
+  { path: '/admin/canceled', component: require('./components/Admin/Reservasi/Canceled.vue').default, name: 'canceled'},
 
   { path: '/admin/payment/tagihan', component: require('./components/Admin/Payment/Tagihan.vue').default, name: 'tagihan'},
+
+  { path: '/admin/master-data/slideshow', component: require('./components/Admin/MasterData/Slideshow.vue').default, name: 'slideshow'},
 ]
 
 const router = new VueRouter({

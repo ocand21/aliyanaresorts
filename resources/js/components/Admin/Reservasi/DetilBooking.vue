@@ -86,7 +86,7 @@
                                       <h5>Jumlah Kamar</h5>
                                     </div>
                                     <div class="col-md-9">
-                                      <h5>{{booking.jmlKamar}} Kamar</h5>
+                                      <h5>{{booking.jmlKamar}}</h5>
                                     </div>
 
                                       <div class="col-md-3">

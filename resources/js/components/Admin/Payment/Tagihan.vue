@@ -41,7 +41,7 @@
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
                                         <p slot="total_tagihan" slot-scope="{row}" class="float-right red">Rp. {{row.total_tagihan | currency}}</p>
                                         <p slot="terbayarkan" slot-scope="{row}" class="float-right red">Rp. {{row.terbayarkan | currency}}</p>
-                                        <p slot="hutang" slot-scope="{row}" class="float-right red">Rp. -{{row.hutang | currency}}</p>
+
                                     </v-client-table>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang',
+                'aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan',
             ],
             options: {
                 texts: {

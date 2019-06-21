@@ -111,15 +111,15 @@
                                         <tbody>
                                             <tr v-for="kamar in dataKamar.kamar" :key="kamar.id">
                                                 <td>{{kamar.no_room}}</td>
-                                                <td>{{kamar.tipe_kamar.tipe}}</td>
-                                                <td>{{kamar.tipe_kamar.kapasitas}} Person</td>
+                                                <td>{{kamar.tipe}}</td>
+                                                <td>{{kamar.kapasitas}} Person</td>
                                                 <!-- <td>{{kamar.tipe.deskripsi}}</td> -->
 
-                                                <td>Start @ Rp. {{kamar.tipe_kamar.harga | currency}}/Night</td>
+                                                <td>Start @ Rp. {{kamar.harga | currency}}/Night</td>
                                                 <td>
                                                     <form class="" method="post" id="formBooking">
                                                         <input type="hidden" name="no_room" class="form-control" :value="kamar.no_room">
-                                                        <input type="hidden" name="harga" class="form-control" :value="kamar.tipe_kamar.harga">
+                                                        <input type="hidden" name="harga" class="form-control" :value="kamar.harga">
                                                         <select class="form-control" name="tamu_booking">
                                                             <option value="-">--</option>
                                                             <option value="1">1</option>
@@ -349,6 +349,7 @@ export default {
         prosesBooking() {
             var formData = new FormData(document.getElementById("formProsesBooking"));
             let instance = this;
+            this.$Progress.start();
             axios.post('/api/admin/booking/proses', formData)
                 .then(() => {
                     Fire.$emit('AfterCreate');
@@ -362,9 +363,10 @@ export default {
                     this.$router.push({
                         name: 'bookings'
                     });
-                }).catch({
-
-                })
+                }).catch(() => {
+                    swal("Gagal!", "Terjadi kesalahan.",
+                        "warning");
+                });
         },
         hapusTemp(id) {
             swal({
@@ -423,9 +425,10 @@ export default {
                         'success'
                     )
                     this.$Progress.finish();
-                }).catch({
-
-                })
+                }).catch(() => {
+                    swal("Gagal!", "Terjadi kesalahan.",
+                        "warning");
+                });
         },
         cekKamar() {
             this.form.post('/api/admin/booking/cek-kamar').then(({

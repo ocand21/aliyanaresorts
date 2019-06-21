@@ -104,7 +104,12 @@
                     </ul>
                     <div class="col-12" style="margin-left: 5px">
                         <a href="" @click.prevent="printme" target="_blank" class="btn btn-light"><i class="fa fa-print"></i> Print</a>
-                        <button type="button" class="btn btn-success float-right"><i class="fa fa-credit-card"></i> Proses Pembayaran
+                        <form id="payment-form" method="post" action="snapfinish">
+                          <input type="hidden" name="_token" value="{!! csrf_token() !!}">
+                          <input type="hidden" name="result_type" id="result-type" value=""></div>
+                          <input type="hidden" name="result_data" id="result-data" value=""></div>
+                        </form>
+                        <button id="pay-button" class="btn btn-success float-right"><i class="fa fa-credit-card"></i> Proses Pembayaran
                         </button>
                     </div>
 
@@ -123,7 +128,7 @@
                             <div class="col-12">
                                 <h4>
                                     <img src="/img/icon/logo.png" alt="" width="100" height="60">
-                                    <small class="float-right">Tanggal: 11/06/2019</small>
+                                    <small class="float-right">Tanggal: {{ Date::parse($booking->created_at)->format('j/m/Y') }}</small>
                                 </h4>
                             </div>
                         </div>
@@ -216,10 +221,7 @@
                                               <td><strong>Terbayarkan</strong></td>
                                               <td>Rp. {{format_uang($tagihan->terbayarkan)}}</td>
                                             </tr>
-                                            <tr>
-                                              <td><strong>Balance</strong> </td>
-                                              <td class="red">Rp. -{{format_uang($tagihan->hutang)}}</td>
-                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -236,6 +238,57 @@
         </div>
 
     </div>
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="{{ !config('services.midtrans.isProduction') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('services.midtrans.clientKey') }}"></script>
+    <script type="text/javascript">
+
+    $('#pay-button').click(function (event) {
+      event.preventDefault();
+      $(this).attr("disabled", "disabled");
+
+    $.ajax({
+
+      url: './snaptoken',
+      cache: false,
+      success: function(data) {
+        //location = data;
+        console.log('token = '+data);
+
+        var resultType = document.getElementById('result-type');
+        var resultData = document.getElementById('result-data');
+        function changeResult(type,data){
+          $("#result-type").val(type);
+          $("#result-data").val(JSON.stringify(data));
+          //resultType.innerHTML = type;
+          //resultData.innerHTML = JSON.stringify(data);
+        }
+        snap.pay(data, {
+
+          onSuccess: function(result){
+            changeResult('success', result);
+            console.log(result.status_message);
+            console.log(result);
+            $("#payment-form").submit();
+          },
+          onPending: function(result){
+            changeResult('pending', result);
+            console.log(result.status_message);
+            $("#payment-form").submit();
+          },
+          onError: function(result){
+            changeResult('error', result);
+            console.log(result.status_message);
+            $("#payment-form").submit();
+          }
+        });
+      }
+    });
+  });
+  </script>
+
 </body>
 
 </html>

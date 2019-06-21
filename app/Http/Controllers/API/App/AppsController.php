@@ -8,9 +8,28 @@ use Illuminate\Support\Facades\DB;
 
 use App\TipeKamar;
 use App\FotoKamar;
+use App\Slideshow;
+
+use App\KonfigWeb;
 
 class AppsController extends Controller
 {
+
+    public function about(){
+      $konfig = KonfigWeb::get();
+
+      return response()->json([
+        'konfig' => $konfig
+      ]);
+    }
+
+    public function slideshow(){
+      $slide = Slideshow::limit(5)->orderBy('id', 'ASC')->get();
+
+      return response()->json([
+        'slideshow' => $slide,
+      ]);
+    }
 
     public function tipeKamar(){
       $tipe = DB::table('tipe_kamar')

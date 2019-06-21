@@ -36,10 +36,12 @@
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
                                                 <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
-                                                <a class="dropdown-item" @click="cancelBooking(row.kode_booking)" href="#"> <span class="fa fa-window-close"></span> Batalkan</a>
+                                                <a class="dropdown-item" @click="cancelModal(row)" href="#"> <span class="fa fa-window-close"></span> Batalkan</a>
                                             </div>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
+                                        <p slot="tgl_checkin" slot-scope="{row}">{{row.tgl_checkin | myDate}}</p>
+                                        <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p>
                                     </v-client-table>
                                 </div>
                             </div>
@@ -50,6 +52,45 @@
                     </div>
 
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modalCancel" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Batalkan Booking</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form class="" @submit.prevent="cancelBooking()" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Kode Booking</label>
+                            <input type="text" readonly class="form-control" v-model="form.kode_booking" :class="{'is-invalid' : form.errors.has('form.kode_booking')}" name="kode_booking">
+                            <has-error :form="form" field="kode_booking"></has-error>
+                            <input type="hidden" v-model="form.id_pelanggan" name="" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Nama Pelanggan</label>
+                            <input type="text" v-model="form.nama" readonly :class="{'is-invalid' : form.errors.has('form.nama')}" class="form-control"></input>
+                            <has-error :form="form" field="nama"></has-error>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Alasan</label>
+                            <input type="text" v-model="form.alasan" :class="{'is-invalid' : form.errors.has('form.alasan')}" class="form-control"></input>
+                            <has-error :form="form" field="alasan"></has-error>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button v-show="editMode" type="submit" class="btn btn-primary">Ubah</button>
+                        <button v-show="!editMode" type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -97,10 +138,21 @@ export default {
                 },
             },
             bookings: [],
+            form: new Form({
+              kode_booking: '',
+              id_pelanggan: '',
+              alasan: '',
+              nama: '',
+            }),
         }
     },
     methods: {
-      cancelBooking(kode_booking){
+      cancelModal(booking){
+        this.form.reset();
+        $('#modalCancel').modal('show');
+        this.form.fill(booking);
+      },
+      cancelBooking(){
         swal({
             title: 'Anda yakin?',
             text: "Operasi ini tidak dapat dibatalkan!",
@@ -111,16 +163,16 @@ export default {
             confirmButtonText: 'Ya, batalkan booking!',
             cancelButtonText: 'Batal'
         }).then((result) => {
-
             if (result.value) {
                 this.$Progress.start();
-                axios.delete('/api/admin/booking/cancel/' + kode_booking).then(() => {
+                this.form.post('/api/admin/booking/cancel').then(() => {
                     swal(
                         'Dibatalkan!',
                         'Booking dibatalkan.',
                         'success'
                     )
                     Fire.$emit('AfterCreate')
+                    $('#newKamar').modal('hide');
                     this.$Progress.finish();
                 }).catch(() => {
                     swal("Gagal!", "Terjadi kesalahan.",
