@@ -47,7 +47,11 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/booking/canceled', 'API\Reservasi\BookingsController@loadCanceled');
 
   Route::get('/admin/checkin', 'API\Reservasi\CheckinController@loadData');
+  Route::get('/admin/checkin/detil/{kode_booking}', 'API\Reservasi\CheckinController@detilCheckin');
+  Route::post('/admin/checkin/proses/{kode_booking}', 'API\Reservasi\CheckinController@prosesCheckin');
   Route::get('/admin/checkin/{tgl_awal}/{tgl_akhir}', 'API\Reservasi\CheckinController@filterTgl');
+
+  Route::get('/admin/inhouse', 'API\Reservasi\InhouseController@index');
 
   Route::get('/admin/payment/tagihan', 'API\Payment\TagihanController@loadTagihan');
 
@@ -55,6 +59,9 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/slideshow', 'API\MasterData\SlideshowController@index');
   Route::delete('/admin/slideshow/{id}', 'API\MasterData\SlideshowController@destroy');
 
+  Route::get('/admin/menu-resto', 'API\MasterData\MenuRestoController@index');
+  Route::post('/admin/menu-resto/tambah', 'API\MasterData\MenuRestoController@store');
+  Route::delete('/admin/menu-resto/hapus/{id}', 'API\MasterData\MenuRestoController@destroy');
 });
 
 
@@ -73,6 +80,8 @@ Route::group(['prefix' => 'apps'], function(){
     Route::get('/about', 'API\App\AppsController@about');
 
   Route::post('/booking/cek-kamar', 'API\App\BookingsController@cekKamar');
+
+  Route::get('/menu-resto', 'API\App\AppsController@menuResto');
 
 
 });

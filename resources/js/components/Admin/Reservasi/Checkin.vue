@@ -37,7 +37,6 @@
                                                 <date-picker name="tgl_akhir" v-model="form.tgl_akhir" :lang="lang" value-type="format" confirm :class="{ 'is-invalid': form.errors.has('tgl_akhir') }"></date-picker>
                                                 <button type="submit" class="btn btn-danger btn-sm" name="button">Filter</button>
                                                 <button type="button" @click="dataBooking()" class="btn btn-success btn-sm" name="button">Reset</button>
-
                                             </div>
                                         </div>
                                     </form>
@@ -46,7 +45,7 @@
                                         <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
-                                                <a class="dropdown-item" href="#" @click="checkIn()"><span class="fa fa-door-open"></span> Checkin</a>
+                                                <a class="dropdown-item" href="#" @click="checkIn(row.kode_booking)"><span class="fa fa-door-open"></span> Checkin</a>
                                                 <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
                                             </div>
                                         </div>
@@ -127,6 +126,14 @@ export default {
         }
     },
     methods: {
+        checkIn(kode_booking){
+          this.$router.push({
+            name: 'form-checkin',
+            params: {
+              kode_booking: kode_booking
+            }
+          })
+        },
         filterTanggal() {
             axios.get('/api/admin/checkin/' + this.form.tgl_awal + '/' + this.form.tgl_akhir).then(({
                 data

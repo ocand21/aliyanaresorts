@@ -103,7 +103,7 @@ class BookingsController extends Controller
     public function detilBooking($kode_booking){
       $bookings = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, bookings.jml_kamar as jmlKamar, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
+                      ->select(DB::raw("bookings.kode_booking, bookings.jml_kamar as jmlKamar, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
                       bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
@@ -117,7 +117,9 @@ class BookingsController extends Controller
       $bookings = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                       ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin, bookings.tgl_checkout,
-                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
+                      WHEN (bookings.status = 3) THEN 'Checkout' END) as status"))
+                      ->whereNotIn('bookings.status', ['2','3'])
                       ->get();
 
       return response()->json($bookings);
@@ -387,9 +389,11 @@ class BookingsController extends Controller
                     ->whereNotIn('kamar.no_room', function($q) use ($tgl_checkin, $tgl_checkout){
                       $q->select('no_room')->from('booking_rooms')
                         ->join('bookings', 'bookings.kode_booking', 'booking_rooms.kode_booking')
-                        ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
-                        ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
-                    })->where([['status_temp', '0']])
+                        // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
+                        // ->whereBetween('bookings.tgl_checkin', [$tgl_checkout, $tgl_checkin]);
+                        ->where([['bookings.tgl_checkin', '<=', $tgl_checkout],['bookings.tgl_checkout', '>=', $tgl_checkin]]);
+                    })
+                    ->where([['status_temp', '0']])
                     ->get();
       } else {
         // $kamar = Kamar::with('booking', 'tipe_kamar')->whereHas('booking', function($q) use ($tgl_checkin, $tgl_checkout, $tipe){
@@ -405,8 +409,9 @@ class BookingsController extends Controller
                     ->whereNotIn('kamar.no_room', function($q) use ($tgl_checkin, $tgl_checkout){
                       $q->select('no_room')->from('booking_rooms')
                         ->join('bookings', 'bookings.kode_booking', 'booking_rooms.kode_booking')
-                        ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
-                        ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
+                        // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
+                        // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
+                        ->where([['bookings.tgl_checkin', '<=', $tgl_checkout],['bookings.tgl_checkout', '>=', $tgl_checkin]]);
                     })->where([['tipe_kamar.id', $tipe], ['status_temp', '0']])
                     ->get();
       }

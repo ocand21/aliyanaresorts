@@ -96,12 +96,20 @@ let routes = [
   { path: '/admin/booking/detail/:kode_booking', component: require('./components/Admin/Reservasi/DetilBooking.vue').default, name: 'detil-booking'},
 
   { path: '/admin/check-in', component: require('./components/Admin/Reservasi/Checkin.vue').default, name: 'check-in'},
+  { path: '/admin/check-in/:kode_booking', component: require('./components/Admin/Reservasi/FormCheckin.vue').default, name: 'form-checkin'},
   { path: '/admin/check-out', component: require('./components/Admin/Reservasi/Checkout.vue').default, name: 'check-out'},
   { path: '/admin/canceled', component: require('./components/Admin/Reservasi/Canceled.vue').default, name: 'canceled'},
+
+  { path: '/admin/inhouse', component: require('./components/Admin/Reservasi/Inhouse.vue').default, name: 'inhouse'},
 
   { path: '/admin/payment/tagihan', component: require('./components/Admin/Payment/Tagihan.vue').default, name: 'tagihan'},
 
   { path: '/admin/master-data/slideshow', component: require('./components/Admin/MasterData/Slideshow.vue').default, name: 'slideshow'},
+
+  { path: '/admin/master-data/menu-resto', component: require('./components/Admin/MasterData/MenuResto.vue').default, name: 'menu-resto'},
+  { path: '/admin/master-data/menu-resto/tambah', component: require('./components/Admin/MasterData/TambahMenu.vue').default, name: 'menu-resto'},
+
+  { path: '/admin/payment/pembayaran', component: require('./components/Admin/Payment/Pembayaran.vue').default, name: 'pembayaran'},
 ]
 
 const router = new VueRouter({

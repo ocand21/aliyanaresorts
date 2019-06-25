@@ -43,8 +43,9 @@ class BookingsController extends Controller
                   ->whereNotIn('kamar.no_room', function($q) use ($tgl_checkin, $tgl_checkout){
                     $q->select('no_room')->from('booking_rooms')
                       ->join('bookings', 'bookings.kode_booking', 'booking_rooms.kode_booking')
-                      ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
-                      ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
+                      // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
+                      // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
+                      ->where([['bookings.tgl_checkin', '<=', $tgl_checkout],['bookings.tgl_checkout', '>=', $tgl_checkin]]);
                   })->where([['status_temp', '0']])
                   ->groupBy('kamar.no_room')
                   ->get();
@@ -74,8 +75,9 @@ class BookingsController extends Controller
                   ->whereNotIn('kamar.no_room', function($q) use ($tgl_checkin, $tgl_checkout){
                     $q->select('no_room')->from('booking_rooms')
                       ->join('bookings', 'bookings.kode_booking', 'booking_rooms.kode_booking')
-                      ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
-                      ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
+                      // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
+                      // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
+                      ->where([['bookings.tgl_checkin', '<=', $tgl_checkout],['bookings.tgl_checkout', '>=', $tgl_checkin]]);
                   })->where([['tipe_kamar.tipe', $tipe], ['status_temp', '0']])
                   ->groupBy('kamar.no_room')
                   ->get();

@@ -86,12 +86,17 @@
                             <ul class="nav-dropdown-items" style="margin-left: 10px">
                               <li class="nav-item">
                                   <router-link to="/admin/bookings" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-key"></i> Booking
+                                      <i class="nav-icon fa fa-briefcase"></i> Booking
                                   </router-link>
                               </li>
                               <li class="nav-item">
                                   <router-link to="/admin/check-in" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-bed"></i> Check-in
+                                      <i class="nav-icon fa fa-key"></i> Check-in
+                                  </router-link>
+                              </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/inhouse" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-bed"></i> Inhouse
                                   </router-link>
                               </li>
                               <li class="nav-item">
@@ -101,7 +106,7 @@
                               </li>
                               <li class="nav-item">
                                   <router-link to="/admin/canceled" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-window-close"></i> Canceled
+                                      <i class="nav-icon fa fa-window-close"></i> Cancel
                                   </router-link>
                               </li>
                             </ul>
@@ -117,7 +122,7 @@
                                   </router-link>
                               </li>
                               <li class="nav-item">
-                                  <router-link to="/admin/payment/tagihan" class="nav-link" href="colors.html">
+                                  <router-link to="/admin/payment/pembayaran" class="nav-link" href="colors.html">
                                       <i class="nav-icon fa fa-credit-card"></i> Pembayaran
                                   </router-link>
                               </li>
@@ -145,6 +150,11 @@
                               <li class="nav-item">
                                   <router-link to="/admin/master-data/slideshow" class="nav-link" href="colors.html">
                                       <i class="nav-icon fa fa-images"></i> Slideshow
+                                  </router-link>
+                              </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/master-data/menu-resto" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-utensils"></i> Menu Resto
                                   </router-link>
                               </li>
                             </ul>

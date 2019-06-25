@@ -3,7 +3,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Dashboard</li>
         <li class="breadcrumb-item">Reservasi</li>
-        <li class="breadcrumb-item active">Booking</li>
+        <li class="breadcrumb-item active">Inhouse</li>
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu d-md-down-none">
             <div class="btn-group" role="group" aria-label="Button group">
@@ -24,19 +24,16 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong>Daftar Booking</strong>
+                                <strong>Daftar Inhouse</strong>
 
                             </div>
                             <div class="card-body">
                                 <div class="col-md-12">
-                                    <router-link to="/admin/booking/room" href="#" @click="modal()" class="btn btn-success btn-sm text-right"><span class="fa fa-plus"></span> Tambah Booking</router-link>
-                                    <hr>
                                     <v-client-table :data="bookings" :columns="columns" :options="options">
                                         <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
                                                 <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
-                                                <a class="dropdown-item" @click="cancelModal(row)" href="#"> <span class="fa fa-window-close"></span> Batalkan</a>
                                             </div>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
@@ -186,7 +183,7 @@ export default {
         this.$router.push({name: 'detil-booking', params:{kode_booking:kode_booking}})
       },
       dataBooking(){
-        axios.get('/api/admin/booking').then(({
+        axios.get('/api/admin/inhouse').then(({
             data
         }) => (this.bookings = data));
       }

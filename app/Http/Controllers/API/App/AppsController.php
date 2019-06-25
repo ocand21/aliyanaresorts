@@ -11,9 +11,19 @@ use App\FotoKamar;
 use App\Slideshow;
 
 use App\KonfigWeb;
+use App\MenuResto;
 
 class AppsController extends Controller
 {
+
+    public function menuResto(){
+      $menu = MenuResto::orderBy('id', 'asc')->get();
+
+      return response()->json([
+        'menu' => $menu
+      ]);
+    }
+
 
     public function about(){
       $konfig = KonfigWeb::get();
