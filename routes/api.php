@@ -22,6 +22,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     'admin/fasilitas' => 'API\FasilitasController',
     'admin/departemen' => 'API\DepartemenController',
     'admin/staff' => 'API\StaffController',
+    'admin/metode-pembayaran' => 'API\MasterData\MetodePembayaranController',
   ]);
 
   Route::post('/admin/tipe-kamar/edit/{id}', 'API\TipeKamarController@update');

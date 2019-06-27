@@ -109,8 +109,8 @@
                           <input type="hidden" name="result_type" id="result-type" value=""></div>
                           <input type="hidden" name="result_data" id="result-data" value=""></div>
                         </form>
-                        <button id="pay-button" class="btn btn-success float-right"><i class="fa fa-credit-card"></i> Proses Pembayaran
-                        </button>
+                        <a id="pay-button" class="btn btn-success float-right"><i class="fa fa-credit-card"></i> Proses Pembayaran
+                        </a>
                     </div>
 
                 </div>
@@ -197,7 +197,9 @@
                         <div class="row invoice-info">
                             <div class="col-6">
                                 <p class="lead">Metode Pembayaran</p>
-
+                                @foreach ($metode as $mtd)
+                                  <p><strong>{{$mtd->bank}} - {{$mtd->no_rekening}} AN {{$mtd->atas_nama}}</strong></p>
+                                @endforeach
                             </div>
 
                             <div class="col-md-6">

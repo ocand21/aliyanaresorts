@@ -10,8 +10,7 @@ use App\KonfigWeb;
 class FrontController extends Controller
 {
     public function index(){
-      $konfig = KonfigWeb::first();
-      return view('public.home', compact('konfig'));
+      return redirect()->route('dashboard');
     }
 
     public function redirectNotFound(){

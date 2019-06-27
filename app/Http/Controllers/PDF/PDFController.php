@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Carbon\Carbon;
 use App\KonfigWeb;
+use App\MetodePembayaran;
 class PDFController extends Controller
 {
     public function invoice($kode_booking){
@@ -45,8 +46,10 @@ class PDFController extends Controller
       $tgl2 = Carbon::parse($booking->tgl_checkout);
       $durasi = $tgl1->diffInDays($tgl2);
 
+      $metode = MetodePembayaran::orderBy('id', 'asc')->get();
+
       // $total = $subtotal->sub_total * $durasi;
       // dd($subtotal);
-      return view('pdf.invoice', compact('booking', 'rooms', 'subtotal', 'durasi', 'tagihan', 'konfig'));
+      return view('pdf.invoice', compact('booking', 'rooms', 'subtotal', 'durasi', 'tagihan', 'metode', 'konfig'));
     }
 }

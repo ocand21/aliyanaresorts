@@ -157,6 +157,11 @@
                                       <i class="nav-icon fa fa-utensils"></i> Menu Resto
                                   </router-link>
                               </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/master-data/metode-pembayaran" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-id-card"></i> Pembayaran
+                                  </router-link>
+                              </li>
                             </ul>
                         </li>
                         <li class="nav-item">

@@ -109,6 +109,8 @@ let routes = [
   { path: '/admin/master-data/menu-resto', component: require('./components/Admin/MasterData/MenuResto.vue').default, name: 'menu-resto'},
   { path: '/admin/master-data/menu-resto/tambah', component: require('./components/Admin/MasterData/TambahMenu.vue').default, name: 'menu-resto'},
 
+  { path: '/admin/master-data/metode-pembayaran', component: require('./components/Admin/MasterData/MetodePembayaran.vue').default, name: 'metode-pembayaran'},
+
   { path: '/admin/payment/pembayaran', component: require('./components/Admin/Payment/Pembayaran.vue').default, name: 'pembayaran'},
 ]
 
