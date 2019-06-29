@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
+use App\Notifications\KonfirmasiPembayaran;
+
 use App\Pembayaran;
 use App\Tagihan;
 use App\Booking;
+use App\Pelanggan;
 class PembayaranController extends Controller
 {
     public function konfirm($id){
@@ -43,6 +46,15 @@ class PembayaranController extends Controller
         DB::rollback();
         throw $e;
       }
+
+      try {
+        $pelanggan = Pelanggan::where('id', $booking->id_pelanggan)->first();
+        $pelanggan->notify(new KonfirmasiPembayaran($booking->kode_booking));
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
 
       DB::commit();
 

@@ -158,7 +158,7 @@
 
                                         <div class="form-group">
                                             <label for="">Nomor Rekening</label>
-                                            <input type="text" name="no_rekening" value="" class="form-control" required>\
+                                            <input type="text" name="no_rekening" value="" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="">Metode Pembayaran</label>

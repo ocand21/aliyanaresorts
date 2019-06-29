@@ -17,12 +17,10 @@ class CreatePembayaransTable extends Migration
             $table->bigIncrements('id');
             $table->string('kode_booking');
             $table->string('id_pelanggan');
-            $table->string('nama_pemilik_rekening');
-            $table->string('no_rekening');
-            $table->integer('id_metode');
-            $table->date('tgl_transfer');
             $table->decimal('jumlah', 10,0);
-            $table->string('status');
+            $table->string('catatan')->nullable();
+            $table->string('status')->default('pending');
+            $table->string('snap_token')->nullable();
             $table->timestamps();
         });
     }

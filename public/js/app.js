@@ -7095,7 +7095,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.$Progress.start();
 
           axios.post('/api/admin/payment/pembayaran/konfirm/' + id).then(function () {
-            swal('Dihapus!', 'Pembayaran dikonfirmasi.', 'success');
+            swal('Dikonfirmasi!', 'Pembayaran dikonfirmasi.', 'success');
             Fire.$emit('AfterCreate');
 
             _this.$Progress.finish();
@@ -7118,8 +7118,13 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
+    var _this3 = this;
+
     this.$Progress.start();
     this.dataPembayaran();
+    Fire.$on('AfterCreate', function () {
+      _this3.dataPembayaran();
+    });
     this.$Progress.finish();
   }
 });

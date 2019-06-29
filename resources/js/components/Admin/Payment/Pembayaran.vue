@@ -120,7 +120,7 @@ export default {
                 this.$Progress.start();
                 axios.post('/api/admin/payment/pembayaran/konfirm/' + id).then(() => {
                     swal(
-                        'Dihapus!',
+                        'Dikonfirmasi!',
                         'Pembayaran dikonfirmasi.',
                         'success'
                     )
@@ -146,6 +146,9 @@ export default {
     created() {
         this.$Progress.start();
         this.dataPembayaran();
+        Fire.$on('AfterCreate', () => {
+            this.dataPembayaran();
+        });
         this.$Progress.finish();
     }
 }

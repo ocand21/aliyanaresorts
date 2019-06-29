@@ -233,6 +233,7 @@ class BookingsController extends Controller
       try {
         $pelanggan->notify(new InvoiceBooking($request->kode_booking));
       } catch (\Exception $e) {
+        DB::rollback();
         throw $e;
       }
 
