@@ -65,9 +65,10 @@ class CheckinController extends Controller
       $bookings = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                       ->select(DB::raw("bookings.kode_booking, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin, bookings.tgl_checkout,
-                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted'
+                      WHEN (bookings.status = 2) THEN 'Checkin' END) as status"))
                       // ->whereDate('bookings.tgl_checkin', '=', $tgl)
-                      ->whereNotIn('bookings.status', ['2', '3'])
+                      ->whereIn('bookings.status', ['1', '2'])
                       ->orderBy('bookings.tgl_checkin', 'desc')
                       ->get();
 

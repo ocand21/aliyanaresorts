@@ -7045,7 +7045,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       editMode: false,
-      columns: ['aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan'],
+      columns: ['aksi', 'kode_booking', 'tgl_transfer', 'nama', 'no_rekening', 'atas_nama', 'bank', 'no_rekening_tujuan', 'jumlah', 'status'],
       options: {
         texts: {
           filterPlaceholder: "Cari data",
@@ -7054,15 +7054,17 @@ __webpack_require__.r(__webpack_exports__);
           count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data"
         },
         headings: {
-          nama: 'Nama Lengkap',
+          nama: 'Nama Pemilik Rek',
+          tgl_transfer: 'Tgl Transfer',
           kode_booking: 'Kode Booking',
-          no_telepon: 'No Telepon',
-          total_tagihan: 'Total Tagihan',
-          terbayarkan: 'Terbayarkan',
-          hutang: 'Balance'
+          no_rekening: 'No Rekening',
+          bank: 'Bank Tujuan',
+          atas_nama: 'Rekening Tujuan',
+          no_rekening_tujuan: 'No Rekening Tujuan',
+          jumlah: 'Nominal'
         },
-        sortable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang'],
-        filterable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang'],
+        sortable: ['kode_booking', 'bank', 'nama', 'no_rekening', 'atas_nama', 'no_rekening_tujuan', 'jumlah'],
+        filterable: ['kode_booking', 'bank', 'nama', 'no_rekening', 'atas_nama', 'no_rekening_tujuan', 'jumlah'],
         columnsDisplay: {},
         filterByColumn: true,
         pagination: {
@@ -7072,25 +7074,52 @@ __webpack_require__.r(__webpack_exports__);
           aksi: 'text-center'
         }
       },
-      tagihan: []
+      pembayaran: []
     };
   },
   methods: {
+    konfirmasiPembayaran: function konfirmasiPembayaran(id) {
+      var _this = this;
+
+      swal({
+        title: 'Anda yakin?',
+        text: "Operasi ini tidak dapat dibatalkan!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, konfirmasi pembayaran!',
+        cancelButtonText: 'Batal'
+      }).then(function (result) {
+        if (result.value) {
+          _this.$Progress.start();
+
+          axios.post('/api/admin/payment/pembayaran/konfirm/' + id).then(function () {
+            swal('Dihapus!', 'Pembayaran dikonfirmasi.', 'success');
+            Fire.$emit('AfterCreate');
+
+            _this.$Progress.finish();
+          })["catch"](function () {
+            swal("Gagal!", "Terjadi kesalahan.", "warning");
+          });
+        }
+      });
+    },
     cetakInvoice: function cetakInvoice(kode_booking) {
       window.open('/booking/invoice/' + kode_booking, '_blank');
     },
-    dataTagihan: function dataTagihan() {
-      var _this = this;
+    dataPembayaran: function dataPembayaran() {
+      var _this2 = this;
 
-      axios.get('/api/admin/payment/tagihan').then(function (_ref) {
+      axios.get('/api/admin/payment/pembayaran').then(function (_ref) {
         var data = _ref.data;
-        return _this.tagihan = data;
+        return _this2.pembayaran = data;
       });
     }
   },
   created: function created() {
     this.$Progress.start();
-    this.dataTagihan();
+    this.dataPembayaran();
     this.$Progress.finish();
   }
 });
@@ -7783,6 +7812,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue2-datepicker */ "./node_modules/vue2-datepicker/lib/index.js");
 /* harmony import */ var vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue2_datepicker__WEBPACK_IMPORTED_MODULE_0__);
+//
 //
 //
 //
@@ -78791,7 +78821,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("v-client-table", {
                         attrs: {
-                          data: _vm.tagihan,
+                          data: _vm.pembayaran,
                           columns: _vm.columns,
                           options: _vm.options
                         },
@@ -78841,6 +78871,27 @@ var render = function() {
                                           attrs: { href: "#" },
                                           on: {
                                             click: function($event) {
+                                              return _vm.konfirmasiPembayaran(
+                                                row.id
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "fa fa-check green"
+                                          }),
+                                          _vm._v(" Konfirmasi")
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "dropdown-item",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
                                               return _vm.cetakInvoice(
                                                 row.kode_booking
                                               )
@@ -78852,25 +78903,6 @@ var render = function() {
                                             staticClass: "fa fa-search info"
                                           }),
                                           _vm._v(" Detil")
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "a",
-                                        {
-                                          staticClass: "dropdown-item",
-                                          attrs: { href: "#" },
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.hapusFasilitas(row.id)
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c("span", {
-                                            staticClass: "fa fa-trash red"
-                                          }),
-                                          _vm._v(" Hapus")
                                         ]
                                       )
                                     ]
@@ -78891,7 +78923,7 @@ var render = function() {
                             }
                           },
                           {
-                            key: "total_tagihan",
+                            key: "jumlah",
                             fn: function(ref) {
                               var row = ref.row
                               return _c(
@@ -78900,16 +78932,14 @@ var render = function() {
                                 [
                                   _vm._v(
                                     "Rp. " +
-                                      _vm._s(
-                                        _vm._f("currency")(row.total_tagihan)
-                                      )
+                                      _vm._s(_vm._f("currency")(row.jumlah))
                                   )
                                 ]
                               )
                             }
                           },
                           {
-                            key: "terbayarkan",
+                            key: "tgl_transfer",
                             fn: function(ref) {
                               var row = ref.row
                               return _c(
@@ -78917,10 +78947,7 @@ var render = function() {
                                 { staticClass: "float-right red" },
                                 [
                                   _vm._v(
-                                    "Rp. " +
-                                      _vm._s(
-                                        _vm._f("currency")(row.terbayarkan)
-                                      )
+                                    _vm._s(_vm._f("myDate")(row.tgl_transfer))
                                   )
                                 ]
                               )
@@ -81556,7 +81583,9 @@ var staticRenderFns = [
           _vm._v(" "),
           _c("option", { attrs: { value: "KTP" } }, [_vm._v("KTP")]),
           _vm._v(" "),
-          _c("option", { attrs: { value: "SIM" } }, [_vm._v("SIM")])
+          _c("option", { attrs: { value: "SIM" } }, [_vm._v("SIM")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "PASSPORT" } }, [_vm._v("PASSPORT")])
         ]
       )
     ])

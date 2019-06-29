@@ -240,6 +240,7 @@
                                 <option value="-">-- Pilih --</option>
                                 <option value="KTP">KTP</option>
                                 <option value="SIM">SIM</option>
+                                <option value="PASSPORT">PASSPORT</option>
                             </select>
                         </div>
                         <div class="form-group">

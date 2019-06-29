@@ -55,6 +55,8 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/inhouse', 'API\Reservasi\InhouseController@index');
 
   Route::get('/admin/payment/tagihan', 'API\Payment\TagihanController@loadTagihan');
+  Route::get('/admin/payment/pembayaran', 'API\Payment\PembayaranController@index');
+  Route::post('/admin/payment/pembayaran/konfirm/{id}', 'API\Payment\PembayaranController@konfirm');
 
   Route::post('/admin/slideshow', 'API\MasterData\SlideshowController@store');
   Route::get('/admin/slideshow', 'API\MasterData\SlideshowController@index');

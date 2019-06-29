@@ -20,6 +20,9 @@ Route::group(['prefix' => 'admin'], function (){
   Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 });
 Route::view('/template-email', 'mail.invoice');
-Route::get('/booking/invoice/{kode_booking}', 'PDF\PDFController@invoice');
-Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d-\/_.]+)?');
+Route::get('/booking/invoice/{kode_booking}', 'PDF\PDFController@invoice')->name('invoice');
+
+Route::get('/booking/invoice/payment/{kode_booking}', 'WEB\PembayaranController@getForm')->name('payment.form');
 Route::post('/booking/invoice/payment', 'WEB\PembayaranController@store')->name('payment.store');
+
+Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d-\/_.]+)?');

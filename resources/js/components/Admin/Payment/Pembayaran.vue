@@ -30,17 +30,17 @@
                             <div class="card-body">
                                 <div class="col-md-12">
                                   <hr>
-                                    <v-client-table :data="tagihan" :columns="columns" :options="options">
+                                    <v-client-table :data="pembayaran" :columns="columns" :options="options">
                                         <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
+                                                <a class="dropdown-item" @click="konfirmasiPembayaran(row.id)" href="#"> <span class="fa fa-check green"></span> Konfirmasi</a>
                                                 <a class="dropdown-item" href="#" @click="cetakInvoice(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
-                                                <a class="dropdown-item" @click="hapusFasilitas(row.id)" href="#"> <span class="fa fa-trash red"></span> Hapus</a>
                                             </div>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
-                                        <p slot="total_tagihan" slot-scope="{row}" class="float-right red">Rp. {{row.total_tagihan | currency}}</p>
-                                        <p slot="terbayarkan" slot-scope="{row}" class="float-right red">Rp. {{row.terbayarkan | currency}}</p>
+                                        <p slot="jumlah" slot-scope="{row}" class="float-right red">Rp. {{row.jumlah | currency}}</p>
+                                        <p slot="tgl_transfer" slot-scope="{row}" class="float-right red">{{row.tgl_transfer | myDate}}</p>
 
                                     </v-client-table>
                                 </div>
@@ -70,7 +70,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan',
+                'aksi', 'kode_booking', 'tgl_transfer', 'nama', 'no_rekening', 'atas_nama', 'bank', 'no_rekening_tujuan', 'jumlah', 'status'
             ],
             options: {
                 texts: {
@@ -80,15 +80,17 @@ export default {
                     count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data",
                 },
                 headings: {
-                    nama: 'Nama Lengkap',
+                    nama: 'Nama Pemilik Rek',
+                    tgl_transfer: 'Tgl Transfer',
                     kode_booking: 'Kode Booking',
-                    no_telepon: 'No Telepon',
-                    total_tagihan: 'Total Tagihan',
-                    terbayarkan: 'Terbayarkan',
-                    hutang: 'Balance',
+                    no_rekening: 'No Rekening',
+                    bank: 'Bank Tujuan',
+                    atas_nama: 'Rekening Tujuan',
+                    no_rekening_tujuan: 'No Rekening Tujuan',
+                    jumlah: 'Nominal',
                 },
-                sortable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang',],
-                filterable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang',],
+                sortable: ['kode_booking', 'bank','nama', 'no_rekening', 'atas_nama', 'no_rekening_tujuan', 'jumlah',],
+                filterable: ['kode_booking','bank', 'nama', 'no_rekening', 'atas_nama', 'no_rekening_tujuan', 'jumlah',],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {
@@ -98,22 +100,52 @@ export default {
                     aksi: 'text-center',
                 },
             },
-            tagihan: [],
+            pembayaran: [],
         }
     },
     methods: {
+      konfirmasiPembayaran(id){
+        swal({
+            title: 'Anda yakin?',
+            text: "Operasi ini tidak dapat dibatalkan!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, konfirmasi pembayaran!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+
+            if (result.value) {
+                this.$Progress.start();
+                axios.post('/api/admin/payment/pembayaran/konfirm/' + id).then(() => {
+                    swal(
+                        'Dihapus!',
+                        'Pembayaran dikonfirmasi.',
+                        'success'
+                    )
+                    Fire.$emit('AfterCreate')
+                    this.$Progress.finish();
+                }).catch(() => {
+                    swal("Gagal!", "Terjadi kesalahan.",
+                        "warning");
+                });
+            }
+
+        })
+      },
       cetakInvoice(kode_booking){
         window.open('/booking/invoice/'+kode_booking, '_blank');
       },
-      dataTagihan(){
-        axios.get('/api/admin/payment/tagihan').then(({
+      dataPembayaran(){
+        axios.get('/api/admin/payment/pembayaran').then(({
             data
-        }) => (this.tagihan = data));
+        }) => (this.pembayaran = data));
       }
     },
     created() {
         this.$Progress.start();
-        this.dataTagihan();
+        this.dataPembayaran();
         this.$Progress.finish();
     }
 }
