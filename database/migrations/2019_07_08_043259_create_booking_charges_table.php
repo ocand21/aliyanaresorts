@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePelanggansTable extends Migration
+class CreateBookingChargesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreatePelanggansTable extends Migration
      */
     public function up()
     {
-        Schema::create('pelanggan', function (Blueprint $table) {
+        Schema::create('booking_charges', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nama')->unique();
-            $table->string('email')->unique();
-            $table->string('tipe_identitas');
-            $table->string('no_identitas')->unique();
-            $table->string('alamat');
-            $table->string('no_telepon')->unique();
+            $table->string('kode_booking');
+            $table->integer('id_charge');
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ class CreatePelanggansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pelanggans');
+        Schema::dropIfExists('booking_charges');
     }
 }

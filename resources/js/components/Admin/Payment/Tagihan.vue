@@ -70,7 +70,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan',
+                'aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'diterima', 'status',
             ],
             options: {
                 texts: {
@@ -87,8 +87,8 @@ export default {
                     terbayarkan: 'Terbayarkan',
                     hutang: 'Balance',
                 },
-                sortable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang',],
-                filterable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang',],
+                sortable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang','diterima','status'],
+                filterable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang','diterima','status'],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {

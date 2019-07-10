@@ -46,7 +46,8 @@
                                         <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
-                                                <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
+                                              <a class="dropdown-item" href="#" @click="checkOut(row.kode_booking)"><span class="fa fa-suitcase-rolling"></span> Checkout</a>
+                                              <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
                                             </div>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
@@ -126,8 +127,16 @@ export default {
         }
     },
     methods: {
+        checkOut(kode_booking){
+          this.$router.push({
+            name: 'form-checkout',
+            params: {
+              kode_booking: kode_booking
+            }
+          })
+        },
         filterTanggal() {
-            axios.get('/api/admin/checkin/' + this.form.tgl_awal + '/' + this.form.tgl_akhir).then(({
+            axios.get('/api/admin/checkout/' + this.form.tgl_awal + '/' + this.form.tgl_akhir).then(({
                 data
             }) => (this.bookings = data));
         },
@@ -140,7 +149,7 @@ export default {
             })
         },
         dataBooking() {
-            axios.get('/api/admin/checkin').then(({
+            axios.get('/api/admin/checkout').then(({
                 data
             }) => (this.bookings = data));
             this.form.reset();

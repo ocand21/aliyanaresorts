@@ -162,6 +162,11 @@
                                       <i class="nav-icon fa fa-id-card"></i> Pembayaran
                                   </router-link>
                               </li>
+                              <li class="nav-item">
+                                  <router-link to="/admin/master-data/charge" class="nav-link" href="colors.html">
+                                      <i class="nav-icon fa fa-file-invoice-dollar"></i> Charge
+                                  </router-link>
+                              </li>
                             </ul>
                         </li>
                         <li class="nav-item">

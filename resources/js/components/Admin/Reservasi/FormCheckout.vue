@@ -3,7 +3,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Dashboard</li>
         <li class="breadcrumb-item">Reservasi</li>
-        <li class="breadcrumb-item active">Form Checkin</li>
+        <li class="breadcrumb-item active">Form Checkout</li>
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu d-md-down-none">
             <div class="btn-group" role="group" aria-label="Button group">
@@ -25,7 +25,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong>Form Checkin</strong>
+                                <strong>Form Checkout</strong>
                             </div>
                             <div class="card-body">
                                 <form class="" id="formTambah" method="post" enctype="multipart/form-data">
@@ -184,7 +184,7 @@
                                 </form>
                             </div>
                             <div class="card-footer text-right">
-                                <button class="btn btn-sm btn-primary" @click="prosesCheckin" type="submit">
+                                <button class="btn btn-sm btn-primary" @click="prosesCheckout" type="submit">
                                     <i class="fa fa-dot-circle-o"></i> Konfirmasi Checkin</button>
                                 <router-link to="/admin/check-in" class="btn btn-sm btn-danger">
                                     <i class="fa fa-dot-circle-o"></i> Batal</router-link>
@@ -341,7 +341,7 @@ export default {
                 data
             }) => (this.form.fill(data)));
         },
-        prosesCheckin() {
+        prosesCheckout() {
             swal({
                 title: 'Anda yakin?',
                 text: "Operasi ini tidak dapat dibatalkan!",
@@ -349,21 +349,21 @@ export default {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, konfirmasi checkin!',
+                confirmButtonText: 'Ya, konfirmasi checkout!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.value) {
                     this.$Progress.start();
-                    this.form.post('/api/admin/checkin/proses/' + this.$route.params.kode_booking).then(() => {
+                    this.form.post('/api/admin/checkout/proses/' + this.$route.params.kode_booking).then(() => {
                         swal(
                             'Berhasil!',
-                            'Checkin berhasil.',
+                            'Checkout berhasil.',
                             'success'
                         )
                         Fire.$emit('AfterCreate')
                         this.$Progress.finish();
                         this.$router.push({
-                            name: 'check-in'
+                            name: 'check-out'
                         });
                     }).catch(() => {
                         swal("Gagal!", "Terjadi kesalahan.",

@@ -47,10 +47,16 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::post('/admin/booking/cancel', 'API\Reservasi\BookingsController@cancelBooking');
   Route::get('/admin/booking/canceled', 'API\Reservasi\BookingsController@loadCanceled');
 
+  Route::get('/admin/checkin/tagihan/{kode_booking}', 'API\Reservasi\CheckinController@loadTagihan');
+  Route::get('/admin/checkin/load-charges/{kode_booking}', 'API\Reservasi\CheckinController@loadCharges');
+  Route::post('/admin/checkin/charges/{kode_booking}', 'API\Reservasi\CheckinController@applyCharges');
   Route::get('/admin/checkin', 'API\Reservasi\CheckinController@loadData');
   Route::get('/admin/checkin/detil/{kode_booking}', 'API\Reservasi\CheckinController@detilCheckin');
   Route::post('/admin/checkin/proses/{kode_booking}', 'API\Reservasi\CheckinController@prosesCheckin');
   Route::get('/admin/checkin/{tgl_awal}/{tgl_akhir}', 'API\Reservasi\CheckinController@filterTgl');
+
+
+
 
   Route::get('/admin/inhouse', 'API\Reservasi\InhouseController@index');
 
@@ -65,6 +71,16 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/menu-resto', 'API\MasterData\MenuRestoController@index');
   Route::post('/admin/menu-resto/tambah', 'API\MasterData\MenuRestoController@store');
   Route::delete('/admin/menu-resto/hapus/{id}', 'API\MasterData\MenuRestoController@destroy');
+
+  Route::post('/admin/charges/{id}', 'API\MasterData\ChargesController@update');
+  Route::delete('/admin/charges/{id}', 'API\MasterData\ChargesController@delete');
+  Route::post('/admin/charges', 'API\MasterData\ChargesController@store');
+  Route::get('/admin/charges', 'API\MasterData\ChargesController@index');
+
+  Route::get('/admin/checkout', 'API\Reservasi\CheckoutController@loadData');
+  Route::get('/admin/checkout/{tgl_awal}/{tgl_akhir}', 'API\Reservasi\CheckoutController@filterTgl');
+  Route::post('/admin/checkout/proses/{kode_booking}', 'API\Reservasi\CheckoutController@prosesCheckout');
+
 });
 
 

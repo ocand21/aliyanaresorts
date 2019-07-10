@@ -15,6 +15,7 @@ use App\Pelanggan;
 class PembayaranController extends Controller
 {
     public function konfirm($id){
+      $user = auth('api')->user();
 
       DB::beginTransaction();
       try {
@@ -31,6 +32,12 @@ class PembayaranController extends Controller
         $tagihan = Tagihan::where('kode_booking', $pembayaran->kode_booking)->first();
         $tagihan->terbayarkan = $tagihan->terbayarkan + $pembayaran->jumlah;
         $tagihan->hutang = $tagihan->terbayarkan - $tagihan->total_tagihan;
+        $tagihan->id_user = $user->id;
+        if ($pembayaran->jumlah == $tagihan->total_tagihan) {
+          $tagihan->status = '1';
+        } elseif ($pembayaran->jumlah < $tagihan->total_tagihan ) {
+          $tagihan->status = '2';
+        }
 
         $tagihan->save();
       } catch (\Exception $e) {

@@ -121,7 +121,7 @@
 
     <div class="container">
         <div class="row">
-          
+
             <div class="col-12" style="margin-top: 15px">
 
                 {{-- --}}
@@ -211,13 +211,19 @@
                                 <table class="table">
                                     <tbody>
                                         <tr>
-                                            <td><strong>Subtotal</strong></td>
-                                            <td>Rp. {{format_uang($subtotal->sub_total)}}</td>
-                                        </tr>
-                                        <tr>
                                             <td> <strong>Durasi Menginap</strong> </td>
                                             <td>{{$durasi}} Hari</td>
                                         </tr>
+                                        <tr>
+                                                <td><strong>Subtotal</strong></td>
+                                                <td>Rp. {{format_uang($booking->total)}}</td>
+                                        </tr>
+                                        @foreach($charges as $charge)
+                                        <tr>
+                                                <td><strong>{{$charge->nama_charge}} {{$charge->jumlah_persen}}%</strong></td>
+                                                <td>Rp. {{format_uang($charge->jumlah_rupiah)}}</td>
+                                        </tr>
+                                      @endforeach
                                         <tr>
                                             <td><strong>Total</strong></td>
                                             <td>Rp. {{format_uang($tagihan->total_tagihan)}}</td>

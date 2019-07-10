@@ -20,6 +20,8 @@ class CreateTagihansTable extends Migration
             $table->decimal('total_tagihan', 10, 0);
             $table->decimal('terbayarkan', 10, 0);
             $table->decimal('hutang', 10, 0);
+            $table->string('id_user');
+            $table->string('status');
             $table->timestamps();
         });
     }

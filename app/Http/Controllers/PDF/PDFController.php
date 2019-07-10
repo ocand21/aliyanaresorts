@@ -10,6 +10,7 @@ use PDF;
 use Carbon\Carbon;
 use App\KonfigWeb;
 use App\MetodePembayaran;
+use App\Charge;
 class PDFController extends Controller
 {
     public function invoice($kode_booking){
@@ -48,8 +49,10 @@ class PDFController extends Controller
 
       $metode = MetodePembayaran::orderBy('id', 'asc')->get();
 
+      $charges = Charge::where('kode_booking', $kode_booking)->get();
+
       // $total = $subtotal->sub_total * $durasi;
       // dd($subtotal);
-      return view('pdf.invoice', compact('booking', 'rooms', 'subtotal', 'durasi', 'tagihan', 'metode', 'konfig'));
+      return view('pdf.invoice', compact('booking', 'rooms', 'subtotal', 'durasi', 'tagihan', 'metode', 'konfig', 'charges'));
     }
 }

@@ -82,6 +82,17 @@ class BookingsController extends Controller
         throw $e;
       }
 
+      try {
+        $charges = Charge::where('kode_booking', $request->kode_booking)->get();
+        foreach ($charges as $charge) {
+          $charge->delete();
+        }
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+
       DB::commit();
 
       return response()->json([
@@ -118,8 +129,8 @@ class BookingsController extends Controller
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                       ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin, bookings.tgl_checkout,
                       (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
-                      WHEN (bookings.status = 3) THEN 'Checkout' END) as status"))
-                      ->whereNotIn('bookings.status', ['2','3'])
+                      WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
+                      ->orderBy('bookings.id', 'asc')
                       ->get();
 
       return response()->json($bookings);
@@ -173,16 +184,25 @@ class BookingsController extends Controller
       }
 
       try {
-        $pelanggan = Pelanggan::updateOrCreate(
-          ['email' => $request->email, 'no_identitas' => $request->no_identitas],
-          [
-          'nama' => $request->nama,
-          'email' => $request->email,
-          'tipe_identitas' => $request->tipe_identitas,
-          'no_identitas' => $request->no_identitas,
-          'alamat' => $request->alamat,
-          'no_telepon' => $request->no_telepon,
+        $pelanggan = Pelanggan::where('email', $request->email)->first();
+        if (!$pelanggan) {
+          $pelanggan = new Pelanggan();
+          $pelanggan->email = $request->email;
+          $pelanggan->nama = $request->nama;
+          $pelanggan->tipe_identitas = $request->tipe_identitas;
+          $pelanggan->no_identitas = $request->no_identitas;
+          $pelanggan->alamat = $request->alamat;
+          $pelanggan->no_telepon = $request->no_telepon;
+          $pelanggan->save();
+        } else {
+          $pelanggan->update([
+            'nama' => $request->nama,
+            'tipe_identitas' => $request->tipe_identitas,
+            'no_identitas' => $request->no_identitas,
+            'alamat' => $request->alamat,
+            'no_telepon' => $request->no_telepon,
           ]);
+        }
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
@@ -397,13 +417,6 @@ class BookingsController extends Controller
                     ->where([['status_temp', '0']])
                     ->get();
       } else {
-        // $kamar = Kamar::with('booking', 'tipe_kamar')->whereHas('booking', function($q) use ($tgl_checkin, $tgl_checkout, $tipe){
-        //   $q->where(function($q2) use ($tgl_checkin, $tgl_checkout){
-        //     $q2->where('tgl_checkin', '>=', $tgl_checkout)
-        //        ->orWhere('tgl_checkout', '<=', $tgl_checkin);
-        //   })->where([['status_temp', '=', '0'],['id_tipe', $tipe]]);
-        // })->orWhereDoesntHave('booking')->where([['id_tipe', $tipe],['status_temp', '=', '0']])->get();
-
         $kamar = DB::table('kamar')
                     ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
                     ->select(DB::raw("kamar.no_room, kamar.id_tipe, tipe_kamar.tipe, tipe_kamar.kapasitas, tipe_kamar.harga"))
