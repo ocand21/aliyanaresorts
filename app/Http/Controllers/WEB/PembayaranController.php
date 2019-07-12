@@ -17,6 +17,8 @@ use Session;
 class PembayaranController extends Controller
 {
 
+  
+
     public function getForm($kode_booking){
       $booking = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')

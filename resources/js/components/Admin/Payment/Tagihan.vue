@@ -34,7 +34,7 @@
                                         <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
-                                                <a class="dropdown-item" href="#" @click="cetakInvoice(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
+                                                <a class="dropdown-item" href="#" @click="detilTagihan(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
                                                 <a class="dropdown-item" @click="hapusFasilitas(row.id)" href="#"> <span class="fa fa-trash red"></span> Hapus</a>
                                             </div>
                                         </div>
@@ -70,7 +70,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'diterima', 'status',
+                'aksi', 'kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'status',
             ],
             options: {
                 texts: {
@@ -87,8 +87,8 @@ export default {
                     terbayarkan: 'Terbayarkan',
                     hutang: 'Balance',
                 },
-                sortable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang','diterima','status'],
-                filterable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang','diterima','status'],
+                sortable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang','status'],
+                filterable: ['kode_booking', 'nama', 'no_telepon', 'total_tagihan', 'terbayarkan', 'hutang','status'],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {
@@ -102,6 +102,9 @@ export default {
         }
     },
     methods: {
+      detilTagihan(kode_booking){
+        this.$router.push({name: 'detil-tagihan', params:{kode_booking:kode_booking}})
+      },
       cetakInvoice(kode_booking){
         window.open('/booking/invoice/'+kode_booking, '_blank');
       },
