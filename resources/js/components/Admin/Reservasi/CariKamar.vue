@@ -99,18 +99,18 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>No Kamar</th>
+                                                <th>Kamar Tersedia</th>
                                                 <th>Tipe Kamar</th>
                                                 <th>Kapasitas</th>
                                                 <!-- <th>Deskripsi</th> -->
                                                 <th>Harga</th>
-                                                <th>Jumlah Tamu</th>
+                                                <th>Jumlah Kamar</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="kamar in dataKamar.kamar" :key="kamar.id">
-                                                <td>{{kamar.no_room}}</td>
+                                                <td>{{kamar.jml_kamar}}</td>
                                                 <td>{{kamar.tipe}}</td>
                                                 <td>{{kamar.kapasitas}} Person</td>
                                                 <!-- <td>{{kamar.tipe.deskripsi}}</td> -->
@@ -118,18 +118,14 @@
                                                 <td>Start @ Rp. {{kamar.harga | currency}}/Night</td>
                                                 <td>
                                                     <form class="" method="post" id="formBooking">
-                                                        <input type="hidden" name="no_room" class="form-control" :value="kamar.no_room">
+                                                        <input type="hidden" name="id_tipe" class="form-control" :value="kamar.id_tipe">
                                                         <input type="hidden" name="harga" class="form-control" :value="kamar.harga">
-                                                        <select class="form-control" name="tamu_booking">
-                                                            <option value="-">--</option>
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                        </select>
+                                                        <input type="text" class="form-control" name="jml_kamar">
                                                         <input type="hidden" name="tgl_checkin" class="form-control" :value="form.tgl_checkin">
                                                         <input type="hidden" name="tgl_checkout" class="form-control" :value="form.tgl_checkout">
                                                     </form>
                                                 </td>
-                                                <td class="text-center"><a href="#" @click="roomTemp()" class="btn btn-warning btn-sm"> <span class="fa fa-check"></span>Book</a> </td>
+                                                <td class="text-center"><a href="#" @click="roomTemp(kamar.id_tipe)" class="btn btn-warning btn-sm"> <span class="fa fa-check"></span>Book</a> </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -167,10 +163,9 @@
                                 <tr>
 
                                     <th>Aksi</th>
-                                    <th>No Kamar</th>
                                     <th>Tipe kamar</th>
                                     <th>Kapasitas</th>
-                                    <th>Jml Tamu</th>
+                                    <th>Jml Kamar</th>
                                     <th>Harga</th>
                                 </tr>
                             </thead>
@@ -179,16 +174,15 @@
                                     <td class="text-center"><a href="#" class="btn btn-light" @click="hapusTemp(temp.id)">
                                             <i class="fa fa-minus red"></i> Hapus
                                         </a></td>
-                                    <td>{{temp.no_room}}</td>
                                     <td>{{temp.tipe}}</td>
                                     <td>{{temp.kapasitas}} Person</td>
-                                    <td>{{temp.jml_tamu}} Guest</td>
+                                    <td>{{temp.jml_kamar}}</td>
                                     <td>Rp. {{temp.harga | currency}}</td>
                                 </tr>
                             </tbody>
                             <thead>
                                 <tr>
-                                    <th colspan="5">
+                                    <th colspan="4">
                                         <p class="text-right">Subtotal</p>
                                     </th>
                                     <th>
@@ -196,7 +190,7 @@
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th colspan="5">
+                                    <th colspan="4">
                                         <p class="text-right">Total (Subtotal X {{dataTemp.durasi}} hari menginap)</p>
                                     </th>
                                     <th>
@@ -208,8 +202,8 @@
                         <h5> <strong>Detil Booking</strong> </h5>
                         <hr>
                         <div class="form-group" v-for="temp in dataTemp.temp" :key="temp.no_room">
-                            <input type="hidden" name="no_rooms[]" class="form-control" :value="temp.no_room">
-                            <input type="hidden" name="jml_tamu[]" class="form-control" :value="temp.jml_tamu">
+                            <input type="hidden" name="id_tipe[]" class="form-control" :value="temp.id_tipe">
+                            <input type="hidden" name="jml_kamar[]" class="form-control" :value="temp.jml_kamar">
                         </div>
                         <div class="form-group">
                             <label for=""><strong>Kode Booking</strong></label>
@@ -258,6 +252,13 @@
                         <div class="form-group">
                             <label for=""> <strong>Email</strong> </label>
                             <input type="email" class="form-control" name="email">
+                        </div>
+                        <div class="form-group">
+                          <label for=""> <strong>Tipe</strong> </label>
+                          <select class="form-control" name="tipe">
+                            <option value="WIG">Walk In Guest</option>
+                            <option value="PHONE">By Phone</option>
+                          </select>
                         </div>
                         <div class="form-group">
                             <label for=""> <strong>Keterangan</strong> </label>
@@ -384,12 +385,14 @@ export default {
                 if (result.value) {
                     this.$Progress.start();
                     axios.delete('/api/admin/booking/room/temp/hapus/' + id).then(() => {
+                      Fire.$emit('AfterCreate');
                         swal(
                             'Dihapus!',
                             'Data berhasil dihapus.',
                             'success'
                         )
-                        Fire.$emit('AfterCreate')
+                        this.$Progress.finish();
+                        $('#detailBooking').modal('hide');
                         this.$Progress.finish();
                     }).catch(() => {
                         swal("Gagal!", "Terjadi kesalahan.",
@@ -413,11 +416,11 @@ export default {
                 data
             }) => (this.countTemp = data))
         },
-        roomTemp() {
+        roomTemp(id_tipe) {
             var formData = new FormData(document.getElementById("formBooking"));
             let instance = this;
             this.$Progress.start();
-            axios.post('/api/admin/booking/room/add', formData)
+            axios.post('/api/admin/booking/room/add/'+id_tipe, formData)
                 .then(() => {
                     Fire.$emit('AfterCreate');
                     swal(

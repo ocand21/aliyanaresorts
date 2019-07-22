@@ -83,12 +83,6 @@
                                     <div class="col-md-9">
                                       <h5>{{booking.tgl_checkout | myDate}}</h5>
                                     </div>
-                                    <div class="col-md-3">
-                                      <h5>Jumlah Kamar</h5>
-                                    </div>
-                                    <div class="col-md-9">
-                                      <h5>{{booking.jmlKamar}}</h5>
-                                    </div>
 
                                       <div class="col-md-3">
                                         <h5>Total</h5>
@@ -102,7 +96,6 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>No Kamar</th>
                                                 <th>Tipe Kamar</th>
                                                 <th>Kapasitas</th>
                                                 <th>Jumlah Tamu</th>
@@ -112,14 +105,12 @@
                                         </thead>
                                         <tbody>
                                           <tr v-for="kamar in dataKamar" :key="kamar.no_room">
-                                            <td>{{kamar.no_room}}</td>
                                             <td>{{kamar.tipe}}</td>
-                                            <td>{{kamar.kapasitas}}</td>
-                                            <td>{{kamar.jml_tamu}}</td>
+                                            <td>{{kamar.kapasitas}} Orang</td>
+                                            <td>{{kamar.jml_kamar}} Kamar</td>
                                             <td><p>Rp. {{kamar.harga | currency}}</p></td>
                                           </tr>
                                         </tbody>
-
                                     </table>
                                   </div>
                                 </div>

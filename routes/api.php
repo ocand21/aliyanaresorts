@@ -34,7 +34,7 @@ Route::group(['middleware' => 'auth:api'], function(){
 
 
   Route::post('/admin/booking/cek-kamar', 'API\Reservasi\BookingsController@cekKamar');
-  Route::post('/admin/booking/room/add', 'API\Reservasi\BookingsController@addRoom');
+  Route::post('/admin/booking/room/add/{id_tipe}', 'API\Reservasi\BookingsController@addRoom');
   Route::get('/admin/booking/room/temp/count', 'API\Reservasi\BookingsController@countTemp');
   Route::get('/admin/booking/room/temp', 'API\Reservasi\BookingsController@loadTemp');
 

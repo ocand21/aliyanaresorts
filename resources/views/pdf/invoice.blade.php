@@ -165,7 +165,6 @@
                             <p></p>
                             <strong>Tanggal Checkin: </strong>{{ Date::parse($booking->tgl_checkin)->format('l, j F Y') }}<br>
                             <strong>Tanggal Checkout: </strong>{{ Date::parse($booking->tgl_checkout)->format('l, j F Y') }}<br>
-                            <strong>Jumlah Kamar: </strong>{{$booking->jmlKamar}}<br>
                         </div>
                     </div>
 
@@ -174,23 +173,21 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>No Kamar</th>
                                         <th>Tipe Kamar</th>
                                         <th>Kapasitas</th>
-                                        <th>Jumlah Tamu</th>
+                                        <th>Jumlah Kamar</th>
                                         <th>Harga</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($rooms as $room)
+                                  @foreach($rooms as $room)
                                     <tr>
-                                        <td>{{$room->no_room}}</td>
                                         <td>{{$room->tipe}}</td>
                                         <td>{{$room->kapasitas}} Orang</td>
-                                        <td>{{$room->jml_tamu}} Orang</td>
+                                        <td>{{$room->jml_kamar}} Kamar</td>
                                         <td>Rp. {{ format_uang($room->harga)}}</td>
                                     </tr>
-                                    @endforeach
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>

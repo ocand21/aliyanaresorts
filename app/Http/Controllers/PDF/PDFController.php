@@ -19,24 +19,31 @@ class PDFController extends Controller
       // return $pdf->stream('invoice.pdf');
       $booking = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, bookings.jml_kamar as jmlKamar, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
-                      bookings.tgl_checkin, bookings.tgl_checkout, bookings.created_at, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                      ->select(DB::raw("bookings.kode_booking, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
+                      bookings.tgl_checkin, bookings.tgl_checkout, bookings.created_at, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment'
+                      ELSE 'Payment Accepted' END) as status"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
 
-                      $rooms = DB::table('booking_rooms')
-                                  ->join('kamar', 'kamar.no_room', 'booking_rooms.no_room')
-                                  ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
-                                  ->select(DB::raw("booking_rooms.no_room, tipe_kamar.tipe, tipe_kamar.kapasitas, booking_rooms.jml_tamu, tipe_kamar.harga"))
-                                  ->where('booking_rooms.kode_booking', $kode_booking)
-                                  ->get();
+                      // $rooms = DB::table('booking_rooms')
+                      //             ->join('kamar', 'kamar.no_room', 'booking_rooms.no_room')
+                      //             ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
+                      //             ->select(DB::raw("booking_rooms.no_room, tipe_kamar.tipe, tipe_kamar.kapasitas, booking_rooms.jml_tamu, tipe_kamar.harga"))
+                      //             ->where('booking_rooms.kode_booking', $kode_booking)
+                      //             ->get();
 
-      $subtotal = DB::table('booking_rooms')
-                      ->join('kamar', 'kamar.no_room', 'booking_rooms.no_room')
-                      ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
-                      ->select(DB::raw("SUM(harga) as sub_total"))
-                      ->where('booking_rooms.kode_booking', $kode_booking)
-                      ->first();
+      $rooms = DB::table('booking_types')
+                  ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                  ->select(DB::raw("tipe_kamar.tipe, tipe_kamar.kapasitas, tipe_kamar.harga, booking_types.jml_kamar"))
+                  ->where('booking_types.kode_booking', $kode_booking)
+                  ->get();
+
+      // $subtotal = DB::table('booking_rooms')
+      //                 ->join('kamar', 'kamar.no_room', 'booking_rooms.no_room')
+      //                 ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
+      //                 ->select(DB::raw("SUM(harga) as sub_total"))
+      //                 ->where('booking_rooms.kode_booking', $kode_booking)
+      //                 ->first();
 
                       $tagihan = DB::table('tagihan')
                                     ->select(DB::raw("total_tagihan, terbayarkan, hutang"))
@@ -53,6 +60,6 @@ class PDFController extends Controller
 
       // $total = $subtotal->sub_total * $durasi;
       // dd($subtotal);
-      return view('pdf.invoice', compact('booking', 'rooms', 'subtotal', 'durasi', 'tagihan', 'metode', 'konfig', 'charges'));
+      return view('pdf.invoice', compact('booking', 'durasi', 'rooms', 'tagihan', 'metode', 'konfig', 'charges'));
     }
 }

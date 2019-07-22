@@ -26,27 +26,25 @@
    <div class="col-sm-12 invoice-col" style="box-sizing:border-box;float:left;width:100%;position:relative;padding-right:15px;padding-left:15px;-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%;">
      <strong style="box-sizing:border-box;font-weight:bolder;">Invoice #{{$booking->kode_booking}}</strong>
      <br style="box-sizing: border-box;"><p style="box-sizing:border-box;margin-top:0;margin-bottom:1rem;"></p>
-     <strong style="box-sizing:border-box;font-weight:bolder;">Tanggal Checkin: </strong>{{ Date::parse($booking->tgl_checkin)->format('l, j F Y') }}<br style="box-sizing: border-box;"><strong style="box-sizing:border-box;font-weight:bolder;">Tanggal Checkout: </strong>{{ Date::parse($booking->tgl_checkout)->format('l, j F Y') }}<br style="box-sizing: border-box;"><strong style="box-sizing:border-box;font-weight:bolder;">Jumlah Kamar: </strong>{{$booking->jmlKamar}}<br style="box-sizing: border-box;">
+     <strong style="box-sizing:border-box;font-weight:bolder;">Tanggal Checkin: </strong>{{ Date::parse($booking->tgl_checkin)->format('l, j F Y') }}<br style="box-sizing: border-box;"><strong style="box-sizing:border-box;font-weight:bolder;">Tanggal Checkout: </strong>{{ Date::parse($booking->tgl_checkout)->format('l, j F Y') }}
 </div>
 
    <table class="table table-striped" style="margin-top:10px;box-sizing:border-box;border-collapse:collapse;width:100%;margin-bottom:1rem;color:#212529;">
 <thead style="box-sizing: border-box;"><tr style="box-sizing: border-box;">
-<th style="box-sizing:border-box;text-align:inherit;padding:0.75rem;vertical-align:bottom;border-top:1px solid #dee2e6;border-bottom:2px solid #dee2e6;">No Kamar</th>
                <th style="box-sizing:border-box;text-align:inherit;padding:0.75rem;vertical-align:bottom;border-top:1px solid #dee2e6;border-bottom:2px solid #dee2e6;">Tipe Kamar</th>
                <th style="box-sizing:border-box;text-align:inherit;padding:0.75rem;vertical-align:bottom;border-top:1px solid #dee2e6;border-bottom:2px solid #dee2e6;">Kapasitas</th>
-               <th style="box-sizing:border-box;text-align:inherit;padding:0.75rem;vertical-align:bottom;border-top:1px solid #dee2e6;border-bottom:2px solid #dee2e6;">Jumlah Tamu</th>
+               <th style="box-sizing:border-box;text-align:inherit;padding:0.75rem;vertical-align:bottom;border-top:1px solid #dee2e6;border-bottom:2px solid #dee2e6;">Jumlah Kamar</th>
                <th style="box-sizing:border-box;text-align:inherit;padding:0.75rem;vertical-align:bottom;border-top:1px solid #dee2e6;border-bottom:2px solid #dee2e6;">Harga</th>
            </tr></thead>
 <tbody style="box-sizing: border-box;">
-         @foreach($rooms as $room)
+        @foreach($rooms as $room)
          <tr style="box-sizing:border-box;background-color:rgba(0, 0, 0, 0.05);">
-<td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">{{$room->no_room}}</td>
              <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">{{$room->tipe}}</td>
              <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">{{$room->kapasitas}} Orang</td>
-             <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">{{$room->jml_tamu}} Orang</td>
+             <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">{{$room->jml_kamar}} Kamar</td>
              <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">Rp. {{ format_uang($room->harga)}}</td>
          </tr>
-         @endforeach
+        @endforeach
        </tbody>
 </table>
 <br style="box-sizing: border-box;"><div class="row invoice-info" style="box-sizing:border-box;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-right:-15px;margin-left:-15px;">
@@ -61,7 +59,7 @@
                <table class="table" style="box-sizing:border-box;border-collapse:collapse;width:100%;margin-bottom:1rem;color:#212529;"><tbody style="box-sizing: border-box;">
 <tr style="box-sizing: border-box;">
 <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;"><strong style="box-sizing:border-box;font-weight:bolder;">Subtotal</strong></td>
-                         <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">Rp. {{format_uang($subtotal->sub_total)}}</td>
+                         <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;">Rp. {{format_uang($booking->total)}}</td>
                      </tr>
 <tr style="box-sizing: border-box;">
 <td style="box-sizing:border-box;padding:0.75rem;vertical-align:top;border-top:1px solid #dee2e6;"> <strong style="box-sizing:border-box;font-weight:bolder;">Durasi Menginap</strong> </td>

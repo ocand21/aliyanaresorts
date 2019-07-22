@@ -11,11 +11,13 @@ use Illuminate\Support\Str;
 use App\Notifications\InvoiceBooking;
 use App\Booking;
 use App\Kamar;
+use App\TipeKamar;
 use App\BookingTemp;
 use App\BookingRoom;
 use App\Pelanggan;
 use App\Tagihan;
 use App\BookingCanceled;
+use App\BookingType;
 use Mail;
 class BookingsController extends Controller
 {
@@ -101,11 +103,10 @@ class BookingsController extends Controller
     }
 
     public function detilKamar($kode_booking){
-      $rooms = DB::table('booking_rooms')
-                  ->join('kamar', 'kamar.no_room', 'booking_rooms.no_room')
-                  ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
-                  ->select(DB::raw("booking_rooms.no_room, tipe_kamar.tipe, tipe_kamar.kapasitas, booking_rooms.jml_tamu, tipe_kamar.harga"))
-                  ->where('booking_rooms.kode_booking', $kode_booking)
+      $rooms = DB::table('booking_types')
+                  ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                  ->select(DB::raw("tipe_kamar.tipe, tipe_kamar.kapasitas, booking_types.jml_kamar, tipe_kamar.harga"))
+                  ->where('booking_types.kode_booking', $kode_booking)
                   ->get();
 
       return response()->json($rooms);
@@ -114,7 +115,7 @@ class BookingsController extends Controller
     public function detilBooking($kode_booking){
       $bookings = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, bookings.jml_kamar as jmlKamar, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
+                      ->select(DB::raw("bookings.kode_booking, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
                       bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
@@ -127,7 +128,11 @@ class BookingsController extends Controller
     public function loadBooking(){
       $bookings = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin, bookings.tgl_checkout,
+                      ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                      ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                      ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
+                      bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
                       (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
                       WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
                       ->orderBy('bookings.id', 'asc')
@@ -140,8 +145,10 @@ class BookingsController extends Controller
     public function prosesBooking(Request $request){
 
       $this->validate($request, [
-        'no_rooms' => 'required|array',
-        'no_rooms.*' => 'required',
+        // 'no_rooms' => 'required|array',
+        // 'no_rooms.*' => 'required',
+        'id_tipe' => 'required|array',
+        'id_tipe.*' => 'required',
         'kode_booking' => 'required|unique:bookings',
         'tgl_checkin' => 'required|date',
         'tgl_checkout' => 'required|date',
@@ -153,35 +160,35 @@ class BookingsController extends Controller
         'no_telepon' => 'required|min:10',
         'email' => 'required',
         'keterangan' => 'sometimes',
-        'jml_tamu' => 'required|array',
-        'jml_tamu.*' => 'required',
+        'jml_kamar' => 'required|array',
+        'jml_kamar.*' => 'required',
       ]);
 
       $user = auth('api')->user();
 
       DB::beginTransaction();
-      try {
-        $no_rooms = $request->no_rooms;
-        $jml_tamu = $request->jml_tamu;
-
-        if (count($no_rooms) > count($jml_tamu))
-          $count = count($jml_tamu);
-        else $count = count($no_rooms);
-
-        for ($i=0; $i < $count ; $i++) {
-          $room = new BookingRoom();
-          $room->kode_booking = $request->kode_booking;
-          $room->no_room = $no_rooms[$i];
-          $room->jml_tamu = $jml_tamu[$i];
-          $room->tgl_checkin = $request->tgl_checkin;
-          $room->tgl_checkout = $request->tgl_checkout;
-          $room->save();
-        }
-
-      } catch (\Exception $e) {
-        DB::rollback();
-        throw $e;
-      }
+      // try {
+      //   $no_rooms = $request->no_rooms;
+      //   $jml_tamu = $request->jml_tamu;
+      //
+      //   if (count($no_rooms) > count($jml_tamu))
+      //     $count = count($jml_tamu);
+      //   else $count = count($no_rooms);
+      //
+      //   for ($i=0; $i < $count ; $i++) {
+      //     $room = new BookingRoom();
+      //     $room->kode_booking = $request->kode_booking;
+      //     $room->no_room = $no_rooms[$i];
+      //     $room->jml_tamu = $jml_tamu[$i];
+      //     $room->tgl_checkin = $request->tgl_checkin;
+      //     $room->tgl_checkout = $request->tgl_checkout;
+      //     $room->save();
+      //   }
+      //
+      // } catch (\Exception $e) {
+      //   DB::rollback();
+      //   throw $e;
+      // }
 
       try {
         $pelanggan = Pelanggan::where('email', $request->email)->first();
@@ -211,13 +218,35 @@ class BookingsController extends Controller
       try {
         Booking::create([
           'kode_booking' => $request->kode_booking,
-          'jml_kamar' => $room->where('kode_booking', $request->kode_booking)->count(),
           'id_pelanggan' => $pelanggan->id,
           'total' => $request->total,
           'keterangan' => $request->keterangan,
           'tgl_checkin' => $request->tgl_checkin,
           'tgl_checkout' => $request->tgl_checkout,
+          'id_users' => $user->id,
+          'tipe' => $request->tipe,
         ]);
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      try {
+        $id_tipe = $request->id_tipe;
+        $jml_kamar = $request->jml_kamar;
+        if (count($id_tipe) > count($jml_kamar)) {
+          $count = count($jml_kamar);
+        } else {
+          $count = count($id_tipe);
+        }
+
+        for ($i=0; $i < $count ; $i++) {
+          $tipe = new BookingType();
+          $tipe->kode_booking = $request->kode_booking;
+          $tipe->id_tipe = $id_tipe[$i];
+          $tipe->jml_kamar = $jml_kamar[$i];
+          $tipe->save();
+        }
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
@@ -226,9 +255,10 @@ class BookingsController extends Controller
       try {
         $temp = BookingTemp::where('id_users', $user->id)->get();
         foreach ($temp as $tmp) {
-          $kamar = Kamar::where('no_room', $tmp->no_room)->update([
-            'status_temp' => '0',
-          ]);
+          // $kamar = Kamar::where('no_room', $tmp->no_room)->update([
+          //   'status_temp' => '0',
+          // ]);
+          //
           $tmp->delete();
         }
       } catch (\Exception $e) {
@@ -250,12 +280,14 @@ class BookingsController extends Controller
         throw $e;
       }
 
-      try {
+
+
+      // try {
         $pelanggan->notify(new InvoiceBooking($request->kode_booking));
-      } catch (\Exception $e) {
-        DB::rollback();
-        throw $e;
-      }
+      // } catch (\Exception $e) {
+      //   DB::rollback();
+      //   throw $e;
+      // }
 
       DB::commit();
 
@@ -269,17 +301,17 @@ class BookingsController extends Controller
     public function hapusTemp($id){
       $temp = BookingTemp::findOrFail($id);
 
-      $kamar = Kamar::where('no_room', $temp->no_room)->first();
+      // $kamar = Kamar::where('no_room', $temp->no_room)->first();
 
 
-      DB::beginTransaction();
-      try {
-        $kamar->status_temp = '0';
-        $kamar->save();
-      } catch (\Exception $e) {
-        DB::rollback();
-        throw $e;
-      }
+      // DB::beginTransaction();
+      // try {
+      //   $kamar->status_temp = '0';
+      //   $kamar->save();
+      // } catch (\Exception $e) {
+      //   DB::rollback();
+      //   throw $e;
+      // }
 
 
       try {
@@ -303,9 +335,8 @@ class BookingsController extends Controller
       $user = auth('api')->user();
 
       $temp = DB::table('booking_temp')
-                  ->join('kamar', 'booking_temp.no_room', 'kamar.no_room')
-                  ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
-                  ->select(DB::raw("booking_temp.id, kamar.no_room, tipe_kamar.kapasitas, tipe_kamar.harga, tipe_kamar.tipe, booking_temp.jml_tamu"))
+                  ->join('tipe_kamar', 'tipe_kamar.id', 'booking_temp.id_tipe')
+                  ->select(DB::raw("booking_temp.id, booking_temp.id_tipe, tipe_kamar.kapasitas, tipe_kamar.harga, tipe_kamar.tipe, booking_temp.jml_kamar"))
                   ->where('booking_temp.id_users', $user->id)
                   ->get();
 
@@ -313,7 +344,7 @@ class BookingsController extends Controller
       $kd_booking = Str::random(10);
 
       $subtotal = DB::table('booking_temp')
-                      ->select(DB::raw("SUM(harga) as subtotal"))
+                      ->select(DB::raw("SUM(harga*jml_kamar) as subtotal"))
                       ->where('id_users', $user->id)
                       ->get();
 
@@ -350,15 +381,16 @@ class BookingsController extends Controller
       return response()->json($temp);
     }
 
-    public function addRoom(Request $request){
+    public function addRoom(Request $request, $id_tipe){
       $user = auth('api')->user();
+      $tipe = TipeKamar::findOrFail($id_tipe);
       DB::beginTransaction();
       try {
         BookingTemp::create([
-          'no_room' => $request->no_room,
-          'jml_tamu' => $request->tamu_booking,
+          'id_tipe' => $id_tipe,
+          'jml_kamar' => $request->jml_kamar,
           'id_users' => $user->id,
-          'harga' => $request->harga,
+          'harga' => $tipe->harga,
           'tgl_checkin' => $request->tgl_checkin,
           'tgl_checkout' => $request->tgl_checkout,
         ]);
@@ -368,15 +400,15 @@ class BookingsController extends Controller
         throw $e;
       }
 
-      try {
-        $kamar = Kamar::where('no_room', $request->no_room)->first();
-        $kamar->status_temp = '1';
-        $kamar->save();
-
-      } catch (\Exception $e) {
-        DB::rollback();
-        throw $e;
-      }
+      // try {
+      //   $kamar = Kamar::where('no_room', $request->no_room)->first();
+      //   $kamar->status_temp = '1';
+      //   $kamar->save();
+      //
+      // } catch (\Exception $e) {
+      //   DB::rollback();
+      //   throw $e;
+      // }
 
 
       DB::commit();
@@ -406,7 +438,7 @@ class BookingsController extends Controller
       if ($tipe == "0") {
         $kamar = DB::table('kamar')
                     ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
-                    ->select(DB::raw("kamar.no_room, kamar.id_tipe, tipe_kamar.tipe, tipe_kamar.kapasitas, tipe_kamar.harga"))
+                    ->select(DB::raw("kamar.id_tipe, tipe_kamar.tipe, tipe_kamar.kapasitas, tipe_kamar.harga, COUNT(kamar.no_room) as jml_kamar"))
                     ->whereNotIn('kamar.no_room', function($q) use ($tgl_checkin, $tgl_checkout){
                       $q->select('no_room')->from('booking_rooms')
                         ->join('bookings', 'bookings.kode_booking', 'booking_rooms.kode_booking')
@@ -415,11 +447,12 @@ class BookingsController extends Controller
                         ->where([['bookings.tgl_checkin', '<=', $tgl_checkout],['bookings.tgl_checkout', '>=', $tgl_checkin]]);
                     })
                     ->where([['status_temp', '0']])
+                    ->groupBy('kamar.id_tipe')
                     ->get();
       } else {
         $kamar = DB::table('kamar')
                     ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
-                    ->select(DB::raw("kamar.no_room, kamar.id_tipe, tipe_kamar.tipe, tipe_kamar.kapasitas, tipe_kamar.harga"))
+                    ->select(DB::raw("kamar.id_tipe, tipe_kamar.tipe, tipe_kamar.kapasitas, tipe_kamar.harga, COUNT(kamar.no_room) as jml_kamar"))
                     ->whereNotIn('kamar.no_room', function($q) use ($tgl_checkin, $tgl_checkout){
                       $q->select('no_room')->from('booking_rooms')
                         ->join('bookings', 'bookings.kode_booking', 'booking_rooms.kode_booking')
@@ -427,6 +460,7 @@ class BookingsController extends Controller
                         // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout]);
                         ->where([['bookings.tgl_checkin', '<=', $tgl_checkout],['bookings.tgl_checkout', '>=', $tgl_checkin]]);
                     })->where([['tipe_kamar.id', $tipe], ['status_temp', '0']])
+                    ->groupBy('kamar.id_tipe')
                     ->get();
       }
 
