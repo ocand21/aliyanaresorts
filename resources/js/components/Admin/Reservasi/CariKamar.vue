@@ -37,7 +37,7 @@
                                                 <label for="">Tanggal Check-in</label>
                                             </div>
                                             <div class="col-md-4">
-                                                <date-picker name="tgl_checkin" v-model="form.tgl_checkin" :lang="lang" value-type="format" confirm :class="{ 'is-invalid': form.errors.has('tgl_checkin') }"></date-picker>
+                                                <date-picker name="tgl_checkin" v-model="form.tgl_checkin" :lang="lang" value-type="format" :class="{ 'is-invalid': form.errors.has('tgl_checkin') }"></date-picker>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 10px">
@@ -45,7 +45,7 @@
                                                 <label for="">Tanggal Check-out</label>
                                             </div>
                                             <div class="col-md-4">
-                                                <date-picker name="tgl_checkout" v-model="form.tgl_checkout" :lang="lang" value-type="format" confirm :class="{ 'is-invalid': form.errors.has('tgl_checkout') }"></date-picker>
+                                                <date-picker name="tgl_checkout" v-model="form.tgl_checkout" :lang="lang" value-type="format" :class="{ 'is-invalid': form.errors.has('tgl_checkout') }"></date-picker>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 10px">
@@ -225,11 +225,11 @@
                         <h5> <strong>Detil Pelanggan</strong> </h5>
                         <hr>
                         <div class="form-group">
-                            <label for=""> <strong>Nama Lengkap (Sesuai Kartu Identitas)</strong> </label>
+                            <label for=""> <strong>Nama Lengkap (Sesuai Kartu Identitas)*</strong> </label>
                             <input type="text" class="form-control" name="nama">
                         </div>
                         <div class="form-group">
-                            <label for=""> <strong>Tipe Identitas</strong> </label>
+                            <label for=""> <strong>Tipe Identitas*</strong> </label>
                             <select class="form-control" name="tipe_identitas">
                                 <option value="-">-- Pilih --</option>
                                 <option value="KTP">KTP</option>
@@ -238,15 +238,15 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for=""> <strong>No Identitas</strong> </label>
+                            <label for=""> <strong>No Identitas*</strong> </label>
                             <input type="text" class="form-control" name="no_identitas">
                         </div>
                         <div class="form-group">
-                            <label for=""> <strong>Alamat (Sesuai Kartu Identitas)</strong> </label>
+                            <label for=""> <strong>Alamat (Sesuai Kartu Identitas)*</strong> </label>
                             <textarea type="text" class="form-control" name="alamat"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for=""> <strong>No Telepon/ Handphone</strong> </label>
+                            <label for=""> <strong>No Telepon/ Handphone*</strong> </label>
                             <input type="text" class="form-control" name="no_telepon">
                         </div>
                         <div class="form-group">
@@ -254,7 +254,7 @@
                             <input type="email" class="form-control" name="email">
                         </div>
                         <div class="form-group">
-                          <label for=""> <strong>Tipe</strong> </label>
+                          <label for=""> <strong>Tipe*</strong> </label>
                           <select class="form-control" name="tipe">
                             <option value="WIG">Walk In Guest</option>
                             <option value="PHONE">By Phone</option>

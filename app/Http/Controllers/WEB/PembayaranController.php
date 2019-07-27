@@ -17,12 +17,12 @@ use Session;
 class PembayaranController extends Controller
 {
 
-  
+
 
     public function getForm($kode_booking){
       $booking = DB::table('bookings')
                       ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, bookings.jml_kamar as jmlKamar, bookings.id_pelanggan, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
+                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
                       bookings.tgl_checkin, bookings.tgl_checkout, bookings.created_at, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();

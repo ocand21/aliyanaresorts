@@ -18,15 +18,65 @@ use App\Pelanggan;
 use App\Tagihan;
 use App\BookingCanceled;
 use App\BookingType;
+use App\Charge;
+use App\PelangganWIG;
 use Mail;
 class BookingsController extends Controller
 {
 
+    public function filterBooking($filter){
+
+      $date = Carbon::now();
+
+      if ($filter == "3") {
+        $bookings = DB::table('bookings')
+                        ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                        ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                        ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                        ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                        ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
+                        bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
+                        WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
+                        ->orderBy('bookings.id', 'asc')
+                        ->where('bookings.status', '3')
+                        ->get();
+        return response()->json($bookings);
+      } else if ($filter == "rsv_today") {
+        $bookings = DB::table('bookings')
+                        ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                        ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                        ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                        ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                        ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
+                        bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
+                        WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
+                        ->orderBy('bookings.id', 'asc')
+                        ->whereDate('bookings.tgl_checkin', $date)
+                        ->get();
+        return response()->json($bookings);
+      } else {
+        $bookings = DB::table('bookings')
+                        ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                        ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                        ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                        ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                        ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
+                        bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
+                        WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
+                        ->orderBy('bookings.id', 'asc')
+                        ->get();
+        return response()->json($bookings);
+      }
+    }
+
     public function loadCanceled(){
       $cancel = DB::table('booking_canceled')
-                    ->join('pelanggan', 'pelanggan.id', 'booking_canceled.id_pelanggan')
+                    ->join('pelanggan_wig', 'pelanggan_wig.id', 'booking_canceled.id_pelanggan')
                     ->join('users', 'users.id', 'booking_canceled.id_user')
-                    ->select(DB::raw("booking_canceled.id, booking_canceled.kode_booking, pelanggan.nama, users.name as admin, booking_canceled.created_at"))
+                    ->select(DB::raw("booking_canceled.id, booking_canceled.kode_booking, pelanggan_wig.nama, users.name as admin, booking_canceled.created_at"))
                     ->orderBy('booking_canceled.id', 'asc')
                     ->get();
 
@@ -65,6 +115,17 @@ class BookingsController extends Controller
         DB::rollback();
         throw $e;
       }
+
+      try {
+        $bType = BookingType::where('kode_booking', $request->kode_booking)->get();
+        foreach ($bType as $type) {
+          $type->delete();
+        }
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
 
       try {
         $booking_rooms = BookingRoom::where('kode_booking', $request->kode_booking)->get();
@@ -114,9 +175,12 @@ class BookingsController extends Controller
 
     public function detilBooking($kode_booking){
       $bookings = DB::table('bookings')
-                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
-                      bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                      ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                      ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                      ->join('users', 'bookings.id_users', 'users.id')
+                      ->select(DB::raw("bookings.kode_booking, pelanggan_wig.no_identitas, pelanggan_wig.tipe_identitas, pelanggan_wig.nama, pelanggan_wig.email, pelanggan_wig.no_telepon, pelanggan_wig.alamat,
+                      bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, tagihan.total_tagihan, tagihan.terbayarkan, tagihan.hutang,
+                      users.name as created_by, bookings.created_at, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
 
@@ -127,11 +191,11 @@ class BookingsController extends Controller
 
     public function loadBooking(){
       $bookings = DB::table('bookings')
-                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
+                      ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
                       ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
                       ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
                       ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
-                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
+                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
                       bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
                       (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
                       WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
@@ -149,7 +213,7 @@ class BookingsController extends Controller
         // 'no_rooms.*' => 'required',
         'id_tipe' => 'required|array',
         'id_tipe.*' => 'required',
-        'kode_booking' => 'required|unique:bookings',
+        'kode_booking' => 'required',
         'tgl_checkin' => 'required|date',
         'tgl_checkout' => 'required|date',
         'total' => 'required|numeric',
@@ -158,7 +222,7 @@ class BookingsController extends Controller
         'no_identitas' => 'required',
         'alamat' => 'required|min:4',
         'no_telepon' => 'required|min:10',
-        'email' => 'required',
+        'email' => 'sometimes',
         'keterangan' => 'sometimes',
         'jml_kamar' => 'required|array',
         'jml_kamar.*' => 'required',
@@ -191,9 +255,9 @@ class BookingsController extends Controller
       // }
 
       try {
-        $pelanggan = Pelanggan::where('email', $request->email)->first();
+        $pelanggan = PelangganWIG::where('no_identitas', $request->no_identitas)->first();
         if (!$pelanggan) {
-          $pelanggan = new Pelanggan();
+          $pelanggan = new PelangganWIG();
           $pelanggan->email = $request->email;
           $pelanggan->nama = $request->nama;
           $pelanggan->tipe_identitas = $request->tipe_identitas;
@@ -283,7 +347,7 @@ class BookingsController extends Controller
 
 
       // try {
-        $pelanggan->notify(new InvoiceBooking($request->kode_booking));
+        // $pelanggan->notify(new InvoiceBooking($request->kode_booking));
       // } catch (\Exception $e) {
       //   DB::rollback();
       //   throw $e;
@@ -382,24 +446,41 @@ class BookingsController extends Controller
     }
 
     public function addRoom(Request $request, $id_tipe){
+
+      // $this->validate($request,[
+      //   'id_tipe' => 'required',
+      //   'jml_kamar' => 'required|array',
+      //   'jml_kamar.*' => 'required',
+      // ]);
+
       $user = auth('api')->user();
       $tipe = TipeKamar::findOrFail($id_tipe);
       DB::beginTransaction();
       try {
-        BookingTemp::create([
-          'id_tipe' => $id_tipe,
-          'jml_kamar' => $request->jml_kamar,
-          'id_users' => $user->id,
-          'harga' => $tipe->harga,
-          'tgl_checkin' => $request->tgl_checkin,
-          'tgl_checkout' => $request->tgl_checkout,
-        ]);
+        //
+        // $id_tipe = $request->id_tipe;
+        // $jml_kamar = $request->jml_kamar;
+        // if (count($id_tipe) > count($jml_kamar)) {
+        //   $count = count($jml_kamar);
+        // } else {
+        //   $count = count($id_tipe);
+        // }
+        // for ($i=0; $i < $count ; $i++) {
+        // dd($request->jml_kamar);
+          BookingTemp::create([
+            'id_tipe' => $id_tipe,
+            'jml_kamar' => $request->jml_kamar,
+            'id_users' => $user->id,
+            'harga' => $tipe->harga,
+            'tgl_checkin' => $request->tgl_checkin,
+            'tgl_checkout' => $request->tgl_checkout,
+          ]);
+        // }
 
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
       }
-
       // try {
       //   $kamar = Kamar::where('no_room', $request->no_room)->first();
       //   $kamar->status_temp = '1';
