@@ -63,9 +63,17 @@ Route::group(['middleware' => 'auth:api'], function(){
 
   Route::get('/admin/payment/tagihan', 'API\Payment\TagihanController@loadTagihan');
   Route::get('/admin/payment/tagihan/{kode_booking}', 'API\Payment\TagihanController@detilTagihan');
+
+  Route::get('/admin/payment/tagihan/cash/{kode_booking}', 'API\Payment\TagihanController@paymentCash');
+  Route::get('/admin/payment/tagihan/transfer/{kode_booking}', 'API\Payment\TagihanController@paymentTransfer');
   Route::get('/admin/payment/pembayaran', 'API\Payment\PembayaranController@index');
   Route::get('/admin/payment/pembayaran/riwayat/{kode_booking}', 'API\Payment\PembayaranController@detilPembayaran');
   Route::post('/admin/payment/pembayaran/konfirm/{id}', 'API\Payment\PembayaranController@konfirm');
+  Route::post('/admin/payment/cash', 'API\Payment\PembayaranController@cashPayment');
+  Route::post('/admin/payment/transfer', 'API\Payment\PembayaranController@transferPayment');
+  Route::get('/admin/payment/metode', 'API\MasterData\MetodePembayaranController@loadMetode');
+
+
 
   Route::post('/admin/slideshow', 'API\MasterData\SlideshowController@store');
   Route::get('/admin/slideshow', 'API\MasterData\SlideshowController@index');
@@ -83,6 +91,7 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/checkout', 'API\Reservasi\CheckoutController@loadData');
   Route::get('/admin/checkout/{tgl_awal}/{tgl_akhir}', 'API\Reservasi\CheckoutController@filterTgl');
   Route::post('/admin/checkout/proses/{kode_booking}', 'API\Reservasi\CheckoutController@prosesCheckout');
+
 
 });
 

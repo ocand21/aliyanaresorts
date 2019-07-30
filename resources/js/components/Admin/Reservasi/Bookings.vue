@@ -85,6 +85,7 @@
 
                         <div class="row">
                             <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-success btn-sm" name="button" @click="pembayaranModal(booking.kode_booking)"><i class="fa fa-money-bill"></i> Pembayaran</button>
                                 <button type="button" class="btn btn-success btn-sm" name="button" @click="detilTagihan(booking.kode_booking)"><i class="fa fa-money-bill"></i> Detil Tagihan</button>
                                 <button type="button" class="btn btn-success btn-sm" name="button" @click="cetakInvoice(booking.kode_booking)"><i class="fa fa-print"></i> Cetak Invoice</button>
                             </div>
@@ -168,6 +169,13 @@
                             <div class="col-md-9">
                                 <p class="red">Rp. {{booking.hutang | currency}}</p>
                             </div>
+
+                            <div class="col-md-3">
+                                <p>Metode Pembayaran</p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="blue">{{booking.bank}}</p>
+                            </div>
                         </div>
                         <hr>
                         <div class="row">
@@ -201,6 +209,116 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modalPayment" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase">Pembayaran Booking {{booking.kode_booking}}</h5>
+                    <button type="button" class="close" @click="tutupModal()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+
+                          <ul class="nav nav-tabs" id="myTab1" role="tablist">
+                              <li class="nav-item">
+                                  <a class="nav-link active show" id="cash-tab" data-toggle="tab" href="#cash" role="tab" aria-controls="cash" aria-selected="true">Cash</a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link" id="transfer-tab" data-toggle="tab" href="#transfer" role="tab" aria-controls="transfer" aria-selected="false">Transfer</a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+                              </li>
+                          </ul>
+                          <div class="tab-content" id="myTab1Content">
+                              <div class="tab-pane fade active show" id="cash" role="tabpanel" aria-labelledby="cash-tab">
+                                  <form class="" @submit.prevent="postCash()" method="post">
+                                      <div class="form-group">
+                                          <label for="">Kode Booking</label>
+                                          <input type="text" name="kode_booking" v-model="cash.kode_booking" :class="{'is-invalid' : cash.errors.has('kode_booking')}" class="form-control text-uppercase" readonly value="">
+                                          <has-error :form="cash" field="kode_booking"></has-error>
+                                      </div>
+                                      <div class="form-group">
+                                          <label for="">Total Tagihan</label>
+                                          <money v-model="cash.total_tagihan" v-bind="money" type="text" name="total_tagihan" readonly class="form-control" :class="{ 'is-invalid': cash.errors.has('total_tagihan') }" id="total"></money>
+                                          <has-error :form="cash" field="total_tagihan"></has-error>
+                                      </div>
+                                      <div class="form-group">
+                                          <label for="">Jumlah Pembayaran</label>
+                                          <money v-model="cash.jml_bayar" v-bind="money" type="text" name="jml_bayar" class="form-control" :class="{ 'is-invalid': cash.errors.has('jml_bayar') }" id="total"></money>
+                                          <has-error :form="cash" field="jml_bayar"></has-error>
+                                      </div>
+                                      <div class="form-group text-right">
+                                          <button type="submit" class="btn btn-success btn-sm" name="button">Simpan</button>
+                                      </div>
+                                  </form>
+                              </div>
+                              <div class="tab-pane fade" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
+                                <form class="" @submit.prevent="postTransfer()" method="post">
+                                    <div class="form-group">
+                                        <label for="">Kode Booking</label>
+                                        <input type="text" name="kode_booking" v-model="transfer.kode_booking" :class="{'is-invalid' : transfer.errors.has('transfer.kode_booking')}" class="form-control text-uppercase" readonly value="">
+                                        <has-error :form="transfer" field="kode_booking"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Total Tagihan</label>
+                                        <money v-model="transfer.total_tagihan" v-bind="money" type="text" name="total_tagihan" readonly class="form-control" :class="{ 'is-invalid': transfer.errors.has('total_tagihan') }" id="total"></money>
+                                        <has-error :form="transfer" field="total_tagihan"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Transfer Ke</label>
+                                        <select class="form-control" name="id_metode" v-model="transfer.id_metode">
+                                          <option v-for="mtd in metode" :key="mtd.id" :value="mtd.id">{{mtd.bank}} - {{mtd.no_rekening}} AN {{mtd.atas_nama}}</option>
+                                        </select>
+                                        <has-error :form="transfer" field="jml_bayar"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Nama Pemilik Rekening</label>
+                                        <input type="text" name="nama_pemilik_rekening" v-model="transfer.nama_pemilik_rekening" :class="{'is-invalid' : transfer.errors.has('transfer.nama_pemilik_rekening')}" class="form-control" value="">
+                                        <has-error :form="transfer" field="nama_pemilik_rekening"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Nomor Rekening</label>
+                                        <input type="text" name="no_rekening" v-model="transfer.no_rekening" :class="{'is-invalid' : transfer.errors.has('transfer.no_rekening')}" class="form-control" value="">
+                                        <has-error :form="transfer" field="no_rekening"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Tanggal Transfer</label>
+                                        <date-picker name="tgl_transfer" v-model="transfer.tgl_transfer" :lang="lang" value-type="format" :class="{ 'is-invalid': transfer.errors.has('tgl_transfer') }"></date-picker>
+                                        <has-error :form="transfer" field="tgl_transfer"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Jumlah Pembayaran</label>
+                                        <money v-model="transfer.jml_bayar" v-bind="money" type="text" name="jml_bayar" class="form-control" :class="{ 'is-invalid': transfer.errors.has('jml_bayar') }" id="total"></money>
+                                        <has-error :form="transfer" field="jml_bayar"></has-error>
+                                    </div>
+
+                                    <div class="form-group text-right">
+                                        <button type="submit" class="btn btn-success btn-sm" name="button">Simpan</button>
+                                    </div>
+                                </form>
+                              </div>
+                              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                  Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard
+                                  locavore carles etsy salvia banksy
+                                  hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you
+                                  probably haven't heard
+                                  of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+                              </div>
+                          </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" name="button" @click="tutupModal()">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="modal fade bd-example-modal-lg" id="modalCancel" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
@@ -246,10 +364,13 @@
 </template>
 
 <script>
+
+import DatePicker from 'vue2-datepicker'
 import Editor from '@tinymce/tinymce-vue';
 export default {
     components: {
-        'editor': Editor
+        'editor': Editor,
+        DatePicker,
     },
     data() {
         return {
@@ -257,6 +378,25 @@ export default {
             columns: [
                 'aksi', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status',
             ],
+            lang: {
+                days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
+                months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
+                placeholder: {
+                    date: 'Pilih Tanggal',
+                }
+            },
+            optionsDate: {
+                format: 'YYYY-mm-dd'
+            },
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'Rp ',
+                suffix: '',
+                precision: 0,
+                masked: false
+            },
             options: {
                 texts: {
                     filterPlaceholder: "Cari data",
@@ -297,9 +437,106 @@ export default {
                 rsv_today: '',
                 all_rsv: '',
             }),
+            cash: new Form({
+                kode_booking: '',
+                total_tagihan: '',
+                jml_bayar: '',
+            }),
+            transfer: new Form({
+              kode_booking: '',
+              total_tagihan: '',
+              jml_bayar: '',
+              id_metode: '',
+              nama_pemilik_rekening: '',
+              no_rekening: '',
+              tgl_transfer: '',
+            }),
+            metode: [],
         }
     },
     methods: {
+        postTransfer(){
+          swal({
+              title: 'Anda yakin?',
+              text: "Operasi ini tidak dapat dibatalkan!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ya, proses pembayaran!',
+              cancelButtonText: 'Batal'
+          }).then((result) => {
+              if (result.value) {
+                  this.$Progress.start();
+                  this.transfer.post('/api/admin/payment/transfer').then(() => {
+                      swal(
+                          'Berhasil!',
+                          'Pembayaran Transfer Berhasil.',
+                          'success'
+                      )
+                      this.tutupModal();
+                      this.transfer.reset();
+                      Fire.$emit('AfterCreate')
+                      this.$Progress.finish();
+                  }).catch(() => {
+                      swal("Gagal!", "Terjadi kesalahan.",
+                          "warning");
+                  });
+              }
+
+          })
+        },
+        tutupModal(){
+          $('#modalPayment').modal('hide');
+          $('#modalDetil').modal('hide');
+        },
+        postCash(){
+          swal({
+              title: 'Anda yakin?',
+              text: "Operasi ini tidak dapat dibatalkan!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ya, proses pembayaran!',
+              cancelButtonText: 'Batal'
+          }).then((result) => {
+              if (result.value) {
+                  this.$Progress.start();
+                  this.cash.post('/api/admin/payment/cash').then(() => {
+                      swal(
+                          'Berhasil!',
+                          'Pembayaran Cash Berhasil.',
+                          'success'
+                      )
+                      $('modalPayment').modal('hide');
+                      this.cash.reset();
+                      Fire.$emit('AfterCreate')
+                      this.$Progress.finish();
+                  }).catch(() => {
+                      swal("Gagal!", "Terjadi kesalahan.",
+                          "warning");
+                  });
+              }
+
+          })
+        },
+        metodePembayaran(){
+          axios.get('/api/admin/payment/metode').then(({
+              data
+          }) => (this.metode = data));
+        },
+        pembayaranModal(kode_booking) {
+            $('#modalPayment').modal('show');
+            // $('#modalDetil').modal('hide');
+            axios.get('/api/admin/booking/detil/' + kode_booking).then(({
+                data
+            }) => (this.cash.fill(data)));
+            axios.get('/api/admin/booking/detil/' + kode_booking).then(({
+                data
+            }) => (this.transfer.fill(data)));
+            this.metodePembayaran();
+        },
         detilTagihan(kode_booking) {
             $('#modalDetil').modal('hide');
             this.$router.push({

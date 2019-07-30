@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMetodePembayaransTable extends Migration
+class CreateCashPaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateMetodePembayaransTable extends Migration
      */
     public function up()
     {
-        Schema::create('metode_pembayaran', function (Blueprint $table) {
+        Schema::create('cash_payments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('bank')->nullable();
-            $table->string('no_rekening')->unique()->nullable();
-            $table->string('atas_nama')->nullable();
+            $table->string('kode_booking');
+            $table->decimal('jml_bayar');
+            $table->integer('id_users');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateMetodePembayaransTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('metode_pembayarans');
+        Schema::dropIfExists('cash_payments');
     }
 }

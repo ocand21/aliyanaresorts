@@ -12,8 +12,131 @@ use App\Pembayaran;
 use App\Tagihan;
 use App\Booking;
 use App\Pelanggan;
+use App\MetodePembayaran;
+
+use App\Model\Payment\CashPayment;
+use App\Model\Payment\TransferPayment;
+
 class PembayaranController extends Controller
 {
+
+  public function transferPayment(Request $request){
+    $user = auth('api')->user();
+    // dd($user);
+
+    $this->validate($request,[
+      'kode_booking' => 'required',
+      'jml_bayar' => 'required',
+      'id_metode' => 'required',
+      'nama_pemilik_rekening' => 'required',
+      'no_rekening' => 'required',
+      'tgl_transfer' => 'required',
+      'jml_bayar' => 'required',
+    ]);
+
+    // dd($request->jml_bayar);
+
+    DB::beginTransaction();
+    try {
+      $transfer = TransferPayment::create([
+        'kode_booking' => $request->kode_booking,
+        'nama_pemilik_rekening' => $request->nama_pemilik_rekening,
+        'id_metode' => $request->id_metode,
+        'no_rekening' => $request->no_rekening,
+        'tgl_transfer' => $request->tgl_transfer,
+        'jml_bayar' => $request->jml_bayar,
+        'id_users' => $user->id,
+      ]);
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    try {
+      $tagihan = Tagihan::where('kode_booking', $request->kode_booking)->first();
+      $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+      $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+      $tagihan->id_metode = $request->id_metode;
+      $tagihan->status = '3';
+      $tagihan->save();
+
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    try {
+      $booking = Booking::where('kode_booking', $request->kode_booking)->first();
+      $booking->update([
+        'status' => '1',
+      ]);
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    DB::commit();
+
+    return response()->json([
+      'msg' => 'Pembayaran berhasil!'
+    ]);
+  }
+
+  public function cashPayment(Request $request){
+    $user = auth('api')->user();
+    // dd($user);
+
+    $this->validate($request,[
+      'kode_booking' => 'required',
+      'jml_bayar' => 'required',
+    ]);
+
+    // dd($request->jml_bayar);
+
+    DB::beginTransaction();
+    try {
+      $cash = CashPayment::create([
+        'kode_booking' => $request->kode_booking,
+        'jml_bayar' => $request->jml_bayar,
+        'id_users' => $user->id,
+      ]);
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    try {
+      $metode = MetodePembayaran::where('bank', 'CASH')->first();
+      $tagihan = Tagihan::where('kode_booking', $request->kode_booking)->first();
+      $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+      $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+      $tagihan->id_metode = $metode->id;
+      $tagihan->status = '3';
+      $tagihan->save();
+
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    try {
+      $booking = Booking::where('kode_booking', $request->kode_booking)->first();
+      $booking->update([
+        'status' => '1',
+      ]);
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    DB::commit();
+
+    return response()->json([
+      'msg' => 'Pembayaran berhasil!'
+    ]);
+
+  }
+
   public function detilPembayaran($kode_booking){
     $pembayaran = DB::table('pembayaran')
                       ->join('users', 'users.id', 'pembayaran.id_user')

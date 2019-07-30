@@ -91,12 +91,17 @@
                                   <div class="row">
                                     <div class="col-md-12">
                                       <p>Riwayat Pembayaran</p>
-
-                                      <v-client-table :data="dataPembayaran" :columns="columns" :options="options">
-
-                                          <p slot="jumlah" slot-scope="{row}" class="float-right red">Rp. {{row.jumlah | currency}}</p>
-
+                                      <h5>Cash</h5>
+                                      <v-client-table :data="dataCash" :columns="columns" :options="options">
+                                          <p slot="jml_bayar" slot-scope="{row}" class="float-right red">Rp. {{row.jml_bayar | currency}}</p>
                                       </v-client-table>
+
+                                      <hr>
+                                      <h5>Transfer</h5>
+                                      <v-client-table :data="dataTransfer" :columns="columnTransfers" :options="optionTransfers">
+                                          <p slot="jml_bayar" slot-scope="{row}" class="float-right red">Rp. {{row.jml_bayar | currency}}</p>
+                                      </v-client-table>
+
                                     </div>
 
                                   </div>
@@ -126,8 +131,32 @@ export default {
     data() {
         return {
             editMode: false,
+            columnTransfers: [
+                'bank', 'nama_pemilik_rekening', 'no_rekening', 'tgl_transfer', 'jml_bayar', 'name',
+            ],
+            optionTransfers: {
+                texts: {
+                    filterPlaceholder: "Cari data",
+                    filter: "Pencarian : ",
+                    filterBy: "Cari {column}",
+                    count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data",
+                },
+                headings: {
+                    bank: 'Metode Pembayaran',
+                    tgl_transfer: 'Tanggal Transfer',
+                    jml_bayar: 'Jumlah Bayar',
+                    name: 'Dikonfirmasi oleh',
+                },
+                columnsDisplay: {},
+                filterByColumn: true,
+                pagination: {
+                    dropdown: false
+                },
+                columnsClasses: {
+                },
+            },
             columns: [
-                'tgl_transfer', 'bank', 'atas_nama', 'jumlah', 'dikonfirmasi',
+                'created_at', 'jml_bayar', 'name',
             ],
             options: {
                 texts: {
@@ -137,11 +166,9 @@ export default {
                     count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data",
                 },
                 headings: {
-                    tgl_transfer: 'Tanggal Pembayaran',
-                    bank: 'Metode Bayar',
-                    atas_nama: 'Atas Nama',
-                    jumlah: 'Jumlah',
-                    dikonfirmasi: 'Diterima oleh',
+                    created_at: 'Tanggal Pembayaran',
+                    jml_bayar: 'Jumlah Bayar',
+                    name: 'Diterima oleh',
                 },
                 columnsDisplay: {},
                 filterByColumn: true,
@@ -154,17 +181,24 @@ export default {
             booking: [],
             dataKamar: [],
             dataTagihan: [],
-            dataPembayaran: [],
+            dataCash: [],
+            dataTransfer: [],
         }
     },
     methods: {
+
+      riwayatTransfer(){
+        axios.get('/api/admin/payment/tagihan/transfer/' + this.$route.params.kode_booking).then(({
+            data
+        }) => (this.dataTransfer = data));
+      },
       detilBooking(){
         this.$router.push({name: 'detil-booking', params:{kode_booking:this.$route.params.kode_booking}})
       },
-      riwayatPembayaran(){
-        axios.get('/api/admin/payment/pembayaran/riwayat/' + this.$route.params.kode_booking).then(({
+      riwayatCash(){
+        axios.get('/api/admin/payment/tagihan/cash/' + this.$route.params.kode_booking).then(({
             data
-        }) => (this.dataPembayaran = data));
+        }) => (this.dataCash = data));
       },
       detilTagihan(){
         axios.get('/api/admin/payment/tagihan/' + this.$route.params.kode_booking).then(({
@@ -178,7 +212,8 @@ export default {
     created() {
         this.$Progress.start();
         this.detilTagihan();
-        this.riwayatPembayaran();
+        this.riwayatCash();
+        this.riwayatTransfer();
         this.$Progress.finish();
     }
 }

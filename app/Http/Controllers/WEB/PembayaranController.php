@@ -21,13 +21,18 @@ class PembayaranController extends Controller
 
     public function getForm($kode_booking){
       $booking = DB::table('bookings')
-                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
-                      bookings.tgl_checkin, bookings.tgl_checkout, bookings.created_at, bookings.total, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                      ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                      ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                      ->join('users', 'bookings.id_users', 'users.id')
+                      ->leftJoin('metode_pembayaran', 'metode_pembayaran.id', 'tagihan.id_metode')
+                      ->select(DB::raw("bookings.kode_booking, pelanggan_wig.no_identitas, pelanggan_wig.tipe_identitas, pelanggan_wig.nama, pelanggan_wig.email, pelanggan_wig.no_telepon, pelanggan_wig.alamat,
+                      bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, tagihan.total_tagihan, tagihan.terbayarkan, tagihan.hutang,
+                      users.name as created_by, bookings.id_pelanggan, bookings.created_at, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status,
+                      metode_pembayaran.bank"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
 
-      $pelanggan = DB::table('pelanggan')
+      $pelanggan = DB::table('pelanggan_wig')
                        ->select(DB::raw("id, nama, email"))
                        ->where('id', $booking->id_pelanggan)
                        ->first();

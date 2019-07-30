@@ -15,6 +15,13 @@ class MetodePembayaranController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function loadMetode(){
+      $metode = MetodePembayaran::whereNotIn('bank', ['CASH', 'CREDIT CARD'])->get();
+
+      return response()->json($metode);
+    }
+
     public function index()
     {
       $metode = MetodePembayaran::orderBy('id', 'asc')->get();
@@ -32,8 +39,8 @@ class MetodePembayaranController extends Controller
     {
         $this->validate($request, [
           'bank' => 'required|',
-          'no_rekening' => 'required',
-          'atas_nama' => 'required',
+          'no_rekening' => 'sometimes',
+          'atas_nama' => 'sometimes',
         ]);
 
         MetodePembayaran::create([

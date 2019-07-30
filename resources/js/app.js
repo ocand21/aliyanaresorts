@@ -8,6 +8,11 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import Vue from 'vue'
+import money from 'v-money'
+Vue.use(money, {precision:4})
+
+
 import { Form, HasError, AlertError} from 'vform';
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 Vue.use(ServerTable, {}, false, 'bootstrap3');

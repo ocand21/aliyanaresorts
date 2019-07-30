@@ -10,8 +10,33 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Tagihan;
 
+
+use App\Model\Payment\CashPayment;
+use App\Model\Payment\TransferPayment;
+
 class TagihanController extends Controller
 {
+
+    public function paymentTransfer($kode_booking){
+      $transfer = DB::table('transfer_payments')
+                      ->join('users', 'users.id', 'transfer_payments.id_users')
+                      ->join('metode_pembayaran', 'metode_pembayaran.id', 'transfer_payments.id_metode')
+                      ->select(DB::raw("metode_pembayaran.bank, transfer_payments.nama_pemilik_rekening, transfer_payments.no_rekening, transfer_payments.jml_bayar, transfer_payments.tgl_transfer, users.name"))
+                      ->where('transfer_payments.kode_booking', $kode_booking)
+                      ->get();
+
+      return response()->json($transfer);
+    }
+
+    public function paymentCash($kode_booking){
+      $cash = DB::table('cash_payments')
+                  ->join('users', 'users.id', 'cash_payments.id_users')
+                  ->select(DB::raw("cash_payments.created_at, cash_payments.jml_bayar, users.name"))
+                  ->where('cash_payments.kode_booking', $kode_booking)
+                  ->get();
+
+      return response()->json($cash);
+    }
 
     public function detilTagihan($kode_booking){
       $tagihan = DB::table('tagihan')

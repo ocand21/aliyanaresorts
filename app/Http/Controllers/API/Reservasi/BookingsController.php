@@ -178,9 +178,11 @@ class BookingsController extends Controller
                       ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
                       ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
                       ->join('users', 'bookings.id_users', 'users.id')
+                      ->leftJoin('metode_pembayaran', 'metode_pembayaran.id', 'tagihan.id_metode')
                       ->select(DB::raw("bookings.kode_booking, pelanggan_wig.no_identitas, pelanggan_wig.tipe_identitas, pelanggan_wig.nama, pelanggan_wig.email, pelanggan_wig.no_telepon, pelanggan_wig.alamat,
                       bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, tagihan.total_tagihan, tagihan.terbayarkan, tagihan.hutang,
-                      users.name as created_by, bookings.created_at, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                      users.name as created_by, bookings.created_at, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status,
+                      metode_pembayaran.bank"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
 
@@ -337,6 +339,7 @@ class BookingsController extends Controller
           'total_tagihan' => $request->total,
           'terbayarkan' => '0',
           'hutang' => $request->total,
+          'status' => '0',
         ]);
 
       } catch (\Exception $e) {
