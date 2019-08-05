@@ -509,7 +509,7 @@ export default {
                           'Pembayaran Cash Berhasil.',
                           'success'
                       )
-                      $('modalPayment').modal('hide');
+                      this.tutupModal();
                       this.cash.reset();
                       Fire.$emit('AfterCreate')
                       this.$Progress.finish();

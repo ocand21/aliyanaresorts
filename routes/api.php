@@ -25,6 +25,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     'admin/metode-pembayaran' => 'API\MasterData\MetodePembayaranController',
   ]);
 
+    Route::get('/admin/checkin/room/{kode_booking}', 'API\Reservasi\CheckinController@checkinRoom');
+
   Route::post('/admin/tipe-kamar/edit/{id}', 'API\TipeKamarController@update');
   Route::get('/admin/tipe-kamar/foto/{id_tipe}', 'API\TipeKamarController@loadFoto');
   Route::delete('/admin/tipe-kamar/foto/hapus/{id}', 'API\TipeKamarController@hapusFoto');
@@ -55,6 +57,9 @@ Route::group(['middleware' => 'auth:api'], function(){
   Route::get('/admin/checkin/detil/{kode_booking}', 'API\Reservasi\CheckinController@detilCheckin');
   Route::post('/admin/checkin/proses/{kode_booking}', 'API\Reservasi\CheckinController@prosesCheckin');
   Route::get('/admin/checkin/{tgl_awal}/{tgl_akhir}', 'API\Reservasi\CheckinController@filterTgl');
+  Route::post('/admin/checkin/cek-kamar/{id_tipe}', 'API\Reservasi\CheckinController@cekKamar');
+  Route::post('/admin/checkin/pilih-kamar/{no_room}', 'API\Reservasi\CheckinController@pilihKamar');
+
 
 
 

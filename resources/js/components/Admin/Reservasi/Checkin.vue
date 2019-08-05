@@ -49,7 +49,13 @@
                                                 <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
                                             </div>
                                         </div>
+
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
+                                        <p slot="tgl_checkin" slot-scope="{row}">{{row.tgl_checkin | myDate}}</p>
+                                        <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p>
+                                        <p slot="total_tagihan" class="red" slot-scope="{row}">Rp. {{row.total_tagihan | currency}}</p>
+                                        <p slot="terbayarkan" class="red" slot-scope="{row}">Rp. {{row.terbayarkan | currency}}</p>
+                                        <p slot="jml_kamar" class="text-right" slot-scope="{row}">{{row.jml_kamar}} Kamar</p>
                                     </v-client-table>
                                 </div>
                             </div>
@@ -82,9 +88,6 @@ export default {
                 tgl_awal: '',
                 tgl_akhir: '',
             }),
-            columns: [
-                'aksi', 'kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status',
-            ],
             lang: {
                 days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
                 months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -96,6 +99,9 @@ export default {
             optionsDate: {
                 format: 'YYYY-mm-dd'
             },
+            columns: [
+                'aksi', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status',
+            ],
             options: {
                 texts: {
                     filterPlaceholder: "Cari data",
@@ -111,8 +117,8 @@ export default {
                     tgl_checkout: 'Tgl Checkout',
                     status: 'Status',
                 },
-                sortable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status', ],
-                filterable: ['kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status', ],
+                sortable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', ],
+                filterable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', ],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {

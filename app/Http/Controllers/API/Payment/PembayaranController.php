@@ -17,6 +17,8 @@ use App\MetodePembayaran;
 use App\Model\Payment\CashPayment;
 use App\Model\Payment\TransferPayment;
 
+use Carbon\Carbon;
+
 class PembayaranController extends Controller
 {
 
@@ -66,10 +68,24 @@ class PembayaranController extends Controller
     }
 
     try {
+      $date = Carbon::now()->format('Y-m-d');
       $booking = Booking::where('kode_booking', $request->kode_booking)->first();
-      $booking->update([
-        'status' => '1',
-      ]);
+
+      if ($booking->tgl_checkin == $date) {
+        $booking->update([
+          'status' => '2',
+        ]);
+      } else {
+        $booking->update([
+          'status' => '1',
+        ]);
+      }
+
+      // else {
+      //   $booking->update([
+      //     'status' => '1',
+      //   ]);
+      // }
     } catch (\Exception $e) {
       DB::rollback();
       throw $e;
@@ -120,10 +136,20 @@ class PembayaranController extends Controller
     }
 
     try {
-      $booking = Booking::where('kode_booking', $request->kode_booking)->first();
-      $booking->update([
-        'status' => '1',
-      ]);
+
+        $date = Carbon::now()->format('Y-m-d');
+        $booking = Booking::where('kode_booking', $request->kode_booking)->first();
+
+        if ($booking->tgl_checkin == $date) {
+          $booking->update([
+            'status' => '2',
+          ]);
+        } else {
+          $booking->update([
+            'status' => '1',
+          ]);
+        }
+
     } catch (\Exception $e) {
       DB::rollback();
       throw $e;

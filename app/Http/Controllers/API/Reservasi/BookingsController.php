@@ -21,6 +21,8 @@ use App\BookingType;
 use App\Charge;
 use App\PelangganWIG;
 use Mail;
+
+use Date;
 class BookingsController extends Controller
 {
 
@@ -166,7 +168,7 @@ class BookingsController extends Controller
     public function detilKamar($kode_booking){
       $rooms = DB::table('booking_types')
                   ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
-                  ->select(DB::raw("tipe_kamar.tipe, tipe_kamar.kapasitas, booking_types.jml_kamar, tipe_kamar.harga"))
+                  ->select(DB::raw("tipe_kamar.id as id_tipe, tipe_kamar.tipe, tipe_kamar.kapasitas, booking_types.jml_kamar, tipe_kamar.harga"))
                   ->where('booking_types.kode_booking', $kode_booking)
                   ->get();
 
@@ -203,6 +205,7 @@ class BookingsController extends Controller
                       WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
                       ->orderBy('bookings.id', 'asc')
                       ->get();
+
 
       return response()->json($bookings);
 

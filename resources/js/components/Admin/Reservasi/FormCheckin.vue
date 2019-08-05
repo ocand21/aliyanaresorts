@@ -22,6 +22,16 @@
             <div class="animated fadeIn">
                 <div class="row">
 
+                    <div class="col-md-12" style="margin-top: 10px">
+                        <div class="alert alert-warning" role="alert">
+                            <h4 class="alert-heading">Attention!</h4>
+                            <p>All rooms are non smoking. If smooking occurs during your stay, Rp. 500.000 cleaning fee will be charged to your account</p>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
@@ -34,13 +44,6 @@
                                         <button type="button" @click="modalCharges()" name="button" class="btn btn-sm btn-warning"> <span class="fa fa-plus"></span> Charges </button>
                                     </div>
 
-                                    <div class="col-md-12" style="margin-top: 10px">
-                                        <div class="alert alert-warning" role="alert">
-                                            <h4 class="alert-heading">Attention!</h4>
-                                            <p>All rooms are non smoking. If smooking occurs during your stay, Rp. 500.000 cleaning fee will be charged to your account</p>
-
-                                        </div>
-                                    </div>
                                     <hr>
                                     <div class="col-md-12">
 
@@ -51,21 +54,21 @@
                                             <has-error :form="form" field="no_room"></has-error>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <label for="">Tipe Identitas</label>
                                                 <input type="text" readonly class="form-control" name="tipe_identitas" v-model="form.tipe_identitas" :class="{'is-invalid' : form.errors.has('form.tipe_identitas')}">
                                             </div>
-                                            <div class="col-md-9">
+                                            <div class="col-md-6">
                                                 <label for="">No Identitas</label>
                                                 <input type="text" readonly class="form-control" name="no_identitas" v-model="form.no_identitas" :class="{'is-invalid' : form.errors.has('form.no_identitas')}">
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <label for="">No Telepon</label>
                                                 <input type="text" readonly class="form-control" name="no_telepon" v-model="form.no_telepon" :class="{'is-invalid' : form.errors.has('form.no_telepon')}">
                                             </div>
-                                            <div class="col-md-9">
+                                            <div class="col-md-6">
                                                 <label for="">Email</label>
                                                 <input type="email" readonly class="form-control" name="email" v-model="form.email" :class="{'is-invalid' : form.errors.has('form.email')}">
                                             </div>
@@ -78,19 +81,12 @@
                                     </div>
 
                                     <hr>
-
                                     <div class="col-md-12">
                                         <h3>Detil Booking</h3>
                                         <div class="form-group">
                                             <label for="">Kode Booking</label>
-                                            <input type="text" readonly name="kode_booking" class="form-control" v-model="form.kode_booking" :class="{'is-invalid' : form.errors.has('form.kode_booking')}">
+                                            <input type="text" readonly name="kode_booking" class="form-control text-uppercase" v-model="form.kode_booking" :class="{'is-invalid' : form.errors.has('form.kode_booking')}">
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="">Jumlah Kamar</label>
-                                            <input type="text" readonly name="jmlKamar" class="form-control" v-model="form.jmlKamar" :class="{'is-invalid' : form.errors.has('form.jmlKamar')}">
-                                        </div>
-
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label for="">Tanggal Checkin</label>
@@ -104,30 +100,60 @@
 
                                     </div>
                                     <hr>
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th>No Kamar</th>
                                                     <th>Tipe Kamar</th>
                                                     <th>Kapasitas</th>
-                                                    <th>Jumlah Tamu</th>
+                                                    <th>Jumlah Kamar</th>
                                                     <!-- <th>Deskripsi</th> -->
                                                     <th>Harga</th>
+                                                    <th>Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="kamar in dataKamar" :key="kamar.no_room">
-                                                    <td>{{kamar.no_room}}</td>
                                                     <td>{{kamar.tipe}}</td>
                                                     <td>{{kamar.kapasitas}}</td>
-                                                    <td>{{kamar.jml_tamu}}</td>
+                                                    <td>{{kamar.jml_kamar}}</td>
                                                     <td>
                                                         <p>Rp. {{kamar.harga | currency}}</p>
                                                     </td>
+                                                    <th class="text-center">
+                                                        <form class="" @submit.prevent="roomModal(kamar.id_tipe)" method="post">
+                                                          <input type="hidden" name="id_tipe" :value="kamar.id_tipe">
+                                                          <input type="hidden" name="jml_kamar" :value="kamar.jml_kamar">
+                                                          <button type="submit" class="btn btn-sm btn-success"><span class="fa fa-plus"></span> Pilih Kamar</button>
+                                                        </form>
+                                                    </th>
                                                 </tr>
                                             </tbody>
                                             <thead>
+                                                <tr class="table-primary">
+                                                    <th>No Kamar</th>
+                                                    <th>Tipe</th>
+                                                    <th>Nama Penghuni</th>
+                                                    <th>Jumlah Penghuni</th>
+                                                    <th class="text-center">
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="chRoom in checkinRoom" :key="chRoom.no_room">
+                                                    <td>{{chRoom.no_room}}</td>
+                                                    <td>{{chRoom.tipe}}</td>
+                                                    <td>
+                                                      <a href="#" v-if="chRoom.nama_penghuni == null" class="btn btn-sm btn-success">Input Nama Penghuni</a>
+                                                      {{chRoom.nama_penghuni}}
+                                                    </td>
+                                                    <td>
+                                                      <a href="#" @click="opsionalModal(chRoom.no_room)" v-if="chRoom.jml_penghuni == null" class="btn btn-sm btn-success">Input Jumlah Penghuni</a>
+                                                      {{chRoom.jml_penghuni}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody>
                                                 <tr>
                                                     <th colspan="4">
                                                         <p class="text-right">Durasi Menginap</p>
@@ -154,32 +180,34 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                  <th colspan="4">
-                                                    <p class="text-right">Total</p>
-                                                  </th>
-                                                  <td>
-                                                    <p>Rp. {{dataTagihan.total_tagihan | currency}}</p>
-                                                  </td>
+                                                    <th colspan="4">
+                                                        <p class="text-right">Total</p>
+                                                    </th>
+                                                    <td>
+                                                        <p>Rp. {{dataTagihan.total_tagihan | currency}}</p>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                  <th colspan="4">
-                                                    <p class="text-right">Terbayarkan</p>
-                                                  </th>
-                                                  <td>
-                                                    <p>Rp. {{dataTagihan.terbayarkan | currency}}</p>
-                                                  </td>
+                                                    <th colspan="4">
+                                                        <p class="text-right">Terbayarkan</p>
+                                                    </th>
+                                                    <td>
+                                                        <p>Rp. {{dataTagihan.terbayarkan | currency}}</p>
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                  <th colspan="4">
-                                                    <p class="text-right">Kekurangan</p>
-                                                  </th>
-                                                  <td>
-                                                    <p>Rp. {{dataTagihan.hutang | currency}}</p>
-                                                  </td>
+                                                    <th colspan="4">
+                                                        <p class="text-right">Kekurangan</p>
+                                                    </th>
+                                                    <td>
+                                                        <p>Rp. {{dataTagihan.hutang | currency}}</p>
+                                                    </td>
                                                 </tr>
-                                            </thead>
+                                            </tbody>
                                         </table>
                                     </div>
+
+
 
                                 </form>
                             </div>
@@ -192,6 +220,38 @@
                         </div>
                     </div>
 
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modalOpsional" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Data Opsional</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="" method="post" id="formCharges">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Nama Penghuni</label>
+                            <input type="text" class="form-control" v-model="formOpsional.nama_penghuni" :class="{'is-invalid' : formOpsional.errors.has('formOpsional.nama_penghuni')}" name="nama_penghuni">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Jumlah Penghuni</label>
+                            <input type="text" class="form-control" v-model="formOpsional.jml_penghuni" :class="{'is-invalid' : formOpsional.errors.has('formOpsional.jml_penghuni')}" name="jml_penghuni"></input>
+                        </div>
+                    </div>
+
+                </form>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" @click="applyCharges()">Apply</button>
+                    <button type="button" name="button" data-dismiss="modal" class="btn btn-warning">Tutup</button>
                 </div>
             </div>
         </div>
@@ -235,6 +295,50 @@
         </div>
     </div>
 
+    <div class="modal fade bd-example-modal-lg" id="modalRoom" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Kamar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="" method="post" id="formCharges">
+                    <div class="modal-body">
+                      <div class="alert alert-success" role="alert">
+                          {{avKamar.msg}}
+                      </div>
+                      <table class="table table-bordered">
+                          <thead>
+                              <tr>
+                                  <th>No Kamar</th>
+                                  <th>Tipe Kamar</th>
+                                  <th>Kapasitas</th>
+                                  <th>Aksi</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr v-for="kamar in avKamar.avKamar" :key="kamar.id">
+                                  <td>{{kamar.no_room}}</td>
+                                  <td>{{kamar.tipe}}</td>
+                                  <td>
+                                    {{kamar.kapasitas}}
+                                  </td>
+                                  <td class="text-center"><a href="#" @click="pilihKamar(kamar.no_room)" class="btn btn-warning btn-sm"> <span class="fa fa-check"></span>Pilih</a> </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" @click="applyCharges()">Apply</button>
+                    <button type="button" name="button" data-dismiss="modal" class="btn btn-warning">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 </template>
@@ -247,6 +351,11 @@ export default {
     },
     data() {
         return {
+            formOpsional: new Form({
+                no_room: '',
+                nama_penghuni: '',
+                jml_penghuni: '',
+            }),
             formCharge: new Form({
                 nama_charge: '',
                 jumlah_persen: '',
@@ -254,6 +363,7 @@ export default {
                 keterangan: '',
             }),
             form: new Form({
+                id_tipe: '',
                 nama: '',
                 tipe_identitas: '',
                 no_identitas: '',
@@ -271,10 +381,48 @@ export default {
             charges: [],
             dataCharges: [],
             dataTagihan: [],
+            avKamar: [],
+            checkinRoom: [],
         }
     },
     methods: {
-        loadTagihan(){
+        opsionalModal(checkinRoom){
+          $('#modalOpsional').modal('show');
+          this.formOpsional.fill(checkinRoom);
+        },
+        pilihKamar(no_room){
+          this.$Progress.start();
+          this.form.post('/api/admin/checkin/pilih-kamar/'+no_room)
+              .then(() => {
+                  Fire.$emit('AfterCreate');
+                  swal(
+                      'Sukses!',
+                      'Kamar berhasil ditambah.',
+                      'success'
+                  )
+                  $('#modalRoom').modal('hide');
+                  this.$Progress.finish();
+              })
+              .catch(() => {
+                  swal(
+                      'Gagal!',
+                      'Terjadi kesalahan',
+                      'warning'
+                  )
+              })
+        },
+        dataCheckinRoom(){
+          axios.get('/api/admin/checkin/room/' + this.$route.params.kode_booking).then(({
+              data
+          }) => (this.checkinRoom = data));
+        },
+        roomModal(id_tipe){
+          $('#modalRoom').modal('show');
+          this.form.post('/api/admin/checkin/cek-kamar/'+id_tipe).then(({
+            data
+          }) => (this.avKamar = data))
+        },
+        loadTagihan() {
             axios.get('/api/admin/checkin/tagihan/' + this.$route.params.kode_booking).then(({
                 data
             }) => (this.dataTagihan = data));
@@ -376,17 +524,20 @@ export default {
     },
     created() {
         Fire.$on('AfterCreate', () => {
-          this.loadCharges();
-          this.loadTagihan();
-          this.loadData();
-          this.detilKamar();
-          this.detilCheckin();
+            this.loadCharges();
+            this.loadTagihan();
+            this.loadData();
+            this.detilKamar();
+            this.detilCheckin();
+            this.dataCheckinRoom();
         });
         this.loadCharges();
         this.loadTagihan();
         this.loadData();
         this.detilKamar();
         this.detilCheckin();
+        this.dataCheckinRoom();
+
     }
 }
 </script>

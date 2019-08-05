@@ -11,8 +11,72 @@ use Carbon\Carbon;
 use App\BookingCharges;
 use App\Charge;
 use App\Tagihan;
+use App\BookingRoom;
 class CheckinController extends Controller
 {
+
+    public function checkinRoom($kode_booking){
+      $room = DB::table('booking_rooms')
+                  ->join('kamar', 'kamar.no_room', 'booking_rooms.no_room')
+                  ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
+                  ->select(DB::raw("kamar.no_room, tipe_kamar.tipe, booking_rooms.nama_penghuni, booking_rooms.jml_penghuni"))
+                  ->where('booking_rooms.kode_booking', $kode_booking)
+                  ->get();
+
+      return response()->json($room);
+    }
+
+    public function pilihKamar(Request $request, $no_room){
+
+      DB::beginTransaction();
+      try {
+        $room = BookingRoom::create([
+          'kode_booking' => $request->kode_booking,
+          'no_room' => $no_room,
+          'tgl_checkin' => $request->tgl_checkin,
+          'tgl_checkout' => $request->tgl_checkout,
+        ]);
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      DB::commit();
+
+      return response()->json([
+        'msg' => 'Kamar berhasil dipilih',
+      ]);
+
+    }
+
+    public function cekKamar(Request $request, $id_tipe){
+      $tgl_checkin = $request->tgl_checkin;
+      $tgl_checkout = $request->tgl_checkout;
+
+      $tgl1 = Carbon::parse($tgl_checkin)->format("d M Y");
+      $tgl2 = Carbon::parse($tgl_checkout)->format("d M Y");
+
+      $kamar = DB::table('kamar')
+                  ->join('tipe_kamar', 'tipe_kamar.id', 'kamar.id_tipe')
+                  ->select(DB::raw("kamar.id, kamar.no_room, kamar.id_tipe, tipe_kamar.tipe, tipe_kamar.kapasitas"))
+                  ->whereNotIn('kamar.no_room', function($q) use ($tgl_checkin, $tgl_checkout){
+                    $q->select('no_room')->from('booking_rooms')
+                      ->join('bookings', 'bookings.kode_booking', 'booking_rooms.kode_booking')
+                      // ->whereBetween('bookings.tgl_checkin', [$tgl_checkin, $tgl_checkout])
+                      // ->whereBetween('bookings.tgl_checkin', [$tgl_checkout, $tgl_checkin]);
+                      ->where([['bookings.tgl_checkin', '<=', $tgl_checkout],['bookings.tgl_checkout', '>=', $tgl_checkin]]);
+                  })
+                  ->where([['id_tipe', $id_tipe],['status_temp', '0']])
+                  ->get();
+
+      $count = $kamar->count();
+
+      return response()->json([
+          'avKamar' => $kamar,
+          'msg' => $count . ' Kamar tersedia pada ' . $tgl1 . ' sd ' . $tgl2 . ' ',
+      ]);
+
+    }
 
     public function loadTagihan($kode_booking){
       $tagihan = Tagihan::where('kode_booking', $kode_booking)->first();
@@ -122,9 +186,15 @@ class CheckinController extends Controller
 
     public function filterTgl($tgl_awal, $tgl_akhir){
       $bookings = DB::table('bookings')
-                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin, bookings.tgl_checkout,
-                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status"))
+                      ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                      ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                      ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                      ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
+                      bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
+                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
+                      WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
+                      ->whereIn('bookings.status', ['2'])
                       ->whereBetween('bookings.tgl_checkin', [$tgl_awal, $tgl_akhir])
                       ->orderBy('bookings.tgl_checkin', 'desc')
                       ->get();
@@ -134,15 +204,30 @@ class CheckinController extends Controller
 
     public function loadData(){
       $tgl = Carbon::now();
+      // $bookings = DB::table('bookings')
+      //                 ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+      //                 ->select(DB::raw("bookings.kode_booking, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin, bookings.tgl_checkout,
+      //                 (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted'
+      //                 WHEN (bookings.status = 2) THEN 'Checkin' END) as status"))
+      //                 // ->whereDate('bookings.tgl_checkin', '=', $tgl)
+      //                 ->whereIn('bookings.status', ['1', '2'])
+      //                 ->orderBy('bookings.tgl_checkin', 'desc')
+      //                 ->get();
+
+
       $bookings = DB::table('bookings')
-                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
-                      ->select(DB::raw("bookings.kode_booking, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin, bookings.tgl_checkout,
-                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted'
-                      WHEN (bookings.status = 2) THEN 'Checkin' END) as status"))
-                      // ->whereDate('bookings.tgl_checkin', '=', $tgl)
-                      ->whereIn('bookings.status', ['1', '2'])
-                      ->orderBy('bookings.tgl_checkin', 'desc')
-                      ->get();
+                    ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                    ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                    ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                    ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                    ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
+                    bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
+                    (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
+                    WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
+                    ->whereIn('bookings.status', ['2'])
+                    ->orderBy('bookings.tgl_checkin', 'desc')
+                    ->get();
+
 
       return response()->json($bookings);
     }
