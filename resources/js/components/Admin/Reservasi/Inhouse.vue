@@ -30,13 +30,14 @@
                             <div class="card-body">
                                 <div class="col-md-12">
                                     <v-client-table :data="bookings" :columns="columns" :options="options">
-                                        <div slot="aksi" slot-scope="{row}" class="btn-group show">
+                                      <div slot="aksi" slot-scope="{row}" class="btn-group show">
                                             <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
                                                 <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
                                             </div>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
+                                        <p slot="jml_penghuni" slot-scope="{row}" class="text-right">{{row.jml_penghuni}} Orang</p>
                                         <p slot="tgl_checkin" slot-scope="{row}">{{row.tgl_checkin | myDate}}</p>
                                         <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p>
                                     </v-client-table>
@@ -106,7 +107,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'status',
+                'aksi', 'kode_booking', 'no_room', 'tipe', 'nama_penghuni', 'jml_penghuni', 'tgl_checkin', 'tgl_checkout', 'status',
             ],
             options: {
                 texts: {
@@ -116,9 +117,9 @@ export default {
                     count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data",
                 },
                 headings: {
-                    nama: 'Nama Lengkap',
+                    nama_penghuni: 'Nama Tamu',
                     kode_booking: 'Kode Booking',
-                    no_telepon: 'No Telepon',
+                    jml_penghuni: 'Jumlah Tamu',
                     tgl_checkin: 'Tgl Checkin',
                     tgl_checkout: 'Tgl Checkout',
                     status: 'Status',

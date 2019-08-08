@@ -14,13 +14,12 @@ use App\MetodePembayaran;
 use Image;
 use Carbon\Carbon;
 use Session;
+
 class PembayaranController extends Controller
 {
-
-
-
-    public function getForm($kode_booking){
-      $booking = DB::table('bookings')
+    public function getForm($kode_booking)
+    {
+        $booking = DB::table('bookings')
                       ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
                       ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
                       ->join('users', 'bookings.id_users', 'users.id')
@@ -32,18 +31,19 @@ class PembayaranController extends Controller
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
 
-      $pelanggan = DB::table('pelanggan_wig')
+        $pelanggan = DB::table('pelanggan_wig')
                        ->select(DB::raw("id, nama, email"))
                        ->where('id', $booking->id_pelanggan)
                        ->first();
 
-      $metode = MetodePembayaran::get();
+        $metode = MetodePembayaran::get();
 
-      return view('payment.form', compact('booking', 'pelanggan', 'metode'));
+        return view('payment.form', compact('booking', 'pelanggan', 'metode'));
     }
 
-    public function store(Request $request){
-      $request->validate([
+    public function store(Request $request)
+    {
+        $request->validate([
         'kode_booking' => 'required',
         'tgl_transfer' => 'required',
         'nama_pemiliki_rekening' => 'required',
@@ -52,30 +52,29 @@ class PembayaranController extends Controller
         'jumlah' => 'required',
       ]);
 
-      DB::beginTransaction();
-      try {
-        $pembayaran = new Pembayaran();
+        DB::beginTransaction();
+        try {
+            $pembayaran = new Pembayaran();
 
-        $pembayaran->kode_booking = $request->kode_booking;
-        $pembayaran->id_pelanggan = $request->id_pelanggan;
-        $pembayaran->tgl_transfer = $request->tgl_transfer;
-        $pembayaran->nama_pemilik_rekening =$request->nama_pemiliki_rekening;
-        $pembayaran->no_rekening = $request->no_rekening;
-        $pembayaran->id_metode = $request->id_metode;
-        $pembayaran->jumlah = $request->jumlah;
-        $pembayaran->status = '0';
+            $pembayaran->kode_booking = $request->kode_booking;
+            $pembayaran->id_pelanggan = $request->id_pelanggan;
+            $pembayaran->tgl_transfer = $request->tgl_transfer;
+            $pembayaran->nama_pemilik_rekening =$request->nama_pemiliki_rekening;
+            $pembayaran->no_rekening = $request->no_rekening;
+            $pembayaran->id_metode = $request->id_metode;
+            $pembayaran->jumlah = $request->jumlah;
+            $pembayaran->status = '0';
 
-        $pembayaran->save();
-      } catch (\Exception $e) {
-        DB::rollback();
-        throw $e;
-      }
+            $pembayaran->save();
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
 
-      DB::commit();
+        DB::commit();
 
-      Session::flash('flash_message', 'Berhasil! Silakan tunggu email pemberitahuan apabila pembayaran telah kami terima');
+        Session::flash('flash_message', 'Berhasil! Silakan tunggu email pemberitahuan apabila pembayaran telah kami terima');
 
-      return redirect()->back();
-
+        return redirect()->back();
     }
 }

@@ -463,16 +463,6 @@ class BookingsController extends Controller
       $tipe = TipeKamar::findOrFail($id_tipe);
       DB::beginTransaction();
       try {
-        //
-        // $id_tipe = $request->id_tipe;
-        // $jml_kamar = $request->jml_kamar;
-        // if (count($id_tipe) > count($jml_kamar)) {
-        //   $count = count($jml_kamar);
-        // } else {
-        //   $count = count($id_tipe);
-        // }
-        // for ($i=0; $i < $count ; $i++) {
-        // dd($request->jml_kamar);
           BookingTemp::create([
             'id_tipe' => $id_tipe,
             'jml_kamar' => $request->jml_kamar,
@@ -481,21 +471,12 @@ class BookingsController extends Controller
             'tgl_checkin' => $request->tgl_checkin,
             'tgl_checkout' => $request->tgl_checkout,
           ]);
-        // }
+
 
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
       }
-      // try {
-      //   $kamar = Kamar::where('no_room', $request->no_room)->first();
-      //   $kamar->status_temp = '1';
-      //   $kamar->save();
-      //
-      // } catch (\Exception $e) {
-      //   DB::rollback();
-      //   throw $e;
-      // }
 
 
       DB::commit();

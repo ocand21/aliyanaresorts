@@ -36,7 +36,8 @@
                                             <div class="tooltip-header-item">June</div>
                                         </div>
                                         <div class="tooltip-body">
-                                            <div class="tooltip-body-item"><span class="tooltip-body-item-color" style="background-color: rgb(0, 165, 224);"></span><span class="tooltip-body-item-label">My First dataset</span><span class="tooltip-body-item-value">55</span></div>
+                                            <div class="tooltip-body-item"><span class="tooltip-body-item-color" style="background-color: rgb(0, 165, 224);"></span><span class="tooltip-body-item-label">My First dataset</span><span
+                                                  class="tooltip-body-item-value">55</span></div>
                                         </div>
                                     </div>
                                 </div>

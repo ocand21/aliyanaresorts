@@ -144,12 +144,16 @@
                                                     <td>{{chRoom.no_room}}</td>
                                                     <td>{{chRoom.tipe}}</td>
                                                     <td>
-                                                      <a href="#" v-if="chRoom.nama_penghuni == null" class="btn btn-sm btn-success">Input Nama Penghuni</a>
+                                                      <a href="#" @click="opsionalModal(chRoom.id)" v-if="chRoom.nama_penghuni == null" class="btn btn-sm btn-success">Input Nama Penghuni</a>
                                                       {{chRoom.nama_penghuni}}
                                                     </td>
                                                     <td>
-                                                      <a href="#" @click="opsionalModal(chRoom.no_room)" v-if="chRoom.jml_penghuni == null" class="btn btn-sm btn-success">Input Jumlah Penghuni</a>
-                                                      {{chRoom.jml_penghuni}}
+                                                      <a href="#" @click="opsionalModal(chRoom.id)" v-if="chRoom.jml_penghuni == null" class="btn btn-sm btn-success">Input Jumlah Penghuni</a>
+                                                      <p v-if="chRoom.jml_penghuni != null">{{chRoom.jml_penghuni}} Orang</p>
+                                                    </td>
+                                                    <td>
+                                                      <a href="#" @click="opsionalModal(chRoom.id)" class="btn btn-sm"><span class="fa fa-edit blue"></span> </a>
+                                                      <a href="#" @click="deleteRoom(chRoom.id)" class="btn btn-sm"><span class="fa fa-trash red"></span> </a>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -163,7 +167,6 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-
                                                     <th colspan="4">
                                                         <p class="text-right">Subtotal</p>
                                                     </th>
@@ -240,6 +243,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="">Nama Penghuni</label>
+                            <input type="hidden" name="id" v-model="formOpsional.id" value="">
                             <input type="text" class="form-control" v-model="formOpsional.nama_penghuni" :class="{'is-invalid' : formOpsional.errors.has('formOpsional.nama_penghuni')}" name="nama_penghuni">
                         </div>
                         <div class="form-group">
@@ -250,7 +254,7 @@
 
                 </form>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" @click="applyCharges()">Apply</button>
+                    <button type="submit" class="btn btn-primary" @click="updateOpsional()">Update</button>
                     <button type="button" name="button" data-dismiss="modal" class="btn btn-warning">Tutup</button>
                 </div>
             </div>
@@ -332,7 +336,6 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" @click="applyCharges()">Apply</button>
                     <button type="button" name="button" data-dismiss="modal" class="btn btn-warning">Tutup</button>
                 </div>
             </div>
@@ -352,6 +355,7 @@ export default {
     data() {
         return {
             formOpsional: new Form({
+                id: '',
                 no_room: '',
                 nama_penghuni: '',
                 jml_penghuni: '',
@@ -386,9 +390,62 @@ export default {
         }
     },
     methods: {
-        opsionalModal(checkinRoom){
+        deleteRoom(id_room){
+          swal({
+              title: 'Anda yakin?',
+              text: "Operasi ini tidak dapat dibatalkan!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ya, hapus kamar!',
+              cancelButtonText: 'Batal'
+          }).then((result) => {
+              if (result.value) {
+                  this.$Progress.start();
+                  axios.delete('/api/admin/checkin/kamar/' + id_room ).then(() => {
+                      swal(
+                          'Berhasil!',
+                          'Kamar berhasil dihapus.',
+                          'success'
+                      )
+                      Fire.$emit('AfterCreate')
+                      this.$Progress.finish();
+                      $('#modalCh').modal('hide');
+                      this.formCharge.reset();
+                  }).catch(() => {
+                      swal("Gagal!", "Terjadi kesalahan.",
+                          "warning");
+                  });
+              }
+
+          })
+        },
+        updateOpsional(){
+          this.formOpsional.post('/api/admin/checkin/opsional/')
+              .then(() => {
+                  Fire.$emit('AfterCreate');
+                  swal(
+                      'Sukses!',
+                      'Data opsional berhasil ditambah.',
+                      'success'
+                  )
+                  $('#modalOpsional').modal('hide');
+                  this.$Progress.finish();
+              })
+              .catch(() => {
+                  swal(
+                      'Gagal!',
+                      'Terjadi kesalahan',
+                      'warning'
+                  )
+              })
+        },
+        opsionalModal(id_room){
           $('#modalOpsional').modal('show');
-          this.formOpsional.fill(checkinRoom);
+          axios.get('/api/admin/checkin/opsional/'+id_room).then(({
+            data
+          }) => (this.formOpsional.fill(data)))
         },
         pilihKamar(no_room){
           this.$Progress.start();
@@ -465,14 +522,8 @@ export default {
 
             })
         },
-        dataCharges() {
-            axios.get('/api/admin/charges').then(({
-                data
-            }) => (this.charges = data));
-        },
         modalCharges() {
             $('#modalCh').modal('show');
-            this.dataCharges();
         },
         detilCheckin() {
             axios.get('/api/admin/checkin/detil/' + this.$route.params.kode_booking).then(({
