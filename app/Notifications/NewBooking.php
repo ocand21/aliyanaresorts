@@ -6,25 +6,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Booking;
-use App\User;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class NewBooking extends Notification
 {
     use Queueable;
+
+    public $booking;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-
-    protected $booking, $user;
-
-    public function __construct(Booking $booking, User $user)
+    public function __construct($booking)
     {
         $this->booking = $booking;
-        $this->user = $user;
     }
 
     /**
@@ -35,7 +32,7 @@ class NewBooking extends Notification
      */
     public function via($notifiable)
     {
-        return ['database','broadcast'];
+        return ['database'];
     }
 
     /**
@@ -44,13 +41,21 @@ class NewBooking extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toDatabase($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        return[
+          'booking' => $this->booking,
+          'user' => auth()->user(),
+        ];
     }
+
+    // public function toBroadcast($notifiable)
+    // {
+    //     return new BroadcastMessage([
+    //       'booking' => $this->booking,
+    //       'user' => auth()->user(),
+    //     ]);
+    // }
 
     /**
      * Get the array representation of the notification.

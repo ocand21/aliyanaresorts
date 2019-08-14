@@ -13,6 +13,7 @@
 
 Route::get('/', 'WEB\FrontController@index')->name('index');
 
+Route::get('/notif-dibaca', 'HomeController@markAsRead');
 
 Route::group(['prefix' => 'admin'], function (){
   Auth::routes();

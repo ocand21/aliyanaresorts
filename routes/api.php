@@ -25,8 +25,10 @@ Route::group(['middleware' => 'auth:api'], function(){
     'admin/metode-pembayaran' => 'API\MasterData\MetodePembayaranController',
   ]);
 
+  Route::get('/admin/booking/apps', 'API\Reservasi\BookingsController@reservasiApps');
+
   Route::delete('/admin/checkin/kamar/{id_room}', 'API\Reservasi\CheckinController@hapusRoom');
-  Route::post('/admin/checkin/opsional', 'API\Reservasi\CheckinController@updateOpsional');
+  Route::post('/admin/checkin/update/opsional', 'API\Reservasi\CheckinController@updateOpsional');
   Route::get('/admin/checkin/opsional/{id_room}', 'API\Reservasi\CheckinController@opsionalKamar');
   Route::get('/admin/checkin/room/{kode_booking}', 'API\Reservasi\CheckinController@checkinRoom');
 

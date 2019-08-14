@@ -422,7 +422,7 @@ export default {
           })
         },
         updateOpsional(){
-          this.formOpsional.post('/api/admin/checkin/opsional/')
+          this.formOpsional.post('/api/admin/checkin/update/opsional')
               .then(() => {
                   Fire.$emit('AfterCreate');
                   swal(

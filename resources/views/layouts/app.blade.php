@@ -28,23 +28,23 @@
             <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <ul class="nav navbar-nav d-md-down-none">
-                <li class="nav-item px-3">
-                    <a class="nav-link" href="#">Dashboard</a>
-                </li>
-                <li class="nav-item px-3">
-                    <a class="nav-link" href="#">Users</a>
-                </li>
-                <li class="nav-item px-3">
-                    <a class="nav-link" href="#">Settings</a>
-                </li>
-            </ul>
             <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item d-md-down-none">
-                    <a class="nav-link" href="#">
+                <li class="nav-item dropdown d-md-down-none">
+                    <a class="nav-link" data-toggle="dropdown"  id="markasread" @click="markasread()" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-bell"></i>
-                        <span class="badge badge-pill badge-danger">5</span>
+                        <span class="badge badge-pill badge-danger">{{count($user->unreadNotifications)}}</span>
                     </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
+                        <div class="dropdown-header text-center">
+                            <strong>{{count($user->unreadNotifications)}} Notifikasi Baru</strong>
+                        </div>
+                        @foreach ($user->unreadNotifications as $notification)
+                          <a class="dropdown-item" href="#">
+                              <i class="fa fa-briefcase text-success"></i>Reservasi Baru AN {{$notification->data['pelanggan']['nama']}}</a>
+                        @endforeach
+
+
+                    </div>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -84,31 +84,31 @@
                             <a class="nav-link nav-dropdown-toggle" href="#">
                                 <i class="nav-icon fa fa-hotel"></i> Reservasi</a>
                             <ul class="nav-dropdown-items" style="margin-left: 10px">
-                              <li class="nav-item">
-                                  <router-link to="/admin/bookings" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-briefcase"></i> Booking
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/check-in" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-key"></i> Check-in
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/inhouse" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-bed"></i> Inhouse
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/check-out" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-suitcase-rolling"></i> Check-out
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/canceled" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-window-close"></i> Cancel
-                                  </router-link>
-                              </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/bookings" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-briefcase"></i> Booking
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/check-in" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-key"></i> Check-in
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/inhouse" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-bed"></i> Inhouse
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/check-out" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-suitcase-rolling"></i> Check-out
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/canceled" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-window-close"></i> Cancel
+                                    </router-link>
+                                </li>
                             </ul>
                         </li>
 
@@ -116,57 +116,57 @@
                             <a class="nav-link nav-dropdown-toggle" href="#">
                                 <i class="nav-icon fa fa-wallet"></i> Payment</a>
                             <ul class="nav-dropdown-items" style="margin-left: 10px">
-                              <li class="nav-item">
-                                  <router-link to="/admin/payment/tagihan" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-money-bill"></i> Tagihan
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/payment/pembayaran" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-credit-card"></i> Pembayaran
-                                  </router-link>
-                              </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/payment/tagihan" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-money-bill"></i> Tagihan
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/payment/pembayaran" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-credit-card"></i> Pembayaran
+                                    </router-link>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#">
                                 <i class="nav-icon fa fa-briefcase"></i> Master Data</a>
                             <ul class="nav-dropdown-items" style="margin-left: 10px">
-                              <li class="nav-item">
-                                  <router-link to="/admin/kamar" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-bed"></i> Kamar
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/fasilitas" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-glass-cheers"></i> Fasilitas
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/departemen" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-users"></i> Departemen
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/master-data/slideshow" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-images"></i> Slideshow
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/master-data/menu-resto" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-utensils"></i> Menu Resto
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/master-data/metode-pembayaran" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-id-card"></i> Pembayaran
-                                  </router-link>
-                              </li>
-                              <li class="nav-item">
-                                  <router-link to="/admin/master-data/charge" class="nav-link" href="colors.html">
-                                      <i class="nav-icon fa fa-file-invoice-dollar"></i> Charge
-                                  </router-link>
-                              </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/kamar" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-bed"></i> Kamar
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/fasilitas" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-glass-cheers"></i> Fasilitas
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/departemen" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-users"></i> Departemen
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/master-data/slideshow" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-images"></i> Slideshow
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/master-data/menu-resto" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-utensils"></i> Menu Resto
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/master-data/metode-pembayaran" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-id-card"></i> Pembayaran
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/admin/master-data/charge" class="nav-link" href="colors.html">
+                                        <i class="nav-icon fa fa-file-invoice-dollar"></i> Charge
+                                    </router-link>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -206,7 +206,9 @@
             <a href="https://coreui.io/pro/">CoreUI Pro</a>
         </div>
     </footer>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
+    {{-- <script type="text/javascript" src="/js/main.js"></script> --}}
 </body>
 
 </html>

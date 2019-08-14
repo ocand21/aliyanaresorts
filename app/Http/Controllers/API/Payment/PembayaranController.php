@@ -48,6 +48,7 @@ class PembayaranController extends Controller
         'tgl_transfer' => $request->tgl_transfer,
         'jml_bayar' => $request->jml_bayar,
         'id_users' => $user->id,
+        'status' => '1',
       ]);
     } catch (\Exception $e) {
       DB::rollback();
@@ -179,9 +180,9 @@ class PembayaranController extends Controller
 
       DB::beginTransaction();
       try {
-        $pembayaran = Pembayaran::findOrFail($id);
+        $pembayaran = TransferPayment::findOrFail($id);
         $pembayaran->status = '1';
-        $pembayaran->id_user = $user->id;
+        $pembayaran->id_users = $user->id;
         $pembayaran->save();
       } catch (\Exception $e) {
         DB::rollback();
@@ -190,28 +191,36 @@ class PembayaranController extends Controller
 
       try {
         $tagihan = Tagihan::where('kode_booking', $pembayaran->kode_booking)->first();
-        $tagihan->terbayarkan = $tagihan->terbayarkan + $pembayaran->jumlah;
-        $tagihan->hutang = $tagihan->terbayarkan - $tagihan->total_tagihan;
-        if ($pembayaran->jumlah == $tagihan->total_tagihan) {
-          $tagihan->status = '1';
-        } elseif ($pembayaran->jumlah < $tagihan->total_tagihan ) {
-          $tagihan->status = '2';
-        }
-
+        $tagihan->terbayarkan = $tagihan->terbayarkan + $pembayaran->jml_bayar;
+        $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+        $tagihan->id_metode = $pembayaran->id_metode;
+        $tagihan->status = '1';
         $tagihan->save();
+
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
       }
 
       try {
+        $date = Carbon::now()->format('Y-m-d');
         $booking = Booking::where('kode_booking', $pembayaran->kode_booking)->first();
-        $booking->status = '1';
-        $booking->save();
+
+        if ($booking->tgl_checkin == $date) {
+          $booking->update([
+            'status' => '2',
+          ]);
+        } else {
+          $booking->update([
+            'status' => '1',
+          ]);
+        }
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
       }
+
+
 
       try {
         $pelanggan = Pelanggan::where('id', $booking->id_pelanggan)->first();
@@ -230,13 +239,13 @@ class PembayaranController extends Controller
     }
 
     public function index(){
-      $pembayaran = DB::table('pembayaran')
-                        ->join('metode_pembayaran', 'metode_pembayaran.id', 'pembayaran.id_metode')
-                        ->select(DB::raw("pembayaran.id, pembayaran.kode_booking, pembayaran.nama_pemilik_rekening as nama, pembayaran.no_rekening,
+      $pembayaran = DB::table('transfer_payments')
+                        ->join('metode_pembayaran', 'metode_pembayaran.id', 'transfer_payments.id_metode')
+                        ->select(DB::raw("transfer_payments.id, transfer_payments.kode_booking, transfer_payments.nama_pemilik_rekening as nama, transfer_payments.no_rekening,
                         metode_pembayaran.bank, metode_pembayaran.atas_nama, metode_pembayaran.no_rekening as no_rekening_tujuan,
-                        pembayaran.jumlah, pembayaran.tgl_transfer, (CASE WHEN (pembayaran.status = 0) THEN 'Menunggu Konfirmasi' ELSE 'Dikonfirmasi' END) as status"))
-                        ->where('pembayaran.status', '0')
-                        ->orderBy('pembayaran.id', 'desc')
+                        transfer_payments.jml_bayar, transfer_payments.tgl_transfer, (CASE WHEN (transfer_payments.status = 0) THEN 'Menunggu Konfirmasi' ELSE 'Dikonfirmasi' END) as status"))
+                        ->where('transfer_payments.status', '0')
+                        ->orderBy('transfer_payments.id', 'desc')
                         ->get();
 
       return response()->json($pembayaran);

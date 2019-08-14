@@ -18,11 +18,11 @@ class PDFController extends Controller
       $konfig = KonfigWeb::first();
       // return $pdf->stream('invoice.pdf');
       $booking = DB::table('bookings')
-                      ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                       ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
-                      ->join('users', 'bookings.id_users', 'users.id')
+                      ->leftJoin('users', 'bookings.id_users', 'users.id')
                       ->leftJoin('metode_pembayaran', 'metode_pembayaran.id', 'tagihan.id_metode')
-                      ->select(DB::raw("bookings.kode_booking, pelanggan_wig.no_identitas, pelanggan_wig.tipe_identitas, pelanggan_wig.nama, pelanggan_wig.email, pelanggan_wig.no_telepon, pelanggan_wig.alamat,
+                      ->select(DB::raw("bookings.kode_booking, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
                       bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, tagihan.total_tagihan, tagihan.terbayarkan, tagihan.hutang,
                       users.name as created_by, bookings.created_at, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status,
                       metode_pembayaran.bank"))

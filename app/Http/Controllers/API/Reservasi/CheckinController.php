@@ -236,11 +236,11 @@ class CheckinController extends Controller
     public function filterTgl($tgl_awal, $tgl_akhir)
     {
         $bookings = DB::table('bookings')
-                      ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                       ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
                       ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
                       ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
-                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
+                      ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
                       bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
                       (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
                       WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
@@ -267,16 +267,16 @@ class CheckinController extends Controller
 
 
         $bookings = DB::table('bookings')
-                    ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                    ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                     ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
                     ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
                     ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
-                    ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan_wig.nama, pelanggan_wig.no_telepon, bookings.tgl_checkin,
+                    ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
                     bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
                     (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
                     WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
                     ->whereIn('bookings.status', ['2'])
-                    ->orderBy('bookings.tgl_checkin', 'desc')
+                    ->orderBy('bookings.tgl_checkin', 'asc')
                     ->get();
 
 

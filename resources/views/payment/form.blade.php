@@ -153,7 +153,7 @@
                                         <div class="form-group">
                                             <input type="hidden" name="id_pelanggan" value="{{$pelanggan->id}}">
                                             <label for="">Nama Pemilik Rekening</label>
-                                            <input type="text" name="nama_pemiliki_rekening" value="" class="form-control" required>
+                                            <input type="text" name="nama_pemilik_rekening" value="" class="form-control" required>
                                         </div>
 
                                         <div class="form-group">

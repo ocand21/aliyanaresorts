@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Admin;
 class HomeController extends Controller
 {
     /**
@@ -21,8 +22,22 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
+    public function markAsRead(){
+      $user = auth()->user();
+
+      foreach ($user->unreadNotifications as $notification) {
+        dd($notification);
+        $notification->markAsRead();
+      }
+
+
+    }
+
     public function index()
     {
-        return view('home');
+        $user = Admin::find(1);
+        // dd($user);
+        return view('home', compact('user'));
     }
 }

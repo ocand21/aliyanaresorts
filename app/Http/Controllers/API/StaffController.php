@@ -38,7 +38,7 @@ class StaffController extends Controller
           'name' => 'required|min:3',
           'email' => 'required|email|string|unique:users',
           'kode_departemen' => 'required',
-          'address' => 'required|min:3',
+          // 'address' => 'required|min:3',
           'password' => 'required|string|min:6|confirmed'
         ]);
 
@@ -47,8 +47,8 @@ class StaffController extends Controller
           $staff = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'kode_departemen' => $request->kode_departemen,
-            'address' => $request->address,
+            'jabatan' => $request->kode_departemen,
+            // 'address' => $request->address,
             'password' => bcrypt($request->password),
             'photo' => public_path('/img/staff/user.png'),
           ]);

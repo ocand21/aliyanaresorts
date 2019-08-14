@@ -139,6 +139,9 @@ const router = new VueRouter({
      methods:{
        printme() {
          window.print();
+       },
+       markasread(){
+         $.get('/notif-dibaca')
        }
      }
  });

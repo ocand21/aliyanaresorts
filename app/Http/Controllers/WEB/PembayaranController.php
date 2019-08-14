@@ -10,6 +10,8 @@ use Veritrans_Notification;
 use Illuminate\Support\Facades\DB;
 use App\Pembayaran;
 use App\MetodePembayaran;
+use App\Model\Payment\TransferPayment;
+
 
 use Image;
 use Carbon\Carbon;
@@ -20,18 +22,18 @@ class PembayaranController extends Controller
     public function getForm($kode_booking)
     {
         $booking = DB::table('bookings')
-                      ->join('pelanggan_wig', 'pelanggan_wig.id', 'bookings.id_pelanggan')
+                      ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                       ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
-                      ->join('users', 'bookings.id_users', 'users.id')
+                      ->leftJoin('users', 'bookings.id_users', 'users.id')
                       ->leftJoin('metode_pembayaran', 'metode_pembayaran.id', 'tagihan.id_metode')
-                      ->select(DB::raw("bookings.kode_booking, pelanggan_wig.no_identitas, pelanggan_wig.tipe_identitas, pelanggan_wig.nama, pelanggan_wig.email, pelanggan_wig.no_telepon, pelanggan_wig.alamat,
+                      ->select(DB::raw("bookings.kode_booking, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
                       bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, tagihan.total_tagihan, tagihan.terbayarkan, tagihan.hutang,
                       users.name as created_by, bookings.id_pelanggan, bookings.created_at, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status,
                       metode_pembayaran.bank"))
                       ->where('bookings.kode_booking', $kode_booking)
                       ->first();
 
-        $pelanggan = DB::table('pelanggan_wig')
+        $pelanggan = DB::table('pelanggan')
                        ->select(DB::raw("id, nama, email"))
                        ->where('id', $booking->id_pelanggan)
                        ->first();
@@ -46,32 +48,34 @@ class PembayaranController extends Controller
         $request->validate([
         'kode_booking' => 'required',
         'tgl_transfer' => 'required',
-        'nama_pemiliki_rekening' => 'required',
+        'nama_pemilik_rekening' => 'required',
         'no_rekening' => 'required',
         'id_metode' => 'required',
         'jumlah' => 'required',
       ]);
 
-        DB::beginTransaction();
-        try {
-            $pembayaran = new Pembayaran();
 
-            $pembayaran->kode_booking = $request->kode_booking;
-            $pembayaran->id_pelanggan = $request->id_pelanggan;
-            $pembayaran->tgl_transfer = $request->tgl_transfer;
-            $pembayaran->nama_pemilik_rekening =$request->nama_pemiliki_rekening;
-            $pembayaran->no_rekening = $request->no_rekening;
-            $pembayaran->id_metode = $request->id_metode;
-            $pembayaran->jumlah = $request->jumlah;
-            $pembayaran->status = '0';
+      DB::beginTransaction();
+      try {
+        $transfer = TransferPayment::create([
+          'kode_booking' => $request->kode_booking,
+          'nama_pemilik_rekening' => $request->nama_pemilik_rekening,
+          'id_metode' => $request->id_metode,
+          'no_rekening' => $request->no_rekening,
+          'tgl_transfer' => $request->tgl_transfer,
+          'jml_bayar' => $request->jumlah,
+          'status' => '0',
+          // 'id_users' => $user->id,
+        ]);
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
 
-            $pembayaran->save();
-        } catch (\Exception $e) {
-            DB::rollback();
-            throw $e;
-        }
 
-        DB::commit();
+
+      DB::commit();
+
 
         Session::flash('flash_message', 'Berhasil! Silakan tunggu email pemberitahuan apabila pembayaran telah kami terima');
 

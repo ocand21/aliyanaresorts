@@ -376,7 +376,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status',
+                'aksi', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', 'tipe_booking'
             ],
             lang: {
                 days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
@@ -411,9 +411,10 @@ export default {
                     tgl_checkin: 'Tgl Checkin',
                     tgl_checkout: 'Tgl Checkout',
                     status: 'Status',
+                    tipe_booking: 'Tipe Booking'
                 },
-                sortable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', ],
-                filterable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', ],
+                sortable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', 'tipe_booking'],
+                filterable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', 'tipe_booking'],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {
