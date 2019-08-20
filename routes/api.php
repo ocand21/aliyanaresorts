@@ -25,6 +25,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     'admin/metode-pembayaran' => 'API\MasterData\MetodePembayaranController',
   ]);
 
+  Route::get('/admin/booking/calendar', 'API\Reservasi\BookingsController@bookingCalendar');
+  
   Route::get('/admin/booking/apps', 'API\Reservasi\BookingsController@reservasiApps');
 
   Route::delete('/admin/checkin/kamar/{id_room}', 'API\Reservasi\CheckinController@hapusRoom');

@@ -12,6 +12,10 @@ import Vue from 'vue'
 import money from 'v-money'
 Vue.use(money, {precision:4})
 
+import 'fullcalendar/dist/fullcalendar.css';
+import FullCalendar from 'vue-full-calendar'; //Import Full-calendar
+Vue.use(FullCalendar);
+
 
 import { Form, HasError, AlertError} from 'vform';
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';

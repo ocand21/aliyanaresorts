@@ -4,9 +4,9 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
-    <meta name="author" content="Łukasz Holeczek">
-    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <meta name="description" content="Aliyana - Hotel and Resorts At Temanggung City">
+    <meta name="author" content="Aliyana Hotel & Resorts">
+    <meta name="keyword" content="Hotel,Aliyana,Reservation,Resorts,Checkin,Checkout,Inhouse,Travel,Holiday">
     <meta charset="utf-8" name="csrf-token" content="{{ csrf_token() }}">
     <title>Aliyana Hotel & Resorts - Admin</title>
 
@@ -198,8 +198,8 @@
     </div>
     <footer class="app-footer">
         <div>
-            <a href="https://coreui.io/pro/">CoreUI Pro</a>
-            <span>© 2018 creativeLabs.</span>
+            <a href="https://coreui.io/pro/">Aliyana Hotel & Resorts</a>
+            <span>© 2019</span>
         </div>
         <div class="ml-auto">
             <span>Powered by</span>

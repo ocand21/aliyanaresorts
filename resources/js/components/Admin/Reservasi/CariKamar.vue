@@ -96,6 +96,7 @@
                                     <div class="alert alert-success" role="alert">
                                         {{dataKamar.msg}}
                                     </div>
+
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -109,6 +110,13 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <form class="" method="post" id="formBooking" enctype="multipart/form-data">
+                                                <!-- <input type="text" class="form-control" name="jml_kamar[]"> -->
+                                                <input type="hidden" name="jml_kamar" class="form-control" :value="form.jml_kamar">
+                                                <input type="hidden" name="tgl_checkin" class="form-control" :value="form.tgl_checkin">
+                                                <input type="hidden" name="tgl_checkout" class="form-control" :value="form.tgl_checkout">
+
+                                            </form>
                                             <tr v-for="kamar in dataKamar.kamar" :key="kamar.id">
                                                 <td>{{kamar.jml_kamar}}</td>
                                                 <td>{{kamar.tipe}}</td>
@@ -117,13 +125,10 @@
 
                                                 <td>Start @ Rp. {{kamar.harga | currency}}/Night</td>
                                                 <td>
-                                                    <form class="" method="post" id="formBooking">
-                                                        <input type="hidden" name="id_tipe" class="form-control" :value="kamar.id_tipe">
-                                                        <input type="hidden" name="harga" class="form-control" :value="kamar.harga">
-                                                        <input type="text" class="form-control" name="jml_kamar">
-                                                        <input type="hidden" name="tgl_checkin" class="form-control" :value="form.tgl_checkin">
-                                                        <input type="hidden" name="tgl_checkout" class="form-control" :value="form.tgl_checkout">
-                                                    </form>
+                                                    <select v-model="form.jml_kamar" class="form-control">
+                                                        <option value=""> -- </option>
+                                                        <option v-for="jml in kamar.jml_kamar">{{jml}}</option>
+                                                    </select>
                                                 </td>
                                                 <td class="text-center"><a href="#" @click="roomTemp(kamar.id_tipe)" class="btn btn-warning btn-sm"> <span class="fa fa-check"></span>Book</a> </td>
                                             </tr>
@@ -254,11 +259,11 @@
                             <input type="email" class="form-control" name="email">
                         </div>
                         <div class="form-group">
-                          <label for=""> <strong>Tipe*</strong> </label>
-                          <select class="form-control" name="tipe">
-                            <option value="WIG">Walk In Guest</option>
-                            <option value="PHONE">By Phone</option>
-                          </select>
+                            <label for=""> <strong>Tipe*</strong> </label>
+                            <select class="form-control" name="tipe">
+                                <option value="WIG">Walk In Guest</option>
+                                <option value="PHONE">By Phone</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for=""> <strong>Keterangan</strong> </label>
@@ -285,6 +290,7 @@ export default {
     },
     data() {
         return {
+            jml_kamar: [],
             editMode: false,
             formBook: new Form({
                 no_room: '',
@@ -295,6 +301,7 @@ export default {
                 tgl_checkout: '',
                 jml_tamu: '',
                 id_tipe: '',
+                jml_kamar: '',
             }),
             lang: {
                 days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
@@ -385,7 +392,7 @@ export default {
                 if (result.value) {
                     this.$Progress.start();
                     axios.delete('/api/admin/booking/room/temp/hapus/' + id).then(() => {
-                      Fire.$emit('AfterCreate');
+                        Fire.$emit('AfterCreate');
                         swal(
                             'Dihapus!',
                             'Data berhasil dihapus.',
@@ -420,7 +427,7 @@ export default {
             var formData = new FormData(document.getElementById("formBooking"));
             let instance = this;
             this.$Progress.start();
-            axios.post('/api/admin/booking/room/add/'+id_tipe, formData)
+            axios.post('/api/admin/booking/room/add/' + id_tipe, formData)
                 .then(() => {
                     Fire.$emit('AfterCreate');
                     swal(

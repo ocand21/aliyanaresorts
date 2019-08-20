@@ -11,6 +11,7 @@
     },
     "devDependencies": {
         "axios": "^0.18.1",
+        "babel-preset-stage-2": "^6.24.1",
         "bootstrap": "^4.1.0",
         "cross-env": "^5.1",
         "jquery": "^3.2",
@@ -26,7 +27,11 @@
     "dependencies": {
         "@coreui/coreui": "github:coreui/coreui",
         "@fortawesome/fontawesome-free": "^5.6.3",
+        "@fullcalendar/core": "^4.3.1",
+        "@fullcalendar/daygrid": "^4.3.0",
+        "@fullcalendar/vue": "^4.3.1",
         "@tinymce/tinymce-vue": "^2.0.0",
+        "babel-runtime": "^6.26.0",
         "laravel-echo": "^1.5.4",
         "moment": "^2.24.0",
         "perfect-scrollbar": "^1.4.0",
@@ -36,6 +41,7 @@
         "v-money": "^0.8.1",
         "vform": "^1.0.0",
         "vue-currency-filter": "^3.4.2",
+        "vue-full-calendar": "^2.7.0",
         "vue-loader": "^15.7.0",
         "vue-progressbar": "^0.7.5",
         "vue-router": "^3.0.6",

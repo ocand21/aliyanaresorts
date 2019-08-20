@@ -196,17 +196,17 @@ class CheckinController extends Controller
             throw $e;
         }
 
-        try {
-            $tagihan = Tagihan::where('kode_booking', $kode_booking)->first();
-            $tagihan->update([
-          'terbayarkan' => $tagihan->terbayarkan + $tagihan->hutang,
-          'hutang' => '0',
-          'status' => '1',
-        ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            throw $e;
-        }
+        // try {
+        //     $tagihan = Tagihan::where('kode_booking', $kode_booking)->first();
+        //     $tagihan->update([
+        //   'terbayarkan' => $tagihan->terbayarkan + $tagihan->hutang,
+        //   'hutang' => '0',
+        //   'status' => '1',
+        // ]);
+        // } catch (\Exception $e) {
+        //     DB::rollback();
+        //     throw $e;
+        // }
 
 
         DB::commit();

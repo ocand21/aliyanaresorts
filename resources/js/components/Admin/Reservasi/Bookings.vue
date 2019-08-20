@@ -39,24 +39,26 @@
                                 <div class="col-md-12">
                                     <hr>
                                     <v-client-table :data="bookings" :columns="columns" :options="options">
-                                        <!-- <div slot="aksi" slot-scope="{row}" class="btn-group show">
-                                            <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Aksi</button>
-                                            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -187px, 0px);">
-                                                <a class="dropdown-item" href="#" @click="detilBooking(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
-                                                <a class="dropdown-item" @click="cancelModal(row)" href="#"> <span class="fa fa-window-close"></span> Batalkan</a>
-                                            </div>
-                                        </div> -->
                                         <div slot="aksi" slot-scope="{row}">
                                             <a href="#" @click="detilModal(row.kode_booking)" style="margin-bottom: 5px" class="btn btn-primary btn-sm"><span class="fa fa-search"></span></a>
-                                            <a href="#" @click="cancelModal(row)" class="btn btn-danger btn-sm"><span class="fa fa-window-close"></span></a>
+                                            <a v-if="row.status === 'Waiting Payment'" href="#" @click="cancelModal(row)" class="btn btn-danger btn-sm"><span class="fa fa-window-close"></span></a>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
                                         <p slot="tgl_checkin" slot-scope="{row}">{{row.tgl_checkin | myDate}}</p>
                                         <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p>
                                         <p slot="total_tagihan" class="red" slot-scope="{row}">Rp. {{row.total_tagihan | currency}}</p>
                                         <p slot="terbayarkan" class="red" slot-scope="{row}">Rp. {{row.terbayarkan | currency}}</p>
+                                        <p slot="kekurangan" class="red" slot-scope="{row}">Rp. {{row.kekurangan | currency}}</p>
                                         <p slot="jml_kamar" class="text-right" slot-scope="{row}">{{row.jml_kamar}} Kamar</p>
-
+                                        <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p>
+                                        <p slot="created_at" slot-scope="{row}">{{row.created_at | myDate}}</p>
+                                        <div slot="status" class="text-center" slot-scope="{row}">
+                                            <a v-if="row.status === 'Waiting Payment'" @click.prevent="pembayaranModal(row.kode_booking)" href="" class="btn btn-sm badge badge-warning text-uppercase">Waiting Payment</a>
+                                            <a v-if="row.status === 'Payment Accepted'" href="" @click.prevent="" class="btn btn-sm badge badge-primary text-uppercase">Payment Accepted</a>
+                                            <a v-if="row.status === 'Checkin'" href="" @click.prevent="checkinRoute(row.kode_booking)" class="btn btn-sm badge badge-success text-uppercase">Checkin</a>
+                                            <a v-if="row.status === 'Inhouse'" href="" @click.prevent="" class="btn btn-sm badge badge-info text-uppercase">Inhouse</a>
+                                            <a v-if="row.status === 'Checkout'" href="" @click.prevent="" class="btn btn-sm badge badge-danger text-uppercase">Checkout</a>
+                                        </div>
                                     </v-client-table>
                                 </div>
                             </div>
@@ -222,41 +224,41 @@
                 <div class="modal-body">
                     <div class="col-md-12">
 
-                          <ul class="nav nav-tabs" id="myTab1" role="tablist">
-                              <li class="nav-item">
-                                  <a class="nav-link active show" id="cash-tab" data-toggle="tab" href="#cash" role="tab" aria-controls="cash" aria-selected="true">Cash</a>
-                              </li>
-                              <li class="nav-item">
-                                  <a class="nav-link" id="transfer-tab" data-toggle="tab" href="#transfer" role="tab" aria-controls="transfer" aria-selected="false">Transfer</a>
-                              </li>
-                              <li class="nav-item">
-                                  <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
-                              </li>
-                          </ul>
-                          <div class="tab-content" id="myTab1Content">
-                              <div class="tab-pane fade active show" id="cash" role="tabpanel" aria-labelledby="cash-tab">
-                                  <form class="" @submit.prevent="postCash()" method="post">
-                                      <div class="form-group">
-                                          <label for="">Kode Booking</label>
-                                          <input type="text" name="kode_booking" v-model="cash.kode_booking" :class="{'is-invalid' : cash.errors.has('kode_booking')}" class="form-control text-uppercase" readonly value="">
-                                          <has-error :form="cash" field="kode_booking"></has-error>
-                                      </div>
-                                      <div class="form-group">
-                                          <label for="">Total Tagihan</label>
-                                          <money v-model="cash.total_tagihan" v-bind="money" type="text" name="total_tagihan" readonly class="form-control" :class="{ 'is-invalid': cash.errors.has('total_tagihan') }" id="total"></money>
-                                          <has-error :form="cash" field="total_tagihan"></has-error>
-                                      </div>
-                                      <div class="form-group">
-                                          <label for="">Jumlah Pembayaran</label>
-                                          <money v-model="cash.jml_bayar" v-bind="money" type="text" name="jml_bayar" class="form-control" :class="{ 'is-invalid': cash.errors.has('jml_bayar') }" id="total"></money>
-                                          <has-error :form="cash" field="jml_bayar"></has-error>
-                                      </div>
-                                      <div class="form-group text-right">
-                                          <button type="submit" class="btn btn-success btn-sm" name="button">Simpan</button>
-                                      </div>
-                                  </form>
-                              </div>
-                              <div class="tab-pane fade" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
+                        <ul class="nav nav-tabs" id="myTab1" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" id="cash-tab" data-toggle="tab" href="#cash" role="tab" aria-controls="cash" aria-selected="true">Cash</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="transfer-tab" data-toggle="tab" href="#transfer" role="tab" aria-controls="transfer" aria-selected="false">Transfer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTab1Content">
+                            <div class="tab-pane fade active show" id="cash" role="tabpanel" aria-labelledby="cash-tab">
+                                <form class="" @submit.prevent="postCash()" method="post">
+                                    <div class="form-group">
+                                        <label for="">Kode Booking</label>
+                                        <input type="text" name="kode_booking" v-model="cash.kode_booking" :class="{'is-invalid' : cash.errors.has('kode_booking')}" class="form-control text-uppercase" readonly value="">
+                                        <has-error :form="cash" field="kode_booking"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Total Tagihan</label>
+                                        <money v-model="cash.total_tagihan" v-bind="money" type="text" name="total_tagihan" readonly class="form-control" :class="{ 'is-invalid': cash.errors.has('total_tagihan') }" id="total"></money>
+                                        <has-error :form="cash" field="total_tagihan"></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Jumlah Pembayaran</label>
+                                        <money v-model="cash.jml_bayar" v-bind="money" type="text" name="jml_bayar" class="form-control" :class="{ 'is-invalid': cash.errors.has('jml_bayar') }" id="total"></money>
+                                        <has-error :form="cash" field="jml_bayar"></has-error>
+                                    </div>
+                                    <div class="form-group text-right">
+                                        <button type="submit" class="btn btn-success btn-sm" name="button">Simpan</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
                                 <form class="" @submit.prevent="postTransfer()" method="post">
                                     <div class="form-group">
                                         <label for="">Kode Booking</label>
@@ -271,7 +273,7 @@
                                     <div class="form-group">
                                         <label for="">Transfer Ke</label>
                                         <select class="form-control" name="id_metode" v-model="transfer.id_metode">
-                                          <option v-for="mtd in metode" :key="mtd.id" :value="mtd.id">{{mtd.bank}} - {{mtd.no_rekening}} AN {{mtd.atas_nama}}</option>
+                                            <option v-for="mtd in metode" :key="mtd.id" :value="mtd.id">{{mtd.bank}} - {{mtd.no_rekening}} AN {{mtd.atas_nama}}</option>
                                         </select>
                                         <has-error :form="transfer" field="jml_bayar"></has-error>
                                     </div>
@@ -300,15 +302,15 @@
                                         <button type="submit" class="btn btn-success btn-sm" name="button">Simpan</button>
                                     </div>
                                 </form>
-                              </div>
-                              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                  Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard
-                                  locavore carles etsy salvia banksy
-                                  hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you
-                                  probably haven't heard
-                                  of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
-                              </div>
-                          </div>
+                            </div>
+                            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard
+                                locavore carles etsy salvia banksy
+                                hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you
+                                probably haven't heard
+                                of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -364,7 +366,6 @@
 </template>
 
 <script>
-
 import DatePicker from 'vue2-datepicker'
 import Editor from '@tinymce/tinymce-vue';
 export default {
@@ -376,7 +377,8 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', 'tipe_booking'
+                'aksi', 'status',  'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'tipe_booking',
+                'created_at', 'diinput_oleh'
             ],
             lang: {
                 days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
@@ -411,10 +413,15 @@ export default {
                     tgl_checkin: 'Tgl Checkin',
                     tgl_checkout: 'Tgl Checkout',
                     status: 'Status',
-                    tipe_booking: 'Tipe Booking'
+                    tipe_booking: 'Tipe Booking',
+                    created_at: 'Tgl Reservasi'
                 },
-                sortable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', 'tipe_booking'],
-                filterable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'status', 'tipe_booking'],
+                sortable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'status', 'tipe_booking', 'created_at',
+                    'diinput_oleh'
+                ],
+                filterable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'status', 'tipe_booking', 'created_at',
+                    'diinput_oleh'
+                ],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {
@@ -444,88 +451,96 @@ export default {
                 jml_bayar: '',
             }),
             transfer: new Form({
-              kode_booking: '',
-              total_tagihan: '',
-              jml_bayar: '',
-              id_metode: '',
-              nama_pemilik_rekening: '',
-              no_rekening: '',
-              tgl_transfer: '',
+                kode_booking: '',
+                total_tagihan: '',
+                jml_bayar: '',
+                id_metode: '',
+                nama_pemilik_rekening: '',
+                no_rekening: '',
+                tgl_transfer: '',
             }),
             metode: [],
         }
     },
     methods: {
-        postTransfer(){
-          swal({
-              title: 'Anda yakin?',
-              text: "Operasi ini tidak dapat dibatalkan!",
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Ya, proses pembayaran!',
-              cancelButtonText: 'Batal'
-          }).then((result) => {
-              if (result.value) {
-                  this.$Progress.start();
-                  this.transfer.post('/api/admin/payment/transfer').then(() => {
-                      swal(
-                          'Berhasil!',
-                          'Pembayaran Transfer Berhasil.',
-                          'success'
-                      )
-                      this.tutupModal();
-                      this.transfer.reset();
-                      Fire.$emit('AfterCreate')
-                      this.$Progress.finish();
-                  }).catch(() => {
-                      swal("Gagal!", "Terjadi kesalahan.",
-                          "warning");
-                  });
-              }
-
+        checkinRoute(kode_booking){
+          this.$router.push({
+            name: 'form-checkin',
+            params: {
+              kode_booking: kode_booking
+            }
           })
         },
-        tutupModal(){
-          $('#modalPayment').modal('hide');
-          $('#modalDetil').modal('hide');
-        },
-        postCash(){
-          swal({
-              title: 'Anda yakin?',
-              text: "Operasi ini tidak dapat dibatalkan!",
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Ya, proses pembayaran!',
-              cancelButtonText: 'Batal'
-          }).then((result) => {
-              if (result.value) {
-                  this.$Progress.start();
-                  this.cash.post('/api/admin/payment/cash').then(() => {
-                      swal(
-                          'Berhasil!',
-                          'Pembayaran Cash Berhasil.',
-                          'success'
-                      )
-                      this.tutupModal();
-                      this.cash.reset();
-                      Fire.$emit('AfterCreate')
-                      this.$Progress.finish();
-                  }).catch(() => {
-                      swal("Gagal!", "Terjadi kesalahan.",
-                          "warning");
-                  });
-              }
+        postTransfer() {
+            swal({
+                title: 'Anda yakin?',
+                text: "Operasi ini tidak dapat dibatalkan!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, proses pembayaran!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.value) {
+                    this.$Progress.start();
+                    this.transfer.post('/api/admin/payment/transfer').then(() => {
+                        swal(
+                            'Berhasil!',
+                            'Pembayaran Transfer Berhasil.',
+                            'success'
+                        )
+                        this.tutupModal();
+                        this.transfer.reset();
+                        Fire.$emit('AfterCreate')
+                        this.$Progress.finish();
+                    }).catch(() => {
+                        swal("Gagal!", "Terjadi kesalahan.",
+                            "warning");
+                    });
+                }
 
-          })
+            })
         },
-        metodePembayaran(){
-          axios.get('/api/admin/payment/metode').then(({
-              data
-          }) => (this.metode = data));
+        tutupModal() {
+            $('#modalPayment').modal('hide');
+            $('#modalDetil').modal('hide');
+        },
+        postCash() {
+            swal({
+                title: 'Anda yakin?',
+                text: "Operasi ini tidak dapat dibatalkan!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, proses pembayaran!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.value) {
+                    this.$Progress.start();
+                    this.cash.post('/api/admin/payment/cash').then(() => {
+                        swal(
+                            'Berhasil!',
+                            'Pembayaran Cash Berhasil.',
+                            'success'
+                        )
+                        this.tutupModal();
+                        this.cash.reset();
+                        Fire.$emit('AfterCreate')
+                        this.$Progress.finish();
+                    }).catch(() => {
+                        swal("Gagal!", "Terjadi kesalahan.",
+                            "warning");
+                    });
+                }
+
+            })
+        },
+        metodePembayaran() {
+            axios.get('/api/admin/payment/metode').then(({
+                data
+            }) => (this.metode = data));
         },
         pembayaranModal(kode_booking) {
             $('#modalPayment').modal('show');

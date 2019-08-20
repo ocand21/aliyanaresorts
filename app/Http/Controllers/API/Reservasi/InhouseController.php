@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
 class InhouseController extends Controller
 {
     public function index()
@@ -18,6 +19,7 @@ class InhouseController extends Controller
         //                 ->where('bookings.status', '=', '3')
         //                 ->get();
 
+        $date = Carbon::now()->format('Y-m-d');
 
         $bookings = DB::table('bookings')
                           ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
@@ -28,10 +30,28 @@ class InhouseController extends Controller
                           booking_rooms.jml_penghuni, bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
                           (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
                           WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status"))
-                          ->where('bookings.status', '3')
+                          ->whereIn('bookings.status', [['3'],['4']])
                           ->groupBy('booking_rooms.nama_penghuni')
                           ->orderBy('bookings.tgl_checkin', 'desc')
                           ->get();
+
+        foreach($bookings as $booking){
+          if ($booking->tgl_checkout == $date) {
+            
+            DB::beginTransaction();
+            try {
+              DB::table('bookings')->where('tgl_checkout', $date)->update([
+                'status' => '4'
+              ]);
+            } catch (\Exception $e) {
+              throw $e;
+              DB::rollback();
+            }
+            DB::commit();
+
+          }
+
+        }
 
         return response()->json($bookings);
     }

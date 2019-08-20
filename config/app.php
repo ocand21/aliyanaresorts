@@ -170,6 +170,7 @@ return [
          Barryvdh\DomPDF\ServiceProvider::class,
          'Jenssegers\Date\DateServiceProvider',
          Lanin\Laravel\EmailTemplatesOptimization\ServiceProvider::class,
+         MaddHatter\LaravelFullcalendar\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -232,6 +233,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Date' => Jenssegers\Date\Date::class,
+        'Calendar' => MaddHatter\LaravelFullcalendar\Facades\Calendar::class,
 
     ],
 

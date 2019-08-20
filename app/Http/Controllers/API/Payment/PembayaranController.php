@@ -57,11 +57,21 @@ class PembayaranController extends Controller
 
     try {
       $tagihan = Tagihan::where('kode_booking', $request->kode_booking)->first();
-      $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
-      $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
-      $tagihan->id_metode = $request->id_metode;
-      $tagihan->status = '3';
-      $tagihan->save();
+      if ($tagihan->total_tagihan == $request->jml_bayar) {
+        $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+        $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+        $tagihan->id_metode = $request->id_metode;
+        $tagihan->status = '1';
+        $tagihan->save();
+      } else {
+        $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+        $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+        $tagihan->id_metode = $request->id_metode;
+        $tagihan->status = '2';
+        $tagihan->save();
+      }
+
+
 
     } catch (\Exception $e) {
       DB::rollback();
@@ -125,11 +135,21 @@ class PembayaranController extends Controller
     try {
       $metode = MetodePembayaran::where('bank', 'CASH')->first();
       $tagihan = Tagihan::where('kode_booking', $request->kode_booking)->first();
-      $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
-      $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
-      $tagihan->id_metode = $metode->id;
-      $tagihan->status = '3';
-      $tagihan->save();
+      // $half = $tagihan->total_tagihan * 0.5;
+      // dd($half);
+      if ($tagihan->total_tagihan == $request->jml_bayar) {
+        $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+        $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+        $tagihan->id_metode = $metode->id;
+        $tagihan->status = '1';
+        $tagihan->save();
+      } else {
+        $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+        $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+        $tagihan->id_metode = $metode->id;
+        $tagihan->status = '2';
+        $tagihan->save();
+      }
 
     } catch (\Exception $e) {
       DB::rollback();
