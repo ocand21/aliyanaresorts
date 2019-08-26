@@ -12,6 +12,12 @@
 
     <link rel="stylesheet" href="/css/app.css">
 
+    <style media="screen">
+        .modal {
+            overflow: scroll !important;
+        }
+    </style>
+
 </head>
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
@@ -30,18 +36,24 @@
             </button>
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item dropdown d-md-down-none">
-                    <a class="nav-link" data-toggle="dropdown"  id="markasread" @click="markasread()" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-bell"></i>
-                        <span class="badge badge-pill badge-danger">{{count($user->unreadNotifications)}}</span>
+                    <a class="nav-link" data-toggle="dropdown" id="markasread" @click="markasread()" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-bell"></i>
+                    <span class="badge badge-pill badge-danger">{{count($user->unreadNotifications)}}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
-                        <div class="dropdown-header text-center">
-                            <strong>{{count($user->unreadNotifications)}} Notifikasi Baru</strong>
-                        </div>
-                        @foreach ($user->unreadNotifications as $notification)
-                          <a class="dropdown-item" href="#">
-                              <i class="fa fa-briefcase text-success"></i>Reservasi Baru AN {{$notification->data['pelanggan']['nama']}}</a>
-                        @endforeach
+                        @if(count($user->unreadNotifications) != null)
+                            <div class="dropdown-header text-center">
+                                <strong>{{count($user->unreadNotifications)}} Notifikasi Baru</strong>
+                            </div>
+                            @foreach ($user->unreadNotifications as $notification)
+                            <a class="dropdown-item" href="#">
+                                <i class="fa fa-briefcase text-success"></i>Reservasi Baru AN {{$notification->data['pelanggan']['nama']}}</a>
+                            @endforeach
+                            @else
+                            <a href="" class="dropdown-item">
+                                Belum ada notifikasi
+                            </a>
+                            @endif
 
 
                     </div>
@@ -209,6 +221,7 @@
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
     {{-- <script type="text/javascript" src="/js/main.js"></script> --}}
+    
 </body>
 
 </html>

@@ -61,7 +61,7 @@
                                         </div>
                                         <div class="row" style="margin-top: 10px">
                                             <div class="col-md-3">
-                                                <label for="">Jumlah Tamu</label>
+                                                <label for="">Jumlah Kamar</label>
                                             </div>
                                             <div class="col-md-4">
 
@@ -168,6 +168,7 @@
                                 <tr>
 
                                     <th>Aksi</th>
+                                    <th>No Kamar</th>
                                     <th>Tipe kamar</th>
                                     <th>Kapasitas</th>
                                     <th>Jml Kamar</th>
@@ -179,6 +180,14 @@
                                     <td class="text-center"><a href="#" class="btn btn-light" @click="hapusTemp(temp.id)">
                                             <i class="fa fa-minus red"></i> Hapus
                                         </a></td>
+                                    <td class="text-center">
+                                        <form class="" v-if="temp.no_room == null" @submit.prevent="roomModal(temp.id)" method="post">
+                                            <!-- <input type="hidden" name="id_tipe" :value="temp.id_tipe">
+                                            <input type="hidden" name="jml_kamar" :value="temp.jml_kamar"> -->
+                                            <button type="submit" class="btn btn-sm btn-success"><span class="fa fa-plus"></span> No Kamar</button>
+                                        </form>
+                                        {{temp.no_room}}
+                                    </td>
                                     <td>{{temp.tipe}}</td>
                                     <td>{{temp.kapasitas}} Person</td>
                                     <td>{{temp.jml_kamar}}</td>
@@ -187,7 +196,7 @@
                             </tbody>
                             <thead>
                                 <tr>
-                                    <th colspan="4">
+                                    <th colspan="5">
                                         <p class="text-right">Subtotal</p>
                                     </th>
                                     <th>
@@ -195,7 +204,7 @@
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th colspan="4">
+                                    <th colspan="5">
                                         <p class="text-right">Total (Subtotal X {{dataTemp.durasi}} hari menginap)</p>
                                     </th>
                                     <th>
@@ -209,6 +218,7 @@
                         <div class="form-group" v-for="temp in dataTemp.temp" :key="temp.no_room">
                             <input type="hidden" name="id_tipe[]" class="form-control" :value="temp.id_tipe">
                             <input type="hidden" name="jml_kamar[]" class="form-control" :value="temp.jml_kamar">
+                            <input type="hidden" name="no_room[]" class="form-control" :value="temp.no_room">
                         </div>
                         <div class="form-group">
                             <label for=""><strong>Kode Booking</strong></label>
@@ -275,6 +285,53 @@
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modalRoom" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Kamar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="" method="post" id="formCharges">
+                    <div class="modal-body">
+                        <div class="alert alert-success" role="alert">
+                            {{avKamar.msg}}
+
+                        </div>
+                        <form action="" id="formPilihKamar" action="POST">
+                            <input type="hidden" name="id_temp" id="id_temp" :value="avKamar.id_temp">
+                        </form>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No Kamar</th>
+                                    <th>Tipe Kamar</th>
+                                    <th>Kapasitas</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="kamar in avKamar.avKamar" :key="kamar.id">
+                                    <td>{{kamar.no_room}}</td>
+                                    <td>{{kamar.tipe}}</td>
+                                    <td>
+                                        {{kamar.kapasitas}}
+                                    </td>
+                                    <td class="text-center"><a href="#" @click="pilihKamar(kamar.no_room)" class="btn btn-warning btn-sm"> <span class="fa fa-check"></span>Pilih</a> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" name="button" data-dismiss="modal" class="btn btn-warning">Tutup</button>
+                </div>
             </div>
         </div>
     </div>
@@ -347,9 +404,40 @@ export default {
             countTemp: [],
             dataTemp: [],
             TipeKamar: [],
+            avKamar: [],
         }
     },
     methods: {
+        pilihKamar(no_room) {
+            var formData = new FormData(document.getElementById("formPilihKamar"));
+            let instance = this;
+
+            this.$Progress.start();
+            axios.post('/api/admin/booking/no-kamar/pilih/' + no_room, formData)
+                .then(() => {
+                    swal(
+                        'Sukses!',
+                        'Kamar berhasil ditambah.',
+                        'success'
+                    )
+                    $('#modalRoom').modal('hide');
+                    this.loadTemp();
+                    this.$Progress.finish();
+                })
+                .catch(() => {
+                    swal(
+                        'Gagal!',
+                        'Terjadi kesalahan',
+                        'warning'
+                    )
+                })
+        },
+        roomModal(id_temp) {
+            $('#modalRoom').modal('show');
+            this.form.post('/api/admin/booking/no-kamar/' + id_temp).then(({
+                data
+            }) => (this.avKamar = data))
+        },
         loadTipe() {
             axios.get('/api/admin/tipe-kamar').then(({
                 data

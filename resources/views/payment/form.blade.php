@@ -151,6 +151,10 @@
                                             <input type="date" name="tgl_transfer" class="form-control" value="" required>
                                         </div>
                                         <div class="form-group">
+                                            <label for="">Bukti Transfer</label>
+                                            <input type="file" name="image" class="form-control" value="" required>
+                                        </div>
+                                        <div class="form-group">
                                             <input type="hidden" name="id_pelanggan" value="{{$pelanggan->id}}">
                                             <label for="">Nama Pemilik Rekening</label>
                                             <input type="text" name="nama_pemilik_rekening" value="" class="form-control" required>

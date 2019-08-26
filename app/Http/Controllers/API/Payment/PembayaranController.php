@@ -261,7 +261,7 @@ class PembayaranController extends Controller
     public function index(){
       $pembayaran = DB::table('transfer_payments')
                         ->join('metode_pembayaran', 'metode_pembayaran.id', 'transfer_payments.id_metode')
-                        ->select(DB::raw("transfer_payments.id, transfer_payments.kode_booking, transfer_payments.nama_pemilik_rekening as nama, transfer_payments.no_rekening,
+                        ->select(DB::raw("transfer_payments.id, transfer_payments.image, transfer_payments.kode_booking, transfer_payments.nama_pemilik_rekening as nama, transfer_payments.no_rekening,
                         metode_pembayaran.bank, metode_pembayaran.atas_nama, metode_pembayaran.no_rekening as no_rekening_tujuan,
                         transfer_payments.jml_bayar, transfer_payments.tgl_transfer, (CASE WHEN (transfer_payments.status = 0) THEN 'Menunggu Konfirmasi' ELSE 'Dikonfirmasi' END) as status"))
                         ->where('transfer_payments.status', '0')

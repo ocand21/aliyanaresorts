@@ -130,7 +130,7 @@ export default {
               password_confirmation: '',
             }),
             columns: [
-                'aksi', 'name', 'address', 'email', 'nama_departemen'
+                'aksi', 'name', 'email', 'nama_departemen'
             ],
             options: {
                 texts: {

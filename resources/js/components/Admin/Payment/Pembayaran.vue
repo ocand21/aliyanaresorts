@@ -38,6 +38,8 @@
                                                 <a class="dropdown-item" href="#" @click="cetakInvoice(row.kode_booking)"><span class="fa fa-search info"></span> Detil</a>
                                             </div>
                                         </div>
+                                        <img class="img-responsive" slot="image" slot-scope="{row}" :src="row.image" alt="" width="160px" height="160px">
+                                        <!-- <p slot="image" slot-scope="{row}">{{row.image}}</p> -->
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
                                         <p slot="jumlah" slot-scope="{row}" class="float-right red">Rp. {{row.jumlah | currency}}</p>
                                         <p slot="tgl_transfer" slot-scope="{row}" class="float-right red">{{row.tgl_transfer | myDate}}</p>
@@ -70,7 +72,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'kode_booking', 'tgl_transfer', 'nama', 'no_rekening', 'atas_nama', 'bank', 'no_rekening_tujuan', 'jumlah', 'status'
+                'aksi', 'image', 'kode_booking', 'tgl_transfer', 'nama', 'no_rekening', 'atas_nama', 'bank', 'no_rekening_tujuan', 'jumlah', 'status'
             ],
             options: {
                 texts: {
@@ -81,6 +83,7 @@ export default {
                 },
                 headings: {
                     nama: 'Nama Pemilik Rek',
+                    image: 'Bukti Transfer',
                     tgl_transfer: 'Tgl Transfer',
                     kode_booking: 'Kode Booking',
                     no_rekening: 'No Rekening',

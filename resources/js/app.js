@@ -79,6 +79,8 @@ Vue.filter('myDate', function(created){
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
+ Vue.component('notification', require('./components/Admin/Notification.vue').default);
+
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 import VueRouter from 'vue-router'
@@ -145,7 +147,7 @@ const router = new VueRouter({
          window.print();
        },
        markasread(){
-         $.get('/notif-dibaca')
+         axios.get('/api/admin/notifikasi/dibaca')
        }
      }
  });

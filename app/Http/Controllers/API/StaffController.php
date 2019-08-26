@@ -18,8 +18,8 @@ class StaffController extends Controller
     public function index()
     {
         $staff = DB::table("users")
-                    ->join('departemen', 'departemen.kode_departemen', 'users.kode_departemen')
-                    ->select(DB::raw("users.id, users.name, users.address, users.email, departemen.kode_departemen, departemen.nama_departemen"))
+                    ->join('departemen', 'departemen.kode_departemen', 'users.jabatan')
+                    ->select(DB::raw("users.id, users.name, users.email, departemen.kode_departemen, departemen.nama_departemen"))
                     ->orderBy('users.id', 'ASC')
                     ->get();
 

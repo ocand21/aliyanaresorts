@@ -23,17 +23,6 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
 
-    public function markAsRead(){
-      $user = auth()->user();
-
-      foreach ($user->unreadNotifications as $notification) {
-        dd($notification);
-        $notification->markAsRead();
-      }
-
-
-    }
-
     public function index()
     {
         $user = Admin::find(1);

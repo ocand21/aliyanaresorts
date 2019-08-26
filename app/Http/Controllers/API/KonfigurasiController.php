@@ -5,9 +5,23 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\KonfigWeb;
+use App\Admin;
 
 class KonfigurasiController extends Controller
 {
+
+    public function readNotification(){
+      $id = auth('api')->user()->id;
+
+      $user = Admin::find($id);
+
+      // dd($user);
+
+      foreach ($user->unreadNotifications as $notification) {
+        $notification->markAsRead();
+      }
+    }
+
     /**
      * Display a listing of the resource.
      *

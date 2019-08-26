@@ -35,6 +35,13 @@
                                         <label class="radio-inline"><input type="radio" v-model="filter.rsv_today" @click="filterBooking('rsv_today')" value="rsv_today" name="optradio">Rsv Today</label>
                                         <label class="radio-inline"><input type="radio" v-model="filter.all_rsv" @click="filterBooking('all_rsv')" value="all_rsv" name="optradio">ALL RSV</label>
                                     </div>
+                                    <form action="" @submit.prevent="filterTgl()" method="POST">
+                                        <label for="">Filter Tanggal</label>
+                                        <date-picker name="tgl_awal" v-model="formFilter.tgl_awal" :lang="lang" value-type="format"  :class="{ 'is-invalid': formFilter.errors.has('tgl_awal') }"></date-picker>
+                                        <date-picker name="tgl_akhir" v-model="formFilter.tgl_akhir" :lang="lang" value-type="format"  :class="{ 'is-invalid': formFilter.errors.has('tgl_akhir') }"></date-picker>
+                                        <button type="submit" class="btn btn-danger btn-sm" name="button">Filter</button>
+                                        <button type="button" @click="dataBooking()" class="btn btn-success btn-sm" name="button">Reset</button>
+                                    </form>
                                 </div>
                                 <div class="col-md-12">
                                     <hr>
@@ -217,7 +224,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-uppercase">Pembayaran Booking {{booking.kode_booking}}</h5>
-                    <button type="button" class="close" @click="tutupModal()" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -377,7 +384,7 @@ export default {
         return {
             editMode: false,
             columns: [
-                'aksi', 'status',  'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'tipe_booking',
+                'aksi', 'status', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'tipe_booking',
                 'created_at', 'diinput_oleh'
             ],
             lang: {
@@ -416,12 +423,8 @@ export default {
                     tipe_booking: 'Tipe Booking',
                     created_at: 'Tgl Reservasi'
                 },
-                sortable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'status', 'tipe_booking', 'created_at',
-                    'diinput_oleh'
-                ],
-                filterable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'status', 'tipe_booking', 'created_at',
-                    'diinput_oleh'
-                ],
+                sortable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'status', 'tipe_booking'],
+                filterable: ['kode_booking', 'tipe', 'jml_kamar', 'nama', 'no_telepon', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'status', 'tipe_booking'],
                 columnsDisplay: {},
                 filterByColumn: true,
                 pagination: {
@@ -434,6 +437,10 @@ export default {
             bookings: [],
             booking: [],
             dataKamar: [],
+            formFilter: new Form({
+                tgl_awal: '',
+                tgl_akhir: '',
+            }),
             form: new Form({
                 kode_booking: '',
                 id_pelanggan: '',
@@ -463,13 +470,18 @@ export default {
         }
     },
     methods: {
-        checkinRoute(kode_booking){
-          this.$router.push({
-            name: 'form-checkin',
-            params: {
-              kode_booking: kode_booking
-            }
-          })
+        filterTgl() {
+            axios.get('/api/admin/booking/' + this.formFilter.tgl_awal + '/' + this.formFilter.tgl_akhir).then(({
+                data
+            }) => (this.bookings = data));
+        },
+        checkinRoute(kode_booking) {
+            this.$router.push({
+                name: 'form-checkin',
+                params: {
+                    kode_booking: kode_booking
+                }
+            })
         },
         postTransfer() {
             swal({
@@ -570,11 +582,6 @@ export default {
                 data
             }) => (this.dataKamar = data));
         },
-        dataBooking() {
-            axios.get('/api/admin/booking/detil/' + this.$route.params.kode_booking).then(({
-                data
-            }) => (this.booking = data));
-        },
         detilModal(booking) {
             $('#modalDetil').modal('show');
             axios.get('/api/admin/booking/detil/kamar/' + booking).then(({
@@ -633,6 +640,7 @@ export default {
             })
         },
         dataBooking() {
+            this.formFilter.reset()
             axios.get('/api/admin/booking').then(({
                 data
             }) => (this.bookings = data));

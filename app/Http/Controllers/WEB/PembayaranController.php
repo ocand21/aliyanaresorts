@@ -38,7 +38,7 @@ class PembayaranController extends Controller
                        ->where('id', $booking->id_pelanggan)
                        ->first();
 
-        $metode = MetodePembayaran::get();
+         $metode = MetodePembayaran::whereNotIn('bank', ['CASH', 'CREDIT CARD'])->get();
 
         return view('payment.form', compact('booking', 'pelanggan', 'metode'));
     }
@@ -47,6 +47,7 @@ class PembayaranController extends Controller
     {
         $request->validate([
         'kode_booking' => 'required',
+        'image' => 'required|image',
         'tgl_transfer' => 'required',
         'nama_pemilik_rekening' => 'required',
         'no_rekening' => 'required',
@@ -57,16 +58,33 @@ class PembayaranController extends Controller
 
       DB::beginTransaction();
       try {
-        $transfer = TransferPayment::create([
-          'kode_booking' => $request->kode_booking,
-          'nama_pemilik_rekening' => $request->nama_pemilik_rekening,
-          'id_metode' => $request->id_metode,
-          'no_rekening' => $request->no_rekening,
-          'tgl_transfer' => $request->tgl_transfer,
-          'jml_bayar' => $request->jumlah,
-          'status' => '0',
-          // 'id_users' => $user->id,
-        ]);
+        // $transfer = TransferPayment::create([
+        //   'kode_booking' => $request->kode_booking,
+        //   'nama_pemilik_rekening' => $request->nama_pemilik_rekening,
+        //   'id_metode' => $request->id_metode,
+        //   'no_rekening' => $request->no_rekening,
+        //   'tgl_transfer' => $request->tgl_transfer,
+        //   'jml_bayar' => $request->jumlah,
+        //   'status' => '0',
+        //   // 'id_users' => $user->id,
+        // ]);
+
+        $transfer = new TransferPayment();
+        $transfer->kode_booking = $request->kode_booking;
+        $transfer->nama_pemilik_rekening = $request->nama_pemilik_rekening;
+        $transfer->id_metode = $request->id_metode;
+        $transfer->no_rekening = $request->no_rekening;
+        $transfer->tgl_transfer = $request->tgl_transfer;
+        $transfer->jml_bayar = $request->jumlah;
+        $transfer->status = '0';
+
+        $image = $request->file('image');
+        $filename = $transfer->kode_booking;
+        $location = public_path('img/bukti-transfer/' . $filename);
+        Image::make($image)->save($location);
+        $transfer->image = '/img/bukti-transfer/' . $filename;
+
+        $transfer->save();
       } catch (\Exception $e) {
         DB::rollback();
         throw $e;
