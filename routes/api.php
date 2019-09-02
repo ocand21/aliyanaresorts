@@ -24,6 +24,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     'admin/metode-pembayaran' => 'API\MasterData\MetodePembayaranController',
   ]);
 
+    Route::post('/admin/inhouse/pindah/{no_room}', 'API\Reservasi\InhouseController@konfirmPindah');
+    Route::get('/admin/inhouse/pindah/{no_room}', 'API\Reservasi\InhouseController@pindahKamar');
+    Route::get('/admin/inhouse/{no_room}', 'API\Reservasi\InhouseController@detilKamar');
+    Route::get('/admin/inhouse', 'API\Reservasi\InhouseController@index');
+
     Route::post('/admin/booking/no-kamar/pilih/{no_room}', 'API\Reservasi\BookingsController@pilihNoKamar');
     Route::post('/admin/booking/no-kamar/{id_temp}', 'API\Reservasi\BookingsController@cekNoKamar');
     Route::post('/admin/booking/cek-kamar', 'API\Reservasi\BookingsController@cekKamar');
@@ -76,7 +81,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 
 
-    Route::get('/admin/inhouse', 'API\Reservasi\InhouseController@index');
 
     Route::get('/admin/payment/tagihan', 'API\Payment\TagihanController@loadTagihan');
     Route::get('/admin/payment/tagihan/{kode_booking}', 'API\Payment\TagihanController@detilTagihan');

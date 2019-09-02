@@ -189,7 +189,7 @@ class CheckinController extends Controller
         try {
           $checkin = Booking::where('kode_booking', $kode_booking)->first();
           $checkin->update([
-            'status' => '3'
+            'status' => '2'
           ]);
         } catch (\Exception $e) {
             DB::rollback();

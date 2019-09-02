@@ -3,7 +3,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Dashboard</li>
         <li class="breadcrumb-item">Reservasi</li>
-        <li class="breadcrumb-item active">Booking</li>
+        <li class="breadcrumb-item active">Booking</li>``
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu d-md-down-none">
             <div class="btn-group" role="group" aria-label="Button group">
@@ -28,12 +28,16 @@
 
                             </div>
                             <div class="card-body table-responsive">
+                                <!-- {{ moment().format('YYYY-MM-YYYY') }} -->
                                 <div class="col-md-12">
                                     <router-link style="margin-bottom: 10px" to="/admin/booking/room" href="#" @click="modal()" class="btn btn-success btn-sm text-right"><span class="fa fa-plus"></span> Tambah Booking</router-link>
                                     <div class="radio">
-                                        <label class="radio-inline"><input type="radio" v-model="filter.inhouse" @click="filterBooking(3)" value="3" name="optradio"> In House</label>
+                                        <label class="radio-inline"><input type="radio" v-model="filter.inhouse" @click="filterBooking(2)" value="3" name="optradio"> In House</label>
                                         <label class="radio-inline"><input type="radio" v-model="filter.rsv_today" @click="filterBooking('rsv_today')" value="rsv_today" name="optradio">Rsv Today</label>
                                         <label class="radio-inline"><input type="radio" v-model="filter.all_rsv" @click="filterBooking('all_rsv')" value="all_rsv" name="optradio">ALL RSV</label>
+                                        <label class="radio-inline"><input type="radio" v-model="filter.expected_arrv" @click="filterBooking('expected_arrv')" value="expected_arrv" name="optradio">Expected Arv</label>
+                                        <label class="radio-inline"><input type="radio" v-model="filter.expected_dep" @click="filterBooking('expected_dep')" value="expected_dep" name="optradio">Expected Dep</label>
+
                                     </div>
                                     <form action="" @submit.prevent="filterTgl()" method="POST">
                                         <label for="">Filter Tanggal</label>
@@ -51,20 +55,26 @@
                                             <a v-if="row.status === 'Waiting Payment'" href="#" @click="cancelModal(row)" class="btn btn-danger btn-sm"><span class="fa fa-window-close"></span></a>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
-                                        <p slot="tgl_checkin" slot-scope="{row}">{{row.tgl_checkin | myDate}}</p>
-                                        <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p>
+                                        <!-- <p slot="tgl_checkin" slot-scope="{row}">{{row.tgl_checkin | myDate}}</p> -->
+                                        <!-- <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p> -->
                                         <p slot="total_tagihan" class="red" slot-scope="{row}">Rp. {{row.total_tagihan | currency}}</p>
                                         <p slot="terbayarkan" class="red" slot-scope="{row}">Rp. {{row.terbayarkan | currency}}</p>
                                         <p slot="kekurangan" class="red" slot-scope="{row}">Rp. {{row.kekurangan | currency}}</p>
                                         <p slot="jml_kamar" class="text-right" slot-scope="{row}">{{row.jml_kamar}} Kamar</p>
-                                        <p slot="tgl_checkout" slot-scope="{row}">{{row.tgl_checkout | myDate}}</p>
+                                        <div slot="tgl_checkin" slot-scope="{row}">
+                                          <a href="#" v-if="row.tgl_checkin === moment().format('YYYY-MM-DD') && row.status === 'Reserved'" @click.prevent="checkinRoute(row.kode_booking)" class="btn btn-sm badge badge-success text-uppercase">CHECKIN NOW</a>
+                                          <p v-if="row.status !='Reserved'">{{row.tgl_checkin | myDate}}</p>
+                                        </div>
+                                        <div slot="tgl_checkout" slot-scope="{row}">
+                                          <a href="#" v-if="row.tgl_checkout === moment().format('YYYY-MM-DD') && row.status === 'Inhouse'" @click.prevent="" class="btn btn-sm badge badge-danger text-uppercase">Checkout NOW</a>
+                                          <p v-if="row.tgl_checkout != moment().format('YYYY-MM-DD')">{{row.tgl_checkout | myDate}}</p>
+                                        </div>
                                         <p slot="created_at" slot-scope="{row}">{{row.created_at | myDate}}</p>
                                         <div slot="status" class="text-center" slot-scope="{row}">
                                             <a v-if="row.status === 'Waiting Payment'" @click.prevent="pembayaranModal(row.kode_booking)" href="" class="btn btn-sm badge badge-warning text-uppercase">Waiting Payment</a>
-                                            <a v-if="row.status === 'Payment Accepted'" href="" @click.prevent="" class="btn btn-sm badge badge-primary text-uppercase">Payment Accepted</a>
-                                            <a v-if="row.status === 'Checkin'" href="" @click.prevent="checkinRoute(row.kode_booking)" class="btn btn-sm badge badge-success text-uppercase">Checkin</a>
-                                            <a v-if="row.status === 'Inhouse'" href="" @click.prevent="" class="btn btn-sm badge badge-info text-uppercase">Inhouse</a>
-                                            <a v-if="row.status === 'Checkout'" href="" @click.prevent="" class="btn btn-sm badge badge-danger text-uppercase">Checkout</a>
+                                            <a v-if="row.status === 'Reserved'" href="" @click.prevent="" class="btn btn-sm badge badge-primary text-uppercase">Reserved</a>
+                                            <a v-if="row.status === 'Inhouse'" href="#" @click.prevent="" class="btn btn-sm badge badge-info text-uppercase">Inhouse</a>
+                                            <!-- <a v-if="row.status === 'Checkout'" href="#" @click.prevent="" class="btn btn-sm badge badge-danger text-uppercase">Checkout</a> -->
                                         </div>
                                     </v-client-table>
                                 </div>
@@ -374,6 +384,7 @@
 
 <script>
 import DatePicker from 'vue2-datepicker'
+import moment from 'moment'
 import Editor from '@tinymce/tinymce-vue';
 export default {
     components: {
@@ -382,10 +393,9 @@ export default {
     },
     data() {
         return {
-            editMode: false,
+            editMode: true,
             columns: [
                 'aksi', 'status', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'tipe_booking',
-                'created_at', 'diinput_oleh'
             ],
             lang: {
                 days: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Ming'],
@@ -451,6 +461,8 @@ export default {
                 inhouse: '',
                 rsv_today: '',
                 all_rsv: '',
+                expected_arrv: '',
+                expected_dep: '',
             }),
             cash: new Form({
                 kode_booking: '',
@@ -470,6 +482,9 @@ export default {
         }
     },
     methods: {
+        moment: function() {
+          return moment();
+        },
         filterTgl() {
             axios.get('/api/admin/booking/' + this.formFilter.tgl_awal + '/' + this.formFilter.tgl_akhir).then(({
                 data

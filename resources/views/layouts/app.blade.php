@@ -101,21 +101,21 @@
                                         <i class="nav-icon fa fa-briefcase"></i> Booking
                                     </router-link>
                                 </li>
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <router-link to="/admin/check-in" class="nav-link" href="colors.html">
                                         <i class="nav-icon fa fa-key"></i> Check-in
                                     </router-link>
-                                </li>
+                                </li> --}}
                                 <li class="nav-item">
                                     <router-link to="/admin/inhouse" class="nav-link" href="colors.html">
                                         <i class="nav-icon fa fa-bed"></i> Inhouse
                                     </router-link>
                                 </li>
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <router-link to="/admin/check-out" class="nav-link" href="colors.html">
                                         <i class="nav-icon fa fa-suitcase-rolling"></i> Check-out
                                     </router-link>
-                                </li>
+                                </li> --}}
                                 <li class="nav-item">
                                     <router-link to="/admin/canceled" class="nav-link" href="colors.html">
                                         <i class="nav-icon fa fa-window-close"></i> Cancel
@@ -221,7 +221,7 @@
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
     {{-- <script type="text/javascript" src="/js/main.js"></script> --}}
-    
+
 </body>
 
 </html>

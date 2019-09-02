@@ -82,15 +82,10 @@ class PembayaranController extends Controller
       $date = Carbon::now()->format('Y-m-d');
       $booking = Booking::where('kode_booking', $request->kode_booking)->first();
 
-      if ($booking->tgl_checkin == $date) {
-        $booking->update([
-          'status' => '2',
-        ]);
-      } else {
         $booking->update([
           'status' => '1',
         ]);
-      }
+
 
       // else {
       //   $booking->update([
@@ -161,15 +156,10 @@ class PembayaranController extends Controller
         $date = Carbon::now()->format('Y-m-d');
         $booking = Booking::where('kode_booking', $request->kode_booking)->first();
 
-        if ($booking->tgl_checkin == $date) {
-          $booking->update([
-            'status' => '2',
-          ]);
-        } else {
           $booking->update([
             'status' => '1',
           ]);
-        }
+
 
     } catch (\Exception $e) {
       DB::rollback();

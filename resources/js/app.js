@@ -114,6 +114,7 @@ let routes = [
 
 
   { path: '/admin/inhouse', component: require('./components/Admin/Reservasi/Inhouse.vue').default, name: 'inhouse'},
+  { path: '/admin/inhouse/:no_room', component: require('./components/Admin/Reservasi/DetilInhouse.vue').default, name: 'detil-inhouse'},
 
   { path: '/admin/payment/tagihan', component: require('./components/Admin/Payment/Tagihan.vue').default, name: 'tagihan'},
   { path: '/admin/payment/tagihan/:kode_booking', component: require('./components/Admin/Payment/DetilTagihan.vue').default, name:'detil-tagihan'},

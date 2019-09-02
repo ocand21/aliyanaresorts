@@ -146,7 +146,7 @@ class BookingsController extends Controller
     {
         $date = Carbon::now();
 
-        if ($filter == "3") {
+        if ($filter == "2") {
             $bookings = DB::table('bookings')
                         ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                         ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
@@ -154,11 +154,11 @@ class BookingsController extends Controller
                         ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
                         ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
                         bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
-                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
-                        WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Reserved' WHEN (bookings.status = 2) THEN 'Inhouse'
+                        WHEN (bookings.status = 3) THEN 'Completed' ELSE 'Cancel' END) as status,
                         bookings.tipe as tipe_booking"))
                         ->orderBy('bookings.tgl_checkin', 'asc')
-                        ->where('bookings.status', '3')
+                        ->where('bookings.status', '2')
                         ->get();
             return response()->json($bookings);
         } elseif ($filter == "rsv_today") {
@@ -169,14 +169,14 @@ class BookingsController extends Controller
                         ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
                         ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
                         bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
-                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
-                        WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Reserved' WHEN (bookings.status = 2) THEN 'Inhouse'
+                        WHEN (bookings.status = 3) THEN 'Completed' ELSE 'Cancel' END) as status, bookings.created_at,
                         bookings.tipe as tipe_booking"))
                         ->orderBy('bookings.tgl_checkin', 'asc')
-                        ->whereDate('bookings.tgl_checkin', $date)
+                        ->whereDate('bookings.created_at', $date)
                         ->get();
             return response()->json($bookings);
-        } else {
+        } elseif ($filter == "expected_arrv") {
             $bookings = DB::table('bookings')
                         ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
                         ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
@@ -184,8 +184,41 @@ class BookingsController extends Controller
                         ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
                         ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
                         bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
-                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
-                        WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Reserved' WHEN (bookings.status = 2) THEN 'Inhouse'
+                        WHEN (bookings.status = 3) THEN 'Completed' ELSE 'Cancel' END) as status, bookings.created_at,
+                        bookings.tipe as tipe_booking"))
+                        ->whereDate('bookings.tgl_checkin', $date)
+                        ->where('bookings.status', '1')
+                        ->orderBy('bookings.tgl_checkin', 'asc')
+                        ->get();
+            return response()->json($bookings);
+        } elseif ($filter == "expected_dep") {
+            $bookings = DB::table('bookings')
+                        ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
+                        ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                        ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                        ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                        ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
+                        bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Reserved' WHEN (bookings.status = 2) THEN 'Inhouse'
+                        WHEN (bookings.status = 3) THEN 'Completed' ELSE 'Cancel' END) as status, bookings.created_at,
+                        bookings.tipe as tipe_booking"))
+                        ->whereDate('bookings.tgl_checkout', $date)
+                        ->where('bookings.status', '2')
+                        ->orderBy('bookings.tgl_checkin', 'asc')
+                        ->get();
+            return response()->json($bookings);
+        }
+         else {
+            $bookings = DB::table('bookings')
+                        ->join('pelanggan', 'pelanggan.id', 'bookings.id_pelanggan')
+                        ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
+                        ->join('booking_types', 'booking_types.kode_booking', 'bookings.kode_booking')
+                        ->join('tipe_kamar', 'tipe_kamar.id', 'booking_types.id_tipe')
+                        ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
+                        bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan,
+                        (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Reserved' WHEN (bookings.status = 2) THEN 'Inhouse'
+                        WHEN (bookings.status = 3) THEN 'Completed' ELSE 'Cancel' END) as status,
                         bookings.tipe as tipe_booking"))
                         ->orderBy('bookings.tgl_checkin', 'asc')
                         ->get();
@@ -327,39 +360,11 @@ class BookingsController extends Controller
                       ->leftJoin('users', 'users.id', 'bookings.id_users')
                       ->select(DB::raw("bookings.kode_booking, bookings.id_pelanggan, tipe_kamar.tipe, booking_types.jml_kamar, pelanggan.nama, pelanggan.no_telepon, bookings.tgl_checkin,
                       bookings.tgl_checkout, tagihan.total_tagihan, tagihan.terbayarkan, tagihan.hutang as kekurangan,
-                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Payment Accepted' WHEN (bookings.status = 2) THEN 'Checkin'
-                      WHEN (bookings.status = 3) THEN 'Inhouse' WHEN (bookings.status = 4) THEN 'Checkout' WHEN (bookings.status = 5) THEN 'Completed' ELSE 'Cancel' END) as status,
+                      (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' WHEN (bookings.status = 1) THEN 'Reserved' WHEN (bookings.status = 2) THEN 'Inhouse'
+                      WHEN (bookings.status = 3) THEN 'Completed' ELSE 'Cancel' END) as status,
                       bookings.tipe as tipe_booking, bookings.created_at, users.name as diinput_oleh"))
                       ->orderBy('bookings.tgl_checkin', 'asc')
                       ->get();
-
-        foreach ($bookings as $booking) {
-            if ($booking->tgl_checkin == $date) {
-                DB::beginTransaction();
-                try {
-                    DB::table('bookings')->where([['tgl_checkin', $date],['status', '1']])->update([
-              'status' => '2',
-            ]);
-                } catch (\Exception $e) {
-                    throw $e;
-                    DB::rollback();
-                }
-
-                DB::commit();
-            } elseif ($booking->tgl_checkout == $date) {
-                DB::beginTransaction();
-                try {
-                    DB::table('bookings')->where([['tgl_checkout', $date],['status', '3']])->update([
-              'status' => '4',
-            ]);
-                } catch (\Exception $e) {
-                    throw $e;
-                    DB::rollback();
-                }
-
-                DB::commit();
-            }
-        }
 
 
         return response()->json($bookings);
@@ -528,8 +533,6 @@ class BookingsController extends Controller
 
         if ($temp->no_room != null) {
             $kamar = Kamar::where('no_room', $temp->no_room)->first();
-
-
             DB::beginTransaction();
             try {
                 $kamar->status_temp = '0';
@@ -538,6 +541,16 @@ class BookingsController extends Controller
                 DB::rollback();
                 throw $e;
             }
+
+            try {
+                $temp->delete();
+            } catch (\Exception $e) {
+                DB::rollback();
+                throw $e;
+            }
+
+
+
         } else {
             try {
                 $temp->delete();
