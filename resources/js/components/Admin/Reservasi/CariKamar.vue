@@ -127,7 +127,7 @@
                                                 <td>
                                                     <select v-model="form.jml_kamar" class="form-control">
                                                         <option value=""> -- </option>
-                                                        <option v-for="jml in kamar.jml_kamar">{{jml}}</option>
+                                                        <option value="1">1</option>
                                                     </select>
                                                 </td>
                                                 <td class="text-center"><a href="#" @click="roomTemp(kamar.id_tipe)" class="btn btn-warning btn-sm"> <span class="fa fa-check"></span>Book</a> </td>

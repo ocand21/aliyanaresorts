@@ -24,6 +24,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     'admin/metode-pembayaran' => 'API\MasterData\MetodePembayaranController',
   ]);
 
+    Route::delete('/admin/drop-charges/{id}', 'API\Reservasi\CheckinController@deleteCharges');
+
     Route::post('/admin/inhouse/pindah/{no_room}', 'API\Reservasi\InhouseController@konfirmPindah');
     Route::get('/admin/inhouse/pindah/{no_room}', 'API\Reservasi\InhouseController@pindahKamar');
     Route::get('/admin/inhouse/{no_room}', 'API\Reservasi\InhouseController@detilKamar');

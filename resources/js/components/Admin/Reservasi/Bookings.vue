@@ -43,8 +43,8 @@
                                         <label for="">Filter Tanggal</label>
                                         <date-picker name="tgl_awal" v-model="formFilter.tgl_awal" :lang="lang" value-type="format"  :class="{ 'is-invalid': formFilter.errors.has('tgl_awal') }"></date-picker>
                                         <date-picker name="tgl_akhir" v-model="formFilter.tgl_akhir" :lang="lang" value-type="format"  :class="{ 'is-invalid': formFilter.errors.has('tgl_akhir') }"></date-picker>
-                                        <button type="submit" class="btn btn-danger btn-sm" name="button">Filter</button>
-                                        <button type="button" @click="dataBooking()" class="btn btn-success btn-sm" name="button">Reset</button>
+                                        <button type="submit" class="btn btn-success btn-sm" name="button">Filter</button>
+                                        <button type="button" @click="dataBooking()" class="btn btn-danger btn-sm" name="button">Reset</button>
                                     </form>
                                 </div>
                                 <div class="col-md-12">
@@ -62,11 +62,11 @@
                                         <p slot="kekurangan" class="red" slot-scope="{row}">Rp. {{row.kekurangan | currency}}</p>
                                         <p slot="jml_kamar" class="text-right" slot-scope="{row}">{{row.jml_kamar}} Kamar</p>
                                         <div slot="tgl_checkin" slot-scope="{row}">
-                                          <a href="#" v-if="row.tgl_checkin === moment().format('YYYY-MM-DD') && row.status === 'Reserved'" @click.prevent="checkinRoute(row.kode_booking)" class="btn btn-sm badge badge-success text-uppercase">CHECKIN NOW</a>
-                                          <p v-if="row.status !='Reserved'">{{row.tgl_checkin | myDate}}</p>
+                                          <a href="#" v-show="row.tgl_checkin == moment().format('YYYY-MM-DD') && row.status == 'Reserved'" @click.prevent="checkinRoute(row.kode_booking)" class="btn btn-sm badge badge-success text-uppercase">CHECKIN NOW</a>
+                                          <p v-show="row.tgl_checkin != moment().format('YYYY-MM-DD') || row.status == 'Inhouse' || row.status == 'Waiting Payment'">{{row.tgl_checkin | myDate}}</p>
                                         </div>
                                         <div slot="tgl_checkout" slot-scope="{row}">
-                                          <a href="#" v-if="row.tgl_checkout === moment().format('YYYY-MM-DD') && row.status === 'Inhouse'" @click.prevent="" class="btn btn-sm badge badge-danger text-uppercase">Checkout NOW</a>
+                                          <a href="#" v-if="row.tgl_checkout === moment().format('YYYY-MM-DD') && row.status === 'Inhouse'" @click.prevent="checkoutRoute(row.kode_booking)" class="btn btn-sm badge badge-danger text-uppercase">Checkout NOW</a>
                                           <p v-if="row.tgl_checkout != moment().format('YYYY-MM-DD')">{{row.tgl_checkout | myDate}}</p>
                                         </div>
                                         <p slot="created_at" slot-scope="{row}">{{row.created_at | myDate}}</p>
@@ -482,6 +482,14 @@ export default {
         }
     },
     methods: {
+        checkoutRoute(kode_booking){
+          this.$router.push({
+              name: 'form-checkout',
+              params: {
+                  kode_booking: kode_booking
+              }
+          })
+        },
         moment: function() {
           return moment();
         },

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
 use App\Booking;
+use App\BookingRoom;
 use Carbon\Carbon;
 use App\BookingCharges;
 use App\Charge;
@@ -21,12 +22,25 @@ class CheckoutController extends Controller
       $checkin = Booking::where('kode_booking', $kode_booking)->first();
 
       $checkin->update([
-        'status' => '5'
+        'status' => '3'
       ]);
     } catch (\Exception $e) {
       DB::rollback();
       throw $e;
     }
+
+    try {
+      $rooms = BookingRoom::where('kode_booking', $kode_booking)->get();
+
+      foreach ($rooms as $room) {
+        $room->delete();
+      }
+
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
 
     try {
       $tagihan = Tagihan::where('kode_booking', $kode_booking)->first();

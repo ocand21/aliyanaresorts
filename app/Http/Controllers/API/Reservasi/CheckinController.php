@@ -15,6 +15,39 @@ use App\BookingRoom;
 
 class CheckinController extends Controller
 {
+
+    public function deleteCharges($id){
+      DB::beginTransaction();
+
+
+      $charge = Charge::findOrFail($id);
+
+      try {
+        $tagihan = Tagihan::where('kode_booking', $charge->kode_booking)->first();
+        $tagihan->update([
+          'total_tagihan' => $tagihan->total_tagihan - $charge->jumlah_rupiah,
+          'hutang' => $tagihan->hutang - $charge->jumlah_rupiah,
+        ]);
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      try {
+        $charge->delete();
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      DB::commit();
+
+      return response()->json([
+        'msg' => 'Berhasil',
+      ]);
+
+    }
+
     public function hapusRoom($id)
     {
         $room = BookingRoom::where('id', $id)->first();
@@ -151,7 +184,7 @@ class CheckinController extends Controller
           'keterangan' => 'required',
         ]);
 
-            $charge = Charge::create([
+        $charge = Charge::create([
           'kode_booking' => $kode_booking,
           'nama_charge' => $request->nama_charge,
           'jumlah_persen' => $request->jumlah_persen,

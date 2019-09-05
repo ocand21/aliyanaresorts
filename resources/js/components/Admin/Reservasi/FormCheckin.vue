@@ -159,65 +159,76 @@
                                             </tbody>
                                             <tbody>
                                                 <tr>
-                                                    <th colspan="4">
+                                                    <th colspan="3">
                                                         <p class="text-right">Durasi Menginap</p>
                                                     </th>
                                                     <td>
                                                         <p>{{dataCheckin.durasi}} Hari</p>
                                                     </td>
+                                                    <th colspan="4">
+                                                    </th>
                                                 </tr>
                                                 <tr>
-                                                    <th colspan="4">
+                                                    <th colspan="3">
                                                         <p class="text-right">Subtotal</p>
                                                     </th>
                                                     <td>
                                                         <p>Rp. {{dataCheckin.detil.total | currency}}</p>
                                                     </td>
+                                                    <th colspan="4">
+                                                    </th>
                                                 </tr>
                                                 <tr v-for="ch in dataCharges" :key="ch.id">
-                                                    <th colspan="4">
+                                                    <th colspan="3">
                                                         <p class="text-right">{{ch.nama_charge}} {{ch.jumlah_persen}}%</p>
                                                     </th>
                                                     <td>
                                                         <p>Rp. {{ch.jumlah_rupiah | currency}}</p>
                                                     </td>
+                                                    <th colspan="4">
+                                                      <a href="#" @click.prevent="deleteCharges(ch.id)"><span class="fa fa-window-close red"></span> </a>
+                                                    </th>
                                                 </tr>
                                                 <tr>
-                                                    <th colspan="4">
+                                                    <th colspan="3">
                                                         <p class="text-right">Total</p>
                                                     </th>
                                                     <td>
                                                         <p>Rp. {{dataTagihan.total_tagihan | currency}}</p>
                                                     </td>
+                                                    <th colspan="4">
+                                                    </th>
                                                 </tr>
                                                 <tr>
-                                                    <th colspan="4">
+                                                    <th colspan="3">
                                                         <p class="text-right">Terbayarkan</p>
                                                     </th>
                                                     <td>
                                                         <p>Rp. {{dataTagihan.terbayarkan | currency}}</p>
                                                     </td>
+                                                    <th colspan="4">
+                                                    </th>
                                                 </tr>
                                                 <tr>
-                                                    <th colspan="4">
+                                                    <th colspan="3">
                                                         <p class="text-right">Kekurangan</p>
                                                     </th>
                                                     <td>
                                                         <p>Rp. {{dataTagihan.hutang | currency}}</p>
                                                     </td>
+                                                    <th colspan="4">
+                                                    </th>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-
-
 
                                 </form>
                             </div>
                             <div class="card-footer text-right">
                                 <button class="btn btn-sm btn-primary" @click="prosesCheckin" type="submit">
                                     <i class="fa fa-dot-circle-o"></i> Konfirmasi Checkin</button>
-                                <router-link to="/admin/check-in" class="btn btn-sm btn-danger">
+                                <router-link to="/admin/bookings" class="btn btn-sm btn-danger">
                                     <i class="fa fa-dot-circle-o"></i> Batal</router-link>
                             </div>
                         </div>
@@ -390,6 +401,37 @@ export default {
         }
     },
     methods: {
+        deleteCharges(id_charges){
+          swal({
+              title: 'Anda yakin?',
+              text: "Operasi ini tidak dapat dibatalkan!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ya, batalkan charges!',
+              cancelButtonText: 'Batal'
+          }).then((result) => {
+              if (result.value) {
+                  this.$Progress.start();
+                  axios.delete('/api/admin/drop-charges/' + id_charges ).then(() => {
+                      swal(
+                          'Berhasil!',
+                          'Charges berhasil dihapus.',
+                          'success'
+                      )
+                      Fire.$emit('AfterCreate')
+                      this.$Progress.finish();
+                      $('#modalCh').modal('hide');
+                      this.formCharge.reset();
+                  }).catch(() => {
+                      swal("Gagal!", "Terjadi kesalahan.",
+                          "warning");
+                  });
+              }
+
+          })
+        },
         deleteRoom(id_room){
           swal({
               title: 'Anda yakin?',
@@ -562,7 +604,7 @@ export default {
                         Fire.$emit('AfterCreate')
                         this.$Progress.finish();
                         this.$router.push({
-                            name: 'check-in'
+                            name: 'bookings'
                         });
                     }).catch(() => {
                         swal("Gagal!", "Terjadi kesalahan.",

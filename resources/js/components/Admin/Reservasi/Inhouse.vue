@@ -26,7 +26,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong>Daftar Inhouse</strong>
-
                             </div>
                             <div class="card-body">
                                 <hr>
@@ -39,7 +38,7 @@
                                 <div class="col-md-12">
                                     <v-client-table :data="bookings" :columns="columns" :options="options">
                                       <div slot="aksi" slot-scope="{row}">
-                                          <a href="#" @click="detilInhouse(row.no_room)" style="margin-bottom: 5px" class="btn btn-primary btn-sm"><span class="fa fa-search"></span></a>
+                                          <a href="#" @click="detilModal(row.no_room)" style="margin-bottom: 5px" class="btn btn-primary btn-sm"><span class="fa fa-search"></span></a>
                                           <a href="#" v-show="row.tipe != 'Suite'" @click="pindahKamar(row.no_room)" style="margin-bottom: 5px" class="btn btn-success btn-sm"><span class="fa fa-angle-double-left"></span></a>
                                       </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
@@ -119,7 +118,7 @@
         </div>
     </div>
 
-    <!-- <div class="modal fade bd-example-modal-lg" id="modalInhouse" tabindex="-1" role="dialog">
+    <div class="modal fade bd-example-modal-lg" id="modalInhouse" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -133,14 +132,17 @@
                     <label for="">Nama Penghuni</label>
                     <input type="text" class="form-control" readonly :value="dtlInhouse.nama_penghuni">
                   </div>
+                  <div class="form-group">
+                    <label for="">Jumlah Penghuni</label>
+                    <input type="text" class="form-control" readonly :value="dtlInhouse.jml_penghuni">
+                  </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" @click="updateOpsional()">Update</button>
-                    <button type="button" name="button" data-dismiss="modal" class="btn btn-warning">Tutup</button>
+                    <button type="button" name="button" data-dismiss="modal" class="btn btn-danger">Tutup</button>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
 
 
