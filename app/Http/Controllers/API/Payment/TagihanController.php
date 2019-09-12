@@ -17,6 +17,17 @@ use App\Model\Payment\TransferPayment;
 class TagihanController extends Controller
 {
 
+    public function paymentCredit($kode_booking){
+      $credit = DB::table('credit_payments')
+                    ->join('users', 'users.id', 'credit_payments.id_user')
+                    ->join('card_masters', 'card_masters.id', 'credit_payments.card_id')
+                    ->select(DB::raw("card_masters.nama_kartu, credit_payments.card_no, credit_payments.card_name, credit_payments.expired_date, credit_payments.jml_bayar, users.name"))
+                    ->where('credit_payments.kode_booking', $kode_booking)
+                    ->get();
+
+      return response()->json($credit);
+    }
+
     public function paymentTransfer($kode_booking){
       $transfer = DB::table('transfer_payments')
                       ->join('users', 'users.id', 'transfer_payments.id_users')

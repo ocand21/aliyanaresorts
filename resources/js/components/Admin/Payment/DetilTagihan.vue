@@ -102,6 +102,11 @@
                                           <p slot="jml_bayar" slot-scope="{row}" class="float-right red">Rp. {{row.jml_bayar | currency}}</p>
                                       </v-client-table>
 
+                                      <hr>
+                                      <h5>Credit Card/Debit</h5>
+                                      <v-client-table :data="dataCredit" :columns="columnCredits" :options="optionCredits">
+                                          <p slot="jml_bayar" slot-scope="{row}" class="float-right red">Rp. {{row.jml_bayar | currency}}</p>
+                                      </v-client-table>
                                     </div>
 
                                   </div>
@@ -131,6 +136,31 @@ export default {
     data() {
         return {
             editMode: false,
+            columnCredits: [
+                'nama_kartu', 'card_no', 'card_name', 'expired_date', 'jml_bayar', 'name',
+            ],
+            optionCredits: {
+                texts: {
+                    filterPlaceholder: "Cari data",
+                    filter: "Pencarian : ",
+                    filterBy: "Cari {column}",
+                    count: "Menampilkan {from} ke {to} dari {count} data|{count} data|Satu data",
+                },
+                headings: {
+                    nama_kartu: 'Tipe Kartu',
+                    card_no: 'No Kartu',
+                    card_name: 'Nama Kartu',
+                    expired_date: 'Tgl Kadaluarsa',
+                    name: 'Diinputkan oleh',
+                },
+                columnsDisplay: {},
+                filterByColumn: true,
+                pagination: {
+                    dropdown: false
+                },
+                columnsClasses: {
+                },
+            },
             columnTransfers: [
                 'bank', 'nama_pemilik_rekening', 'no_rekening', 'tgl_transfer', 'jml_bayar', 'name',
             ],
@@ -183,10 +213,15 @@ export default {
             dataTagihan: [],
             dataCash: [],
             dataTransfer: [],
+            dataCredit: [],
         }
     },
     methods: {
-
+      riwayatCredit(){
+        axios.get('/api/admin/payment/tagihan/credit/' + this.$route.params.kode_booking).then(({
+            data
+        }) => (this.dataCredit = data));
+      },
       riwayatTransfer(){
         axios.get('/api/admin/payment/tagihan/transfer/' + this.$route.params.kode_booking).then(({
             data
@@ -213,6 +248,7 @@ export default {
         this.$Progress.start();
         this.detilTagihan();
         this.riwayatCash();
+        this.riwayatCredit();
         this.riwayatTransfer();
         this.$Progress.finish();
     }

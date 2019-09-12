@@ -24,7 +24,7 @@ class MetodePembayaranController extends Controller
 
     public function index()
     {
-      $metode = MetodePembayaran::orderBy('id', 'asc')->get();
+      $metode = MetodePembayaran::orderBy('id', 'asc')->whereNotIn('bank', ['CASH', 'CREDIT CARD'])->get();
 
       return response()->json($metode);
     }

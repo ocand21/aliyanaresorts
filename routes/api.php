@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResources([
+    'admin/master-kartu' => 'API\MasterData\CardMasterController',
     'admin/konfigurasi-web' => 'API\KonfigurasiController',
     'admin/tipe-kamar' => 'API\TipeKamarController',
     'admin/kamar' => 'API\KamarController',
@@ -23,6 +24,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     'admin/staff' => 'API\StaffController',
     'admin/metode-pembayaran' => 'API\MasterData\MetodePembayaranController',
   ]);
+
+    Route::post('/admin/booking/update', 'API\Reservasi\BookingsController@updateBooking');
+
+    Route::get('/admin/payment/tagihan/credit/{kode_booking}', 'API\Payment\TagihanController@paymentCredit');
+    Route::post('/admin/payment/credit-card', 'API\Payment\PembayaranController@creditPayment');
 
     Route::delete('/admin/drop-charges/{id}', 'API\Reservasi\CheckinController@deleteCharges');
 

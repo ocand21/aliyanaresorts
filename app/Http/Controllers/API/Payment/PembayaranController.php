@@ -16,11 +16,83 @@ use App\MetodePembayaran;
 
 use App\Model\Payment\CashPayment;
 use App\Model\Payment\TransferPayment;
+use App\Model\Payment\CreditPayment;
 
 use Carbon\Carbon;
 
 class PembayaranController extends Controller
 {
+
+  public function creditPayment(Request $request){
+    $user = auth('api')->user();
+
+    $request->validate([
+      'kode_booking' => 'required',
+      'card_id' => 'required',
+      'card_no' => 'required|numeric',
+      'card_name' => 'required',
+      'expired_date' => 'required|date',
+      'jml_bayar' => 'required|numeric',
+    ]);
+
+    DB::beginTransaction();
+    try {
+      $credit = CreditPayment::create([
+        'kode_booking' => $request->kode_booking,
+        'card_id' => $request->card_id,
+        'card_no' => $request->card_no,
+        'card_name' => $request->card_name,
+        'expired_date' => $request->expired_date,
+        'jml_bayar' => $request->jml_bayar,
+        'id_user' => $user->id,
+      ]);
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    try {
+      $metode = MetodePembayaran::where('bank', 'CREDIT CARD')->first();
+      $tagihan = Tagihan::where('kode_booking', $request->kode_booking)->first();
+      if ($tagihan->total_tagihan == $request->jml_bayar) {
+        $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+        $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+        $tagihan->id_metode = $metode->id;
+        $tagihan->status = '1';
+        $tagihan->save();
+      } else {
+        $tagihan->terbayarkan = $tagihan->terbayarkan + $request->jml_bayar;
+        $tagihan->hutang = $tagihan->total_tagihan - $tagihan->terbayarkan;
+        $tagihan->id_metode = $metode->id;
+        $tagihan->status = '2';
+        $tagihan->save();
+      }
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    try {
+      $date = Carbon::now()->format('Y-m-d');
+      $booking = Booking::where('kode_booking', $request->kode_booking)->first();
+
+        $booking->update([
+          'status' => '1',
+        ]);
+
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw $e;
+    }
+
+    DB::commit();
+
+    return response()->json([
+      'msg' => 'Pembayaran berhasil!'
+    ]);
+
+
+  }
 
   public function transferPayment(Request $request){
     $user = auth('api')->user();
@@ -86,12 +158,6 @@ class PembayaranController extends Controller
           'status' => '1',
         ]);
 
-
-      // else {
-      //   $booking->update([
-      //     'status' => '1',
-      //   ]);
-      // }
     } catch (\Exception $e) {
       DB::rollback();
       throw $e;

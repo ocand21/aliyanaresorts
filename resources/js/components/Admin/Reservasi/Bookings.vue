@@ -52,7 +52,8 @@
                                     <v-client-table :data="bookings" :columns="columns" :options="options">
                                         <div slot="aksi" slot-scope="{row}">
                                             <a href="#" @click="detilModal(row.kode_booking)" style="margin-bottom: 5px" class="btn btn-primary btn-sm"><span class="fa fa-search"></span></a>
-                                            <a v-if="row.status === 'Waiting Payment'" href="#" @click="cancelModal(row)" class="btn btn-danger btn-sm"><span class="fa fa-window-close"></span></a>
+                                            <a v-if="row.status === 'Waiting Payment' && row.status === 'Reserved'" href="#" @click="cancelModal(row)" class="btn btn-danger btn-sm"><span class="fa fa-window-close"></span></a>
+                                            <a href="#" @click="editReservasi(row.kode_booking)" class="btn btn-success btn-sm"><span class="fa fa-edit"></span></a>
                                         </div>
                                         <p slot="kode_booking" slot-scope="{row}" class="text-uppercase">{{row.kode_booking}}</p>
                                         <!-- <p slot="tgl_checkin" slot-scope="{row}">{{row.tgl_checkin | myDate}}</p> -->
@@ -249,7 +250,7 @@
                                 <a class="nav-link" id="transfer-tab" data-toggle="tab" href="#transfer" role="tab" aria-controls="transfer" aria-selected="false">Transfer</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+                                <a class="nav-link" id="credit-tab" data-toggle="tab" href="#credit" role="tab" aria-controls="credit" aria-selected="false">Credit Card</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTab1Content">
@@ -320,12 +321,51 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard
-                                locavore carles etsy salvia banksy
-                                hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you
-                                probably haven't heard
-                                of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+                            <div class="tab-pane fade" id="credit" role="tabpanel" aria-labelledby="credit-tab">
+                              <form action="" @submit.prevent="postCredit()">
+                                <div class="form-group">
+                                  <label for="">Kode Booking</label>
+                                  <input type="text" class="form-control text-uppercase" v-model="formCard.kode_booking" name="kode_booking" readonly :class="{ 'is-invalid': formCard.errors.has('kode_booking') }">
+                                  <has-error :form="formCard" field="kode_booking"></has-error>
+                                </div>
+                                <div class="form-group">
+                                  <label for="">Card Type</label>
+                                  <select class="form-control" name="card_id" v-model="formCard.card_id">
+                                    <option v-for="kartu in masterKartu" :value="kartu.id">{{kartu.nama_kartu}}</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="">Card No</label>
+                                  <input type="text" class="form-control" v-model="formCard.card_no" name="card_no" :class="{ 'is-invalid': formCard.errors.has('card_no') }">
+                                  <has-error :form="formCard" field="card_no"></has-error>
+                                </div>
+                                <div class="form-group">
+                                  <label for="">Card Name</label>
+                                  <input type="text" class="form-control" v-model="formCard.card_name" name="card_name" :class="{ 'is-invalid': formCard.errors.has('card_name') }">
+                                  <has-error :form="formCard" field="card_name"></has-error>
+                                </div>
+                                <div class="form-group">
+                                  <label for="">Expired Date</label>
+                                  <date-picker name="expired_date" v-model="formCard.expired_date" :lang="lang" value-type="format" :class="{ 'is-invalid': formCard.errors.has('expired_date') }"></date-picker>
+                                  <has-error :form="formCard" field="expired_date"></has-error>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Total Tagihan</label>
+                                    <money v-model="formCard.total_tagihan" v-bind="money" type="text" name="total_tagihan" readonly class="form-control" :class="{ 'is-invalid': formCard.errors.has('total_tagihan') }" id="total"></money>
+                                    <has-error :form="formCard" field="total_tagihan"></has-error>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Jumlah Pembayaran</label>
+                                    <money v-model="formCard.jml_bayar" v-bind="money" type="text" name="jml_bayar" class="form-control" :class="{ 'is-invalid': formCard.errors.has('jml_bayar') }" id="total"></money>
+                                    <has-error :form="formCard" field="jml_bayar"></has-error>
+                                </div>
+
+
+                                <div class="form-group text-right">
+                                    <button type="submit" class="btn btn-success btn-sm" name="button">Simpan</button>
+                                </div>
+
+                              </form>
                             </div>
                         </div>
                     </div>
@@ -378,6 +418,73 @@
         </div>
     </div>
 
+    <div class="modal fade bd-example-modal-lg" id="modalEdit" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Booking</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form class="" @submit.prevent="updateBooking()" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Kode Booking</label>
+                            <input type="text" readonly class="form-control text-uppercase" v-model="formEdit.kode_booking" :class="{'is-invalid' : formEdit.errors.has('formEdit.kode_booking')}" name="kode_booking">
+                            <input type="hidden" readonly class="form-control text-uppercase" v-model="formEdit.user_id" :class="{'is-invalid' : formEdit.errors.has('formEdit.user_id')}" name="user_id">
+                            <has-error :form="formEdit" field="kode_booking"></has-error>
+                            <input type="hidden" v-model="formEdit.id_pelanggan" name="" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Nama Lengkap</label>
+                            <input type="text" v-model="formEdit.nama" :class="{'is-invalid' : formEdit.errors.has('formEdit.nama')}" class="form-control"></input>
+                            <has-error :form="formEdit" field="nama"></has-error>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="">Tipe Identitas</label>
+                                <input type="text" v-model="formEdit.tipe_identitas" :class="{'is-invalid' : formEdit.errors.has('formEdit.tipe_identitas')}" class="form-control"></input>
+                                <has-error :form="formEdit" field="tipe_identitas"></has-error>
+                            </div>
+                          </div>
+                          <div class="col-lg-9">
+                            <div class="form-group">
+                                <label for="">No Identitas</label>
+                                <input type="text" v-model="formEdit.no_identitas" :class="{'is-invalid' : formEdit.errors.has('formEdit.no_identitas')}" class="form-control"></input>
+                                <has-error :form="formEdit" field="no_identitas"></has-error>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">No Telepon</label>
+                            <input type="text" v-model="formEdit.no_telepon" :class="{'is-invalid' : formEdit.errors.has('formEdit.no_telepon')}" class="form-control"></input>
+                            <has-error :form="formEdit" field="no_telepon"></has-error>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Email</label>
+                            <input type="text" v-model="formEdit.email" :class="{'is-invalid' : formEdit.errors.has('formEdit.email')}" class="form-control"></input>
+                            <has-error :form="formEdit" field="email"></has-error>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Alamat</label>
+                            <input type="text" v-model="formEdit.alamat" :class="{'is-invalid' : formEdit.errors.has('formEdit.alamat')}" class="form-control"></input>
+                            <has-error :form="formEdit" field="alamat"></has-error>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button v-show="editMode" type="submit" class="btn btn-primary">Ubah</button>
+                        <button v-show="!editMode" type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 </template>
@@ -393,6 +500,15 @@ export default {
     },
     data() {
         return {
+            formCard: new Form({
+              kode_booking: '',
+              card_id: '',
+              card_no: '',
+              card_name: '',
+              expired_date: '',
+              total_tagihan: '',
+              jml_bayar: '',
+            }),
             editMode: true,
             columns: [
                 'aksi', 'status', 'kode_booking', 'tipe', 'jml_kamar', 'nama', 'tgl_checkin', 'tgl_checkout', 'total_tagihan', 'terbayarkan', 'kekurangan', 'tipe_booking',
@@ -478,10 +594,94 @@ export default {
                 no_rekening: '',
                 tgl_transfer: '',
             }),
+            formEdit: new Form({
+              user_id: '',
+              kode_booking: '',
+              nama: '',
+              tipe_identitas: '',
+              no_identitas: '',
+              no_telepon: '',
+              email: '',
+              alamat: '',
+            }),
             metode: [],
+            masterKartu: [],
         }
     },
     methods: {
+        updateBooking(){
+          swal({
+              title: 'Anda yakin?',
+              text: "Operasi ini tidak dapat dibatalkan!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ya, ubah data!',
+              cancelButtonText: 'Batal'
+          }).then((result) => {
+              if (result.value) {
+                  this.$Progress.start();
+                  this.formEdit.post('/api/admin/booking/update').then(() => {
+                      swal(
+                          'Berhasil!',
+                          'Data berhasil diubah.',
+                          'success'
+                      )
+                      Fire.$emit('AfterCreate')
+                      $('#modalEdit').modal('hide');
+                      this.formEdit.reset();
+                      this.$Progress.finish();
+                  }).catch(() => {
+                      swal("Gagal!", "Terjadi kesalahan.",
+                          "warning");
+                  });
+              }
+
+          })
+        },
+        editReservasi(kode_booking){
+          $('#modalEdit').modal('show');
+          axios.get('/api/admin/booking/detil/' + kode_booking).then(({
+              data
+          }) => (this.formEdit.fill(data)));
+        },
+        postCredit(){
+          swal({
+              title: 'Anda yakin?',
+              text: "Operasi ini tidak dapat dibatalkan!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ya, proses pembayaran!',
+              cancelButtonText: 'Batal'
+          }).then((result) => {
+              if (result.value) {
+                  this.$Progress.start();
+                  this.formCard.post('/api/admin/payment/credit-card').then(() => {
+                      swal(
+                          'Berhasil!',
+                          'Pembayaran Credit Berhasil.',
+                          'success'
+                      )
+                      this.tutupModal();
+                      this.transfer.reset();
+                      Fire.$emit('AfterCreate')
+                      this.$Progress.finish();
+                  }).catch(() => {
+                      swal("Gagal!", "Terjadi kesalahan.",
+                          "warning");
+                  });
+              }
+
+          })
+        },
+        loadKartu(){
+          axios.get('/api/admin/master-kartu').then(({
+              data
+          }) => (this.masterKartu = data));
+        },
         checkoutRoute(kode_booking){
           this.$router.push({
               name: 'form-checkout',
@@ -586,7 +786,11 @@ export default {
             axios.get('/api/admin/booking/detil/' + kode_booking).then(({
                 data
             }) => (this.transfer.fill(data)));
+            axios.get('/api/admin/booking/detil/' + kode_booking).then(({
+                data
+            }) => (this.formCard.fill(data)));
             this.metodePembayaran();
+            this.loadKartu();
         },
         detilTagihan(kode_booking) {
             $('#modalDetil').modal('hide');

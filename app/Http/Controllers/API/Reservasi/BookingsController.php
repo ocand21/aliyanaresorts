@@ -29,6 +29,43 @@ use Date;
 
 class BookingsController extends Controller
 {
+
+    public function updateBooking(Request $request){
+
+      $pelanggan = Pelanggan::findOrFail($request->user_id);
+
+      $request->validate([
+        'nama' => 'required',
+        'tipe_identitas' => 'required',
+        'no_identitas' => 'required|unique:pelanggan,no_identitas,'.$pelanggan->id,
+        'no_telepon' => 'required|unique:pelanggan,no_telepon,'.$pelanggan->id,
+        'email' => 'sometimes|unique:pelanggan,email,'.$pelanggan->id,
+        'alamat' => 'required',
+      ]);
+
+      DB::beginTransaction();
+      try {
+        $pelanggan->update([
+          'nama' => $request->nama,
+          'tipe_identitas' => $request->tipe_identitas,
+          'no_identitas' => $request->no_identitas,
+          'no_telepon' => $request->no_telepon,
+          'email' => $request->email,
+          'alamat' => $request->alamat,
+        ]);
+      } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+      }
+
+      DB::commit();
+
+      return response()->json([
+        'msg' => 'Data berhasil diubah',
+      ]);
+
+    }
+
     public function pilihNoKamar(Request $request, $no_room)
     {
         $temp = BookingTemp::where('id', $request->id_temp)->first();
@@ -336,7 +373,7 @@ class BookingsController extends Controller
                       ->join('tagihan', 'tagihan.kode_booking', 'bookings.kode_booking')
                       ->leftJoin('users', 'bookings.id_users', 'users.id')
                       ->leftJoin('metode_pembayaran', 'metode_pembayaran.id', 'tagihan.id_metode')
-                      ->select(DB::raw("bookings.kode_booking, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
+                      ->select(DB::raw("bookings.kode_booking, pelanggan.id as user_id, pelanggan.tipe_identitas, pelanggan.no_identitas, pelanggan.tipe_identitas, pelanggan.nama, pelanggan.email, pelanggan.no_telepon, pelanggan.alamat,
                       bookings.tgl_checkin, bookings.tgl_checkout, bookings.total, tagihan.total_tagihan, tagihan.terbayarkan, tagihan.hutang,
                       users.name as created_by, bookings.created_at, (CASE WHEN (bookings.status = 0) THEN 'Waiting Payment' ELSE 'Payment Accepted' END) as status,
                       metode_pembayaran.bank"))
